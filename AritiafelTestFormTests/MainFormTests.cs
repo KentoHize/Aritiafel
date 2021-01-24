@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Aritiafel.Organizations;
+using Aritiafel.Characters;
 
 namespace AritiafelTestForm.Tests
 {
@@ -17,14 +18,14 @@ namespace AritiafelTestForm.Tests
 
         [TestInitialize]
         public void TestInitialize()
-            => AdventurerAssociation.RegisterMemberAndRefreshInput(TestContext.Properties);
+            => AdventurerAssociation.RegisterMember();
 
         [TestCleanup]
         public void TestCleanup()
         {   
-            foreach (string s in AdventurerAssociation.Bard.MessageReceived)
-                TestContext.WriteLine(s);
-            AdventurerAssociation.Bard.MessageReceived.Clear();
+            //foreach (string s in AdventurerAssociation.Bard.MessageReceived)
+            //    TestContext.WriteLine(s);
+            //AdventurerAssociation.Bard.MessageReceived.Clear();
         }
 
         [TestMethod]
@@ -34,7 +35,8 @@ namespace AritiafelTestForm.Tests
 
             mf.btnMessageBox2_Click(mf, new EventArgs());
             mf.btnMessageBox2_Click(mf, new EventArgs());
-            mf.Close();         
+            mf.Close();
+            AdventurerAssociation.PrintMessageFromBard(TestContext);
         }
 
             
@@ -42,23 +44,30 @@ namespace AritiafelTestForm.Tests
         [TestProperty("FileName", @"‪C:\WebSite\GoogleDrive\ArinaQuotes.txt")]
         public void btnOpenFile_ClickTest()
         {   
-            MainForm mf = new MainForm();           
+            AdventurerAssociation.RefreshInput(TestContext.Properties);
+            MainForm mf = new MainForm();            
             mf.btnOpenFile_Click(mf, new EventArgs());
+            AdventurerAssociation.PrintMessageFromBard(TestContext);
 
-            TestContext.Properties["FileName"] = @"C:\WebSite\GoogleDrive\ArinaArticles.txt";
-            mf.btnOpenFile_Click(mf, new EventArgs());            
+            AdventurerAssociation.Bard = new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaArticles.txt");
+            mf.btnOpenFile_Click(mf, new EventArgs());
+            AdventurerAssociation.PrintMessageFromBard(TestContext);
             mf.Close();           
         }
 
         [TestMethod]
-        [TestProperty("FileName", @"‪C:\WebSite\GoogleDrive\ArinaQuotes.txt")]
         public void btnOpenFile_ClickTest2()
         {
             MainForm mf = new MainForm();
-            mf.btnOpenFile_Click(mf, new EventArgs());
 
-            TestContext.Properties["FileName"] = @"C:\WebSite\GoogleDrive\ArinaArticles.txt";
+            AdventurerAssociation.Bard = new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaQuotes.txt");
             mf.btnOpenFile_Click(mf, new EventArgs());
+            AdventurerAssociation.PrintMessageFromBard(TestContext);
+
+            AdventurerAssociation.Bard = new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaArticles.txt");
+            mf.btnOpenFile_Click(mf, new EventArgs());
+            AdventurerAssociation.PrintMessageFromBard(TestContext);
+
             mf.Close();
         }
 

@@ -1,24 +1,24 @@
-﻿using System;
+﻿using Aritiafel.Characters;
+using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using System.Reflection;
-
-using Aritiafel.Characters;
+using System.Windows.Forms;
 
 namespace Aritiafel.Organizations
 {
     public static class AdventurerAssociation
     {
-        public static Bard Bard { get; private set; }
+        public static Bard Bard { get; set; }
 
         public static Courier Courier { get; private set; } = new Courier();
 
         public static bool Registered { get; private set; }
 
         public static void RegisterMember()
-            => RegisterMember(new Bard());
+        { 
+            if (!Registered)
+                RegisterMember(new Bard());
+        }
 
         public static void RegisterMember(Bard member)
         {
@@ -30,18 +30,27 @@ namespace Aritiafel.Organizations
         {
             if (!Registered)
                 RegisterMember();
-            Bard.InputInfomation = inputInformation;
+            RefreshInput(inputInformation);
         }
 
-        private static void CheckInputInformationIsNew()
+        public static void RefreshInput(IDictionary inputInformation)
+            => Bard.InputInformation = inputInformation;        
+
+        /// <summary>
+        /// 從詩人身上傾倒逐行訊息
+        /// </summary>
+        /// <param name="writeLineObject">可以WriteLine的任意Object</param>
+        public static void PrintMessageFromBard(object writeLineObject)
         {
-            if (Bard.InputInfomation == null)
-                throw new ArgumentNullException("Text Context Connected Failed");
-        }   
+            foreach(string message in Bard.MessageReceived)
+            writeLineObject.GetType().InvokeMember("WriteLine", BindingFlags.InvokeMethod, 
+                null, writeLineObject, new object[] { message });
+            Bard.MessageReceived.Clear();
+        }
 
         public static DialogResult NewMessage(string message)
         {
-            if(!Registered)
+            if (!Registered)
                 return MessageBox.Show(message);
 
             //Test
@@ -70,8 +79,9 @@ namespace Aritiafel.Organizations
                     return cd.ShowDialog(owner);
                 else
                     return cd.ShowDialog();
-
-            CheckInputInformationIsNew();
+            
+            if (Bard.InputInformation == null)
+                throw new ArgumentNullException("Text Context Connected Failed");
 
             string dialogTypeName = cd.GetType().Name;
             DialogResult dr = DialogResult.OK;
@@ -79,16 +89,19 @@ namespace Aritiafel.Organizations
 
             foreach (PropertyInfo pi in cdProps)
             {
-                if (Bard.InputInfomation[pi.Name] != null)
-                { 
-                    pi.SetValue(cd, Bard.InputInfomation[pi.Name]);
-                    Bard.MessageReceived.Add($"{dialogTypeName} {pi.Name} = {Bard.InputInfomation[pi.Name]}");
+                object value = Bard.InputInformation[$"{cd.GetType().Name}.{pi.Name}"] ??
+                    Bard.InputInformation[pi.Name];
+
+                if (value != null)
+                {
+                    pi.SetValue(cd, value);
+                    Bard.MessageReceived.Add($"{dialogTypeName}.{pi.Name} = {value}");
                 }
             }
 
-            if (Bard.InputInfomation["DialogResult"] != null)
+            if (Bard.InputInformation["DialogResult"] != null)
             {
-                dr = (DialogResult)Bard.InputInfomation["DialogResult"];
+                dr = (DialogResult)Bard.InputInformation["DialogResult"];
                 Bard.MessageReceived.Add($"DialogResult = {dr}");
             }
             return dr;

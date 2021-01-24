@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Aritiafel.Characters.Heroes
 {
-    public class Tina
+    public static class Tina
     {
     }
 }
