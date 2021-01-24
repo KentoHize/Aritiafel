@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Aritiafel.Organizations;
 using Aritiafel.Characters;
+using System.IO;
 
 namespace AritiafelTestForm.Tests
 {
@@ -16,13 +17,35 @@ namespace AritiafelTestForm.Tests
     {
         public TestContext TestContext { get; set; }
 
+        static FileStream fs;
+
+        MemoryStream ms;
+
         [TestInitialize]
         public void TestInitialize()
-            => AdventurerAssociation.RegisterMembers();
+        {
+            if(!AdventurerAssociation.Registered)
+            {
+                fs = new FileStream(@"C:\Programs\TestArea\TestOutput2.txt", FileMode.Create);
+                //ms = new MemoryStream();
+                AdventurerAssociation.RegisterMembers(fs);
+            }
+        }
 
         [TestCleanup]
         public void TestCleanup()
-        { }
+        {
+            //MessageBox.Show((AdventurerAssociation.Archivist.Stream.Length).ToString());
+            //MessageBox.Show(ms.ToString());
+           
+        }
+
+        [ClassCleanup]
+        public static void CleanUp()
+        {
+            if (fs != null)
+                fs.Close();
+        }
 
         [TestMethod()]
         public void btnMessageBox_ClickTest()
@@ -30,6 +53,7 @@ namespace AritiafelTestForm.Tests
             MainForm mf = new MainForm();
             mf.btnMessageBox_Click(mf, new EventArgs());            
             mf.Close();
+            
             AdventurerAssociation.PrintMessageFromCourier(TestContext);
         }
 
@@ -76,7 +100,7 @@ namespace AritiafelTestForm.Tests
             mf.btnOpenFile_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromBard(TestContext);
 
-            mf.Close();
+            mf.Close(); 
         }
 
 

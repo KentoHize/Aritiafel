@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Text;
+using System.IO;
 
 namespace Aritiafel.Organizations
 {
@@ -13,27 +15,41 @@ namespace Aritiafel.Organizations
 
         public static Courier Courier { get; private set; }
 
+        public static Archivist Archivist { get; private set; }
+
         public static bool Registered { get; private set; }
 
         /// <summary>
         /// 測試成員註冊
         /// </summary>
         public static void RegisterMembers()
-        {
-            if (!Registered)
-                RegisterMembers(new Bard(), new Courier());
-        }
+            => RegisterMembers(null);
 
         /// <summary>
-        /// 註冊詩人與信使
+        /// 測試成員註冊
+        /// </summary>
+        /// <param name="output">輸出流</param>
+        public static void RegisterMembers(Stream output)
+        {
+            if (!Registered)
+                RegisterMembers(new Bard(), new Courier(), new Archivist(output));            
+        }
+
+        private static void UpdateRegisteredState()
+            => Registered = Bard != null && Courier != null && Archivist != null;
+
+        /// <summary>
+        /// 註冊詩人、信使與文件管理員
         /// </summary>
         /// <param name="bard">新詩人</param>
         /// <param name="courier">新信使</param>
-        public static void RegisterMembers(Bard bard, Courier courier)
+        /// <param name="archivist">新文件管理員</param>
+        public static void RegisterMembers(Bard bard, Courier courier, Archivist archivist)
         {
             RegisterMember(bard);
             RegisterMember(courier);
-            Registered = Bard != null && Courier != null;
+            RegisterMember(archivist);
+            UpdateRegisteredState();
         }
 
         /// <summary>
@@ -44,7 +60,7 @@ namespace Aritiafel.Organizations
         {
             if (newcomer != null)
                 Bard = newcomer;
-            Registered = Bard != null && Courier != null;
+            UpdateRegisteredState();
         }
 
         /// <summary>
@@ -55,7 +71,18 @@ namespace Aritiafel.Organizations
         {
             if (newcomer != null)
                 Courier = newcomer;
-            Registered = Bard != null && Courier != null;
+            UpdateRegisteredState();
+        }
+
+        /// <summary>
+        /// 註冊文件管理員
+        /// </summary>
+        /// <param name="newcomer">新文件管理員</param>
+        public static void RegisterMember(Archivist newcomer)
+        {
+            if (newcomer != null)
+                Archivist = newcomer;
+            UpdateRegisteredState();
         }
 
         public static void RegisterMemberAndRefreshInput(IDictionary inputInformation)
@@ -93,6 +120,18 @@ namespace Aritiafel.Organizations
         }
 
         /// <summary>
+        /// 從文件管理員上傾倒逐行訊息(全部流程)
+        /// </summary>
+        /// <param name="writeLineObject">可以WriteLine的任意Object</param>
+        public static void PrintMessageFromArchivist (object writeLineObject)
+        {
+            foreach (string record in Archivist.Records)
+                writeLineObject.GetType().InvokeMember("WriteLine", BindingFlags.InvokeMethod,
+                    null, writeLineObject, new object[] { record });
+            Archivist.ClearRecords();
+        }
+
+        /// <summary>
         /// 顯示訊息視窗或設置結果(測試時)
         /// </summary>
         /// <param name="message">訊息</param>
@@ -121,14 +160,20 @@ namespace Aritiafel.Organizations
                         (MessageBoxDefaultButton)((message.DefaultResponse - 1) * 256));
 
             DialogResult dr = (DialogResult)Enum.Parse(typeof(DialogResult), message.GetDefaultResponse());
-            Courier.MessageReceived.Add(message.ToString());
+            string record;
+            record = message.ToString();
+            Courier.MessageReceived.Add(record);
+            Archivist.WriteRecord(record);
+            
             if (!string.IsNullOrEmpty(Courier.InputResponse))
                 dr = (DialogResult)Enum.Parse(typeof(DialogResult), Courier.InputResponse);
 
             if (!message.ResponseOption.ToString().Contains(dr.ToString()))
                 throw new InvalidCastException("DialogResult");
 
-            Courier.MessageReceived.Add($"DialogResult = {dr}");
+            record = $"DialogResult = {dr}";
+            Courier.MessageReceived.Add(record);
+            Archivist.WriteRecord(record);
             return dr;
         }
 
@@ -154,15 +199,17 @@ namespace Aritiafel.Organizations
                 else
                     return cd.ShowDialog(owner);
 
-
             if (Bard.InputInformation == null)
                 throw new ArgumentNullException("Text Context Connected Failed");
 
             string dialogTypeName = cd.GetType().Name;
+            string record;
             DialogResult dr = DialogResult.OK;
             PropertyInfo[] cdProps = cd.GetType().GetProperties();
 
-            Bard.MessageReceived.Add($"Open Dialog: \"{cd.GetType().Name}\"");
+            record = $"Open Dialog: \"{cd.GetType().Name}\"";
+            Bard.MessageReceived.Add(record);
+            Archivist.WriteRecord(record);
 
             foreach (PropertyInfo pi in cdProps)
             {
@@ -172,7 +219,9 @@ namespace Aritiafel.Organizations
                 if (value != null)
                 {
                     pi.SetValue(cd, value);
-                    Bard.MessageReceived.Add($"{dialogTypeName}.{pi.Name} = {value}");
+                    record = $"{dialogTypeName}.{pi.Name} = {value}";
+                    Bard.MessageReceived.Add(record);
+                    Archivist.WriteRecord(record);
                 }
             }
 
@@ -184,7 +233,9 @@ namespace Aritiafel.Organizations
             if (dr != DialogResult.OK && dr != DialogResult.Cancel)
                 throw new InvalidCastException("DialogResult");
 
-            Bard.MessageReceived.Add($"DialogResult = {dr}");
+            record = $"DialogResult = {dr}";
+            Bard.MessageReceived.Add(record);
+            Archivist.WriteRecord(record);
             return dr;
         }
     }

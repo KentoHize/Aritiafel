@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Aritiafel</name>
+    </assembly>
+    <members>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMembers">
+            <summary>
+            測試成員註冊
+            </summary>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMembers(System.IO.Stream)">
+            <summary>
+            測試成員註冊
+            </summary>
+            <param name="output">輸出流</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMembers(Aritiafel.Characters.Bard,Aritiafel.Characters.Courier,Aritiafel.Characters.Archivist)">
+            <summary>
+            註冊詩人、信使與文件管理員
+            </summary>
+            <param name="bard">新詩人</param>
+            <param name="courier">新信使</param>
+            <param name="archivist">新文件管理員</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMember(Aritiafel.Characters.Bard)">
+            <summary>
+            註冊詩人
+            </summary>
+            <param name="newcomer">新詩人</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMember(Aritiafel.Characters.Courier)">
+            <summary>
+            註冊信使
+            </summary>
+            <param name="newcomer">新信使</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMember(Aritiafel.Characters.Archivist)">
+            <summary>
+            註冊文件管理員
+            </summary>
+            <param name="newcomer">新文件管理員</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.PrintMessageFromBard(System.Object)">
+            <summary>
+            從詩人身上傾倒逐行訊息
+            </summary>
+            <param name="writeLineObject">可以WriteLine的任意Object</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.PrintMessageFromCourier(System.Object)">
+            <summary>
+            從信使身上傾倒逐行訊息
+            </summary>
+            <param name="writeLineObject">可以WriteLine的任意Object</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.PrintMessageFromArchivist(System.Object)">
+            <summary>
+            從文件管理員上傾倒逐行訊息(全部流程)
+            </summary>
+            <param name="writeLineObject">可以WriteLine的任意Object</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowNewMessageOrSetResult(Aritiafel.Items.ArMessage)">
+            <summary>
+            顯示訊息視窗或設置結果(測試時)
+            </summary>
+            <param name="message">訊息</param>
+            <returns>結果</returns>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowNewMessageOrSetResult(Aritiafel.Items.ArMessage,System.Windows.Forms.IWin32Window)">
+            <summary>
+            顯示訊息視窗或設置結果(測試時)
+            </summary>
+            <param name="message">訊息</param>
+            <param name="owner">父表單</param>
+            <returns>結果</returns>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrSetResult(System.Windows.Forms.CommonDialog)">
+            <summary>
+            顯示對話視窗或是設置結果(測試時)
+            </summary>
+            <param name="cd">對話視窗實體</param>
+            <returns>結果</returns>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrSetResult(System.Windows.Forms.CommonDialog,System.Windows.Forms.IWin32Window)">
+            <summary>
+            顯示對話視窗或是設置結果(測試時)
+            </summary>
+            <param name="cd">對話視窗實體</param>
+            <param name="owner">父表單</param>
+            <returns>結果</returns>
+        </member>
+    </members>
+</doc>
