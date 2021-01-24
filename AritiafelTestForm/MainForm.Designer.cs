@@ -30,6 +30,8 @@
         {
             this.btnMessageBox = new System.Windows.Forms.Button();
             this.btnMessageBox2 = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.btnOpenFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMessageBox
@@ -52,11 +54,26 @@
             this.btnMessageBox2.UseVisualStyleBackColor = true;
             this.btnMessageBox2.Click += new System.EventHandler(this.btnMessageBox2_Click);
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // btnOpenFile
+            // 
+            this.btnOpenFile.Location = new System.Drawing.Point(45, 199);
+            this.btnOpenFile.Name = "btnOpenFile";
+            this.btnOpenFile.Size = new System.Drawing.Size(130, 57);
+            this.btnOpenFile.TabIndex = 2;
+            this.btnOpenFile.Text = "Open File";
+            this.btnOpenFile.UseVisualStyleBackColor = true;
+            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnOpenFile);
             this.Controls.Add(this.btnMessageBox2);
             this.Controls.Add(this.btnMessageBox);
             this.Name = "MainForm";
@@ -70,6 +87,8 @@
 
         private System.Windows.Forms.Button btnMessageBox;
         private System.Windows.Forms.Button btnMessageBox2;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button btnOpenFile;
     }
 }
 
