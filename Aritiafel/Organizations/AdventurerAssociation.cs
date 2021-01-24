@@ -9,29 +9,59 @@ namespace Aritiafel.Organizations
 {
     public static class AdventurerAssociation
     {
-        public static Bard Bard { get; set; }
+        public static Bard Bard { get; private set; }
 
-        public static Courier Courier { get; set; }
+        public static Courier Courier { get; private set; }
 
         public static bool Registered { get; private set; }
 
-        public static void RegisterMember()
+        /// <summary>
+        /// 測試成員註冊
+        /// </summary>
+        public static void RegisterMembers()
         {
             if (!Registered)
-                RegisterMember(new Bard(), new Courier());
+                RegisterMembers(new Bard(), new Courier());
         }
 
-        public static void RegisterMember(Bard bard, Courier courier)
+        /// <summary>
+        /// 註冊詩人與信使
+        /// </summary>
+        /// <param name="bard">新詩人</param>
+        /// <param name="courier">新信使</param>
+        public static void RegisterMembers(Bard bard, Courier courier)
         {
-            Bard = bard;
-            Courier = courier;
-            Registered = true;
+            RegisterMember(bard);
+            RegisterMember(courier);
+            Registered = Bard != null && Courier != null;
+        }
+
+        /// <summary>
+        /// 註冊詩人
+        /// </summary>
+        /// <param name="newcomer">新詩人</param>
+        public static void RegisterMember(Bard newcomer)
+        {
+            if (newcomer != null)
+                Bard = newcomer;
+            Registered = Bard != null && Courier != null;
+        }
+
+        /// <summary>
+        /// 註冊信使
+        /// </summary>
+        /// <param name="newcomer">新信使</param>
+        public static void RegisterMember(Courier newcomer)
+        {
+            if (newcomer != null)
+                Courier = newcomer;
+            Registered = Bard != null && Courier != null;
         }
 
         public static void RegisterMemberAndRefreshInput(IDictionary inputInformation)
         {
             if (!Registered)
-                RegisterMember();
+                RegisterMembers();
             RefreshInput(inputInformation);
         }
 

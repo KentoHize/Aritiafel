@@ -18,7 +18,7 @@ namespace AritiafelTestForm.Tests
 
         [TestInitialize]
         public void TestInitialize()
-            => AdventurerAssociation.RegisterMember();
+            => AdventurerAssociation.RegisterMembers();
 
         [TestCleanup]
         public void TestCleanup()
@@ -45,7 +45,7 @@ namespace AritiafelTestForm.Tests
             mf.btnOpenFile_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromBard(TestContext);
 
-            AdventurerAssociation.Bard = new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaArticles.txt");
+            AdventurerAssociation.RegisterMember(new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaArticles.txt"));
             mf.btnOpenFile_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromBard(TestContext);
             mf.Close();           
@@ -56,11 +56,11 @@ namespace AritiafelTestForm.Tests
         {
             MainForm mf = new MainForm();
 
-            AdventurerAssociation.Bard = new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaQuotes.txt");
+            AdventurerAssociation.RegisterMember(new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaQuotes.txt"));
             mf.btnOpenFile_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromBard(TestContext);
 
-            AdventurerAssociation.Bard = new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaArticles.txt");
+            AdventurerAssociation.RegisterMember(new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaArticles.txt"));
             mf.btnOpenFile_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromBard(TestContext);
 

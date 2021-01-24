@@ -9,7 +9,7 @@ namespace Aritiafel.Characters
     {
         public string Name { get; set; }
         public IDictionary InputInformation { get; set; }
-        public List<string> MessageReceived { get; set; } = new List<string>();
+        public List<string> MessageReceived { get; private set; } = new List<string>();
 
         public Bard()
             : this("")
