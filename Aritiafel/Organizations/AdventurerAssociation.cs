@@ -50,10 +50,33 @@ namespace Aritiafel.Organizations
             Bard.MessageReceived.Clear();
         }
 
-        public static DialogResult ShowNewMessage(ArMessage message)
-            => ShowNewMessage(message, null);
+        /// <summary>
+        /// 從信使身上傾倒逐行訊息
+        /// </summary>
+        /// <param name="writeLineObject">可以WriteLine的任意Object</param>
+        public static void PrintMessageFromCourier(object writeLineObject)
+        {
+            foreach (string message in Courier.MessageReceived)
+                writeLineObject.GetType().InvokeMember("WriteLine", BindingFlags.InvokeMethod,
+                    null, writeLineObject, new object[] { message });
+            Courier.MessageReceived.Clear();
+        }
 
-        public static DialogResult ShowNewMessage(ArMessage message, IWin32Window owner)
+        /// <summary>
+        /// 顯示訊息視窗或設置結果(測試時)
+        /// </summary>
+        /// <param name="message">訊息</param>
+        /// <returns>結果</returns>
+        public static DialogResult ShowNewMessageOrSetResult(ArMessage message)
+            => ShowNewMessageOrSetResult(message, null);
+
+        /// <summary>
+        /// 顯示訊息視窗或設置結果(測試時)
+        /// </summary>
+        /// <param name="message">訊息</param>
+        /// <param name="owner">父表單</param>
+        /// <returns>結果</returns>
+        public static DialogResult ShowNewMessageOrSetResult(ArMessage message, IWin32Window owner)
         {
             if (!Registered)
                 if (owner == null)
@@ -67,8 +90,14 @@ namespace Aritiafel.Organizations
                         (MessageBoxIcon)(byte)message.LevelOfEergency,
                         (MessageBoxDefaultButton)((message.DefaultResponse - 1) * 256));
 
-            Bard.MessageReceived.Add(message.ToString());
-            return DialogResult.Cancel;
+            DialogResult dr = DialogResult.Cancel;
+            Courier.MessageReceived.Add(message.ToString());
+            if (Courier.InputResponse != null)
+            {
+                dr = (DialogResult)Enum.Parse(typeof(DialogResult), Courier.InputResponse);
+                Courier.MessageReceived.Add($"DialogResult = {dr}");
+            }            
+            return dr;
         }
 
         /// <summary>
@@ -83,7 +112,7 @@ namespace Aritiafel.Organizations
         /// 顯示對話視窗或是設置結果(測試時)
         /// </summary>
         /// <param name="cd">對話視窗實體</param>
-        /// <param name="owner">父視窗</param>
+        /// <param name="owner">父表單</param>
         /// <returns>結果</returns>
         public static DialogResult ShowDialogOrSetResult(this CommonDialog cd, IWin32Window owner)
         {
@@ -100,6 +129,8 @@ namespace Aritiafel.Organizations
             string dialogTypeName = cd.GetType().Name;
             DialogResult dr = DialogResult.OK;
             PropertyInfo[] cdProps = cd.GetType().GetProperties();
+
+            Bard.MessageReceived.Add($"Open Dialog: \"{cd.GetType().Name}\"");
 
             foreach (PropertyInfo pi in cdProps)
             {
