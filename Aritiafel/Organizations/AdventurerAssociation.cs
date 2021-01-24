@@ -178,6 +178,8 @@ namespace Aritiafel.Organizations
 
             if (Bard.InputInformation["DialogResult"] != null)
                 dr = (DialogResult)Bard.InputInformation["DialogResult"];
+            else if (Bard.InputInformation[$"{dialogTypeName}.DialogResult"] != null)
+                dr = (DialogResult)Bard.InputInformation[$"{dialogTypeName}.DialogResult"];
 
             if (dr != DialogResult.OK && dr != DialogResult.Cancel)
                 throw new InvalidCastException("DialogResult");

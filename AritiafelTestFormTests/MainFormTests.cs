@@ -41,7 +41,7 @@ namespace AritiafelTestForm.Tests
             AdventurerAssociation.RegisterMember(new Courier(InputResponseOptions.OK));
             mf.btnMessageBox2_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromCourier(TestContext);
-            AdventurerAssociation.RegisterMember(new Courier(InputResponseOptions.Retry));
+            AdventurerAssociation.RegisterMember(new Courier(InputResponseOptions.OK));
             mf.btnMessageBox2_Click(mf, new EventArgs());
             mf.Close();
             AdventurerAssociation.PrintMessageFromCourier(TestContext);
