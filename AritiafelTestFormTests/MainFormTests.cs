@@ -24,31 +24,43 @@ namespace AritiafelTestForm.Tests
         public void TestCleanup()
         { }
 
+        [TestMethod()]
+        public void btnMessageBox_ClickTest()
+        {
+            MainForm mf = new MainForm();
+            mf.btnMessageBox_Click(mf, new EventArgs());            
+            mf.Close();
+            AdventurerAssociation.PrintMessageFromCourier(TestContext);
+        }
+
         [TestMethod]
         public void btnMessageBox2_ClickTest()
         {
             MainForm mf = new MainForm();
 
+            AdventurerAssociation.RegisterMember(new Courier(InputResponseOptions.OK));
             mf.btnMessageBox2_Click(mf, new EventArgs());
+            AdventurerAssociation.PrintMessageFromCourier(TestContext);
+            AdventurerAssociation.RegisterMember(new Courier(InputResponseOptions.Retry));
             mf.btnMessageBox2_Click(mf, new EventArgs());
             mf.Close();
-            AdventurerAssociation.PrintMessageFromBard(TestContext);
+            AdventurerAssociation.PrintMessageFromCourier(TestContext);
         }
 
-            
+
         [TestMethod]
         [TestProperty("FileName", @"‪C:\WebSite\GoogleDrive\ArinaQuotes.txt")]
         public void btnOpenFile_ClickTest()
-        {   
+        {
             AdventurerAssociation.RefreshInput(TestContext.Properties);
-            MainForm mf = new MainForm();            
+            MainForm mf = new MainForm();
             mf.btnOpenFile_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromBard(TestContext);
 
             AdventurerAssociation.RegisterMember(new Bard("FileName", @"‪C:\WebSite\GoogleDrive\ArinaArticles.txt"));
             mf.btnOpenFile_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromBard(TestContext);
-            mf.Close();           
+            mf.Close();
         }
 
         [TestMethod]
@@ -66,6 +78,8 @@ namespace AritiafelTestForm.Tests
 
             mf.Close();
         }
+
+
 
         //[DataTestMethod]
         //[DataRow(1, 2, 3)]

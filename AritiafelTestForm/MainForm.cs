@@ -23,7 +23,7 @@ namespace AritiafelTestForm
 
         public void btnMessageBox_Click(object sender, EventArgs e)
         {
-            DialogResult dr = RabbitCouriers.SentNoramlQuestion("點選OK或Cancel", "Test");
+            DialogResult dr = RabbitCouriers.SentNoramlQuestion("點選OK或Cancel", "Test", Aritiafel.Items.ResponseOption.OKCancel, 2);
 
             if (dr == DialogResult.Cancel)
                 Console.WriteLine(1);

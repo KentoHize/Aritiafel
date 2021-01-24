@@ -120,13 +120,15 @@ namespace Aritiafel.Organizations
                         (MessageBoxIcon)(byte)message.LevelOfEergency,
                         (MessageBoxDefaultButton)((message.DefaultResponse - 1) * 256));
 
-            DialogResult dr = DialogResult.Cancel;
+            DialogResult dr = (DialogResult)Enum.Parse(typeof(DialogResult), message.GetDefaultResponse());
             Courier.MessageReceived.Add(message.ToString());
-            if (Courier.InputResponse != null)
-            {
+            if (!string.IsNullOrEmpty(Courier.InputResponse))
                 dr = (DialogResult)Enum.Parse(typeof(DialogResult), Courier.InputResponse);
-                Courier.MessageReceived.Add($"DialogResult = {dr}");
-            }            
+
+            if (!message.ResponseOption.ToString().Contains(dr.ToString()))
+                throw new InvalidCastException("DialogResult");
+
+            Courier.MessageReceived.Add($"DialogResult = {dr}");
             return dr;
         }
 
@@ -175,10 +177,12 @@ namespace Aritiafel.Organizations
             }
 
             if (Bard.InputInformation["DialogResult"] != null)
-            {
                 dr = (DialogResult)Bard.InputInformation["DialogResult"];
-                Bard.MessageReceived.Add($"DialogResult = {dr}");
-            }
+
+            if (dr != DialogResult.OK && dr != DialogResult.Cancel)
+                throw new InvalidCastException("DialogResult");
+
+            Bard.MessageReceived.Add($"DialogResult = {dr}");
             return dr;
         }
     }

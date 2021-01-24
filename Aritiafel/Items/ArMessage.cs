@@ -8,18 +8,27 @@ namespace Aritiafel.Items
     {
         public string Content { get; set; }
         public LevelOfEergency LevelOfEergency { get; set; }
-        public ResponseOption ResponseOption { get; set;}
+        public ResponseOption ResponseOption { get; set; }
         public byte DefaultResponse
         {
             get => _DefaultRespose;
             set
             {
                 if (value == 0 || value > 2)
-                    throw new ArgumentOutOfRangeException("DefaultRespone");
+                    throw new ArgumentOutOfRangeException("DefaultResponse");
                 _DefaultRespose = value;
             }
         }
         private byte _DefaultRespose;
+
+        public string GetDefaultResponse()
+        {
+            string[] sArray = GetResponseOptionString().Split(']');
+            for (int i = 0; i < sArray.Length; i++)
+                if (sArray[i][0] == '*')
+                    return sArray[i].Substring(2);
+            return null;
+        }
 
         public ArMessage(string content, string title = "", ResponseOption ro = ResponseOption.OK, LevelOfEergency loe = LevelOfEergency.None, byte defaultResponse = 1)
             : base(title)
@@ -56,7 +65,18 @@ namespace Aritiafel.Items
                 default:
                     return null;                    
             }
-            return result.Insert(result.IndexOf('[', 0, DefaultResponse), "*");
+            int index = 0;
+            byte time = 0;
+            while(true)
+            {
+                index = result.IndexOf('[', index);
+                time++;                
+
+                if (time == DefaultResponse)
+                    break;
+                index++;
+            }
+            return result.Insert(index, "*");
         }
 
         public override string ToString()
