@@ -45,7 +45,7 @@ namespace AritiafelTestForm
 
         public void btnOpenFile_Click(object sender, EventArgs e)
         {   
-            openFileDialog1.ShowDialog2(this);
+            openFileDialog1.ShowDialogOrSetResult(this);
         }
     }
 }

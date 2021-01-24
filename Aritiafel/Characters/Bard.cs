@@ -5,11 +5,16 @@ using System.Text;
 
 namespace Aritiafel.Characters
 {
-    public class Bard //TestingUser
+    public class Bard //Test User
     {
         public string Name { get; set; }
         public IDictionary InputInfomation { get; set; }
+        public string Response { get; set; }
         public List<string> MessageReceived { get; set; } = new List<string>();
+
+        public Bard()
+            : this("")
+        { }
 
         public Bard(string name)
         {
