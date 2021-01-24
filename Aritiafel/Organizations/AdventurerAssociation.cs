@@ -1,4 +1,5 @@
 ﻿using Aritiafel.Characters;
+using Aritiafel.Items;
 using System;
 using System.Collections;
 using System.Reflection;
@@ -10,19 +11,20 @@ namespace Aritiafel.Organizations
     {
         public static Bard Bard { get; set; }
 
-        public static Courier Courier { get; private set; } = new Courier();
+        public static Courier Courier { get; set; }
 
         public static bool Registered { get; private set; }
 
         public static void RegisterMember()
-        { 
+        {
             if (!Registered)
-                RegisterMember(new Bard());
+                RegisterMember(new Bard(), new Courier());
         }
 
-        public static void RegisterMember(Bard member)
+        public static void RegisterMember(Bard bard, Courier courier)
         {
-            Bard = member;
+            Bard = bard;
+            Courier = courier;
             Registered = true;
         }
 
@@ -34,7 +36,7 @@ namespace Aritiafel.Organizations
         }
 
         public static void RefreshInput(IDictionary inputInformation)
-            => Bard.InputInformation = inputInformation;        
+            => Bard.InputInformation = inputInformation;
 
         /// <summary>
         /// 從詩人身上傾倒逐行訊息
@@ -42,19 +44,30 @@ namespace Aritiafel.Organizations
         /// <param name="writeLineObject">可以WriteLine的任意Object</param>
         public static void PrintMessageFromBard(object writeLineObject)
         {
-            foreach(string message in Bard.MessageReceived)
-            writeLineObject.GetType().InvokeMember("WriteLine", BindingFlags.InvokeMethod, 
-                null, writeLineObject, new object[] { message });
+            foreach (string message in Bard.MessageReceived)
+                writeLineObject.GetType().InvokeMember("WriteLine", BindingFlags.InvokeMethod,
+                    null, writeLineObject, new object[] { message });
             Bard.MessageReceived.Clear();
         }
 
-        public static DialogResult NewMessage(string message)
+        public static DialogResult ShowNewMessage(ArMessage message)
+            => ShowNewMessage(message, null);
+
+        public static DialogResult ShowNewMessage(ArMessage message, IWin32Window owner)
         {
             if (!Registered)
-                return MessageBox.Show(message);
+                if (owner == null)
+                    return MessageBox.Show(message.Content, message.Title,
+                        (MessageBoxButtons)(byte)message.ResponseOption,
+                        (MessageBoxIcon)(byte)message.LevelOfEergency,
+                        (MessageBoxDefaultButton)((message.DefaultResponse - 1) * 256));
+                else
+                    return MessageBox.Show(owner, message.Content, message.Title,
+                        (MessageBoxButtons)(byte)message.ResponseOption,
+                        (MessageBoxIcon)(byte)message.LevelOfEergency,
+                        (MessageBoxDefaultButton)((message.DefaultResponse - 1) * 256));
 
-            //Test
-            Bard.MessageReceived.Add("NewMessage:" + message);
+            Bard.MessageReceived.Add(message.ToString());
             return DialogResult.Cancel;
         }
 
@@ -75,11 +88,12 @@ namespace Aritiafel.Organizations
         public static DialogResult ShowDialogOrSetResult(this CommonDialog cd, IWin32Window owner)
         {
             if (!Registered)
-                if (owner != null)
-                    return cd.ShowDialog(owner);
-                else
+                if (owner == null)
                     return cd.ShowDialog();
-            
+                else
+                    return cd.ShowDialog(owner);
+
+
             if (Bard.InputInformation == null)
                 throw new ArgumentNullException("Text Context Connected Failed");
 

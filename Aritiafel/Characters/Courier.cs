@@ -9,7 +9,7 @@ namespace Aritiafel.Characters
     {
         public string Name { get; set; }
 
-        public Package Package { get; set; }
+        public ArPackage Package { get; set; }
         public string InputResponse { get; set; }
         public List<string> MessageReceived { get; set; } = new List<string>();
 

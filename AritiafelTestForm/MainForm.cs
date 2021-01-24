@@ -23,7 +23,7 @@ namespace AritiafelTestForm
 
         public void btnMessageBox_Click(object sender, EventArgs e)
         {
-            DialogResult dr = MessageBox.Show("點選OK或Cancel", "Test", MessageBoxButtons.OKCancel);
+            DialogResult dr = RabbitCouriers.SentNoramlQuestion("點選OK或Cancel", "Test");
 
             if (dr == DialogResult.Cancel)
                 Console.WriteLine(1);
@@ -34,8 +34,9 @@ namespace AritiafelTestForm
         public void btnMessageBox2_Click(object sender, EventArgs e)
         {
             Var.VarA = Var.VarA += "T";
+
+            RabbitCouriers.SentInformation(Var.VarA);
             
-            AdventurerAssociation.NewMessage(Var.VarA);
         }
 
         private void MainForm_Load(object sender, EventArgs e)

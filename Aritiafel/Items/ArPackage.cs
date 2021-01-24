@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Aritiafel.Items
 {
-    public abstract class Package
+    public abstract class ArPackage
     {
         public string Title { get; set; }
 
-        protected Package(string title)
+        protected ArPackage(string title)
         {
             Title = title;
         }

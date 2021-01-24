@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Aritiafel.Items
 {
-    public class Mail
+    public class ArMail
     {
         
     }

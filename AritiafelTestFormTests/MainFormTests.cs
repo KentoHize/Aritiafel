@@ -22,11 +22,7 @@ namespace AritiafelTestForm.Tests
 
         [TestCleanup]
         public void TestCleanup()
-        {   
-            //foreach (string s in AdventurerAssociation.Bard.MessageReceived)
-            //    TestContext.WriteLine(s);
-            //AdventurerAssociation.Bard.MessageReceived.Clear();
-        }
+        { }
 
         [TestMethod]
         public void btnMessageBox2_ClickTest()
@@ -71,14 +67,14 @@ namespace AritiafelTestForm.Tests
             mf.Close();
         }
 
-        [DataTestMethod]
-        [DataRow(1, 2, 3)]
-        [DataRow(2, 3, 5)]
-        [DataRow(3, 5, 8)]
-        [TestProperty("a", "0")]
-        public void AdditionTest(int a, int b, int result)
-        {
-            Assert.AreEqual(result, a + b + Convert.ToInt32(TestContext.Properties["a"]));
-        }
+        //[DataTestMethod]
+        //[DataRow(1, 2, 3)]
+        //[DataRow(2, 3, 5)]
+        //[DataRow(3, 5, 8)]
+        //[TestProperty("a", "0")]
+        //public void AdditionTest(int a, int b, int result)
+        //{
+        //    Assert.AreEqual(result, a + b + Convert.ToInt32(TestContext.Properties["a"]));
+        //}
     }
 }
