@@ -32,6 +32,7 @@
             this.btnMessageBox2 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnOpenFile = new System.Windows.Forms.Button();
+            this.btnInputForm = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMessageBox
@@ -68,11 +69,22 @@
             this.btnOpenFile.UseVisualStyleBackColor = true;
             this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
+            // btnInputForm
+            // 
+            this.btnInputForm.Location = new System.Drawing.Point(45, 282);
+            this.btnInputForm.Name = "btnInputForm";
+            this.btnInputForm.Size = new System.Drawing.Size(130, 57);
+            this.btnInputForm.TabIndex = 3;
+            this.btnInputForm.Text = "Open Input Form";
+            this.btnInputForm.UseVisualStyleBackColor = true;
+            this.btnInputForm.Click += new System.EventHandler(this.btnInputForm_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnInputForm);
             this.Controls.Add(this.btnOpenFile);
             this.Controls.Add(this.btnMessageBox2);
             this.Controls.Add(this.btnMessageBox);
@@ -89,6 +101,7 @@
         private System.Windows.Forms.Button btnMessageBox2;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button btnOpenFile;
+        private System.Windows.Forms.Button btnInputForm;
     }
 }
 

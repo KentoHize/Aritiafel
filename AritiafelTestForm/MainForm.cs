@@ -48,5 +48,11 @@ namespace AritiafelTestForm
         {   
             openFileDialog1.ShowDialogOrSetResult(this);
         }
+
+        public void btnInputForm_Click(object sender, EventArgs e)
+        {
+            string result = frmInputBox.Show(this);
+            RabbitCouriers.SentInformation(result);            
+        }
     }
 }

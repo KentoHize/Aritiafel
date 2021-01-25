@@ -4,6 +4,11 @@
         <name>Aritiafel</name>
     </assembly>
     <members>
+        <member name="T:Aritiafel.Characters.Heroes.Tina">
+            <summary>
+            主要法師角色，人類
+            </summary>
+        </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMembers">
             <summary>
             測試成員註冊
@@ -76,16 +81,44 @@
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrSetResult(System.Windows.Forms.CommonDialog)">
             <summary>
-            顯示對話視窗或是設置結果(測試時)
+            顯示一般對話視窗或是設置結果(測試時)
             </summary>
             <param name="cd">對話視窗實體</param>
             <returns>結果</returns>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrSetResult(System.Windows.Forms.CommonDialog,System.Windows.Forms.IWin32Window)">
             <summary>
-            顯示對話視窗或是設置結果(測試時)
+            顯示一般對話視窗或是設置結果(測試時)
             </summary>
             <param name="cd">對話視窗實體</param>
+            <param name="owner">父表單</param>
+            <returns>結果</returns>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowOrCallEvent(System.Windows.Forms.Form)">
+            <summary>
+            顯示表單或是送出表單(測試時)
+            </summary>
+            <param name="form">顯示的表單</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowOrCallEvent(System.Windows.Forms.Form,System.Windows.Forms.IWin32Window)">
+            <summary>
+            顯示表單或是送出表單(測試時)
+            </summary>
+            <param name="form">顯示的表單</param>
+            <param name="owner">父表單</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrCallEvent(System.Windows.Forms.Form)">
+            <summary>
+            顯示表單或是送出表單(測試時)
+            </summary>
+            <param name="form">顯示的表單</param>
+            <returns>結果</returns>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrCallEvent(System.Windows.Forms.Form,System.Windows.Forms.IWin32Window)">
+            <summary>
+            顯示表單或是送出表單(測試時)
+            </summary>
+            <param name="form">顯示的表單</param>
             <param name="owner">父表單</param>
             <returns>結果</returns>
         </member>

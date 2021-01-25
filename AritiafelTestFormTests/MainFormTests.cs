@@ -29,6 +29,7 @@ namespace AritiafelTestForm.Tests
                 fs = new FileStream(@"C:\Programs\TestArea\TestOutput2.txt", FileMode.Create);
                 //ms = new MemoryStream();
                 AdventurerAssociation.RegisterMembers(fs);
+                AdventurerAssociation.Form_Start += AdventurerAssociation_Form_Start;
             }
         }
 
@@ -103,7 +104,30 @@ namespace AritiafelTestForm.Tests
             mf.Close(); 
         }
 
+        [TestMethod]
+        public void btnInputForm_ClickTest()
+        {
+            MainForm mf = new MainForm();
 
+            
+            AdventurerAssociation.Archivist.ClearRecords();
+            mf.btnInputForm_Click(mf, new EventArgs());
+            AdventurerAssociation.PrintMessageFromArchivist(TestContext);
+
+            mf.Close();
+        }
+
+        private DialogResult AdventurerAssociation_Form_Start(Form newForm)
+        {   
+            if (newForm.Name == "frmInputBox")
+            {
+                frmInputBox frmInputBox = newForm as frmInputBox;                
+                (frmInputBox.Controls.Find("txtInputbox", false)[0] as TextBox).Text = "A New Record";
+                frmInputBox.btnOK_Click(frmInputBox, new EventArgs());
+                return newForm.DialogResult;
+            }
+            return DialogResult.None;
+        }
 
         //[DataTestMethod]
         //[DataRow(1, 2, 3)]
