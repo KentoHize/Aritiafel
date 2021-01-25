@@ -96,27 +96,27 @@
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowOrCallEvent(System.Windows.Forms.Form)">
             <summary>
-            顯示表單或是送出表單(測試時)
+            顯示表單或是觸發事件(測試時)
             </summary>
             <param name="form">顯示的表單</param>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowOrCallEvent(System.Windows.Forms.Form,System.Windows.Forms.IWin32Window)">
             <summary>
-            顯示表單或是送出表單(測試時)
+            顯示表單或是觸發事件(測試時)
             </summary>
             <param name="form">顯示的表單</param>
             <param name="owner">父表單</param>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrCallEvent(System.Windows.Forms.Form)">
             <summary>
-            顯示表單或是送出表單(測試時)
+            顯示表單或是觸發事件(測試時)
             </summary>
             <param name="form">顯示的表單</param>
             <returns>結果</returns>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrCallEvent(System.Windows.Forms.Form,System.Windows.Forms.IWin32Window)">
             <summary>
-            顯示表單或是送出表單(測試時)
+            顯示表單或是觸發事件(測試時)
             </summary>
             <param name="form">顯示的表單</param>
             <param name="owner">父表單</param>

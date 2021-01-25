@@ -243,17 +243,17 @@ namespace Aritiafel.Organizations
             Bard.MessageReceived.Add(record);
             Archivist.WriteRecord(record);
             return dr;
-        }     
+        }
 
         /// <summary>
-        /// 顯示表單或是送出表單(測試時)
+        /// 顯示表單或是觸發事件(測試時)
         /// </summary>
         /// <param name="form">顯示的表單</param>
         public static void ShowOrCallEvent(this Form form)
             => ShowOrCallEvent(form, null, false);
 
         /// <summary>
-        /// 顯示表單或是送出表單(測試時)
+        /// 顯示表單或是觸發事件(測試時)
         /// </summary>
         /// <param name="form">顯示的表單</param>
         /// <param name="owner">父表單</param>
@@ -261,7 +261,7 @@ namespace Aritiafel.Organizations
             => ShowOrCallEvent(form, owner, false);
 
         /// <summary>
-        /// 顯示表單或是送出表單(測試時)
+        /// 顯示表單或是觸發事件(測試時)
         /// </summary>
         /// <param name="form">顯示的表單</param>
         /// <returns>結果</returns>
@@ -269,7 +269,7 @@ namespace Aritiafel.Organizations
             => ShowOrCallEvent(form, null, true);
 
         /// <summary>
-        /// 顯示表單或是送出表單(測試時)
+        /// 顯示表單或是觸發事件(測試時)
         /// </summary>
         /// <param name="form">顯示的表單</param>
         /// <param name="owner">父表單</param>
