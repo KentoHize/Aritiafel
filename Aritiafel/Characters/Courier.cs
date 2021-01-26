@@ -55,6 +55,27 @@ namespace Aritiafel.Characters
                 _Responses[messageID] = responses;
         }
 
+        public string GetResponse(string messageID = "", bool notDefault = false)
+        {
+            string result;
+            if (messageID == null)
+                messageID = "";
+
+            if (_Responses.ContainsKey(messageID) && _Responses[messageID].Count != 0)
+            {
+                result = _Responses[messageID][0];
+                _Responses[messageID].RemoveAt(0);
+                return result;
+            }
+            else if(_Responses[""].Count != 0 && !notDefault)
+            {
+                result = _Responses[""][0];
+                _Responses[""].RemoveAt(0);
+                return result;
+            }
+            return null;
+        }
+
         public void ClearResponses(string messageID = null)
         {
             if (string.IsNullOrEmpty(messageID))

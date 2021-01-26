@@ -51,7 +51,7 @@ namespace AritiafelTestForm
 
         public void btnInputForm_Click(object sender, EventArgs e)
         {
-            string result = frmInputBox.Show(this);
+            string result = frmInputBox.MyShow(this);
             RabbitCouriers.SentInformation(result);            
         }
 

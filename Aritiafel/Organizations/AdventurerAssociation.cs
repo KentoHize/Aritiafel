@@ -171,8 +171,9 @@ namespace Aritiafel.Organizations
             Courier.MessageReceived.Add(record);
             Archivist.WriteRecord(record);
 
-            if (!string.IsNullOrEmpty(Courier.InputResponse))
-                dr = (DialogResult)Enum.Parse(typeof(DialogResult), Courier.InputResponse);
+            string response = Courier.GetResponse(message.ID);
+            if (!string.IsNullOrEmpty(response))
+                dr = (DialogResult)Enum.Parse(typeof(DialogResult), response);                
 
             if (!message.ChoiceOption.ToString().Contains(dr.ToString()))
                 throw new InvalidCastException("DialogResult");

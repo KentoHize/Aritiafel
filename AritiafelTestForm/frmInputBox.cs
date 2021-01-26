@@ -19,7 +19,7 @@ namespace AritiafelTestForm
             InitializeComponent();
         }
 
-        public static string Show(IWin32Window owner)
+        public static string MyShow(IWin32Window owner)
         {
             frmInputBox frmInputBox = new frmInputBox();
             frmInputBox.ShowDialogOrCallEvent(owner);
