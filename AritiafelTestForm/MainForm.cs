@@ -23,7 +23,7 @@ namespace AritiafelTestForm
 
         public void btnMessageBox_Click(object sender, EventArgs e)
         {
-            DialogResult dr = RabbitCouriers.SentNoramlQuestion("點選OK或Cancel", "Test", Aritiafel.Items.ResponseOption.OKCancel, 2);
+            DialogResult dr = RabbitCouriers.SentNoramlQuestion("點選OK或Cancel", "Test", Aritiafel.Items.ChoiceOptions.OKCancel, 2);
 
             if (dr == DialogResult.Cancel)
                 Console.WriteLine(1);
@@ -53,6 +53,15 @@ namespace AritiafelTestForm
         {
             string result = frmInputBox.Show(this);
             RabbitCouriers.SentInformation(result);            
+        }
+
+        private void btnShowMessageByResource_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = RabbitCouriers.SentNoramlQuestionByResource("QuestionString", "Q1", "Male", "Female");
+            DialogResult dr2 = RabbitCouriers.SentNoramlQuestionByResource("QuestionString2", "Q2");
+
+            if (dr == DialogResult.OK && dr2 == DialogResult.Cancel)
+                RabbitCouriers.SentInformation("AnswerString", "Answer");
         }
     }
 }

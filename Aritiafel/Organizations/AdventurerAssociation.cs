@@ -135,8 +135,6 @@ namespace Aritiafel.Organizations
             Archivist.ClearRecords();
         }
 
-
-
         /// <summary>
         /// 顯示訊息視窗或設置結果(測試時)
         /// </summary>
@@ -156,17 +154,19 @@ namespace Aritiafel.Organizations
             if (!Registered)
                 if (owner == null)
                     return MessageBox.Show(message.Content, message.Title,
-                        (MessageBoxButtons)(byte)message.ResponseOption,
+                        (MessageBoxButtons)(byte)message.ChoiceOption,
                         (MessageBoxIcon)(byte)message.LevelOfEergency,
                         (MessageBoxDefaultButton)((message.DefaultResponse - 1) * 256));
                 else
                     return MessageBox.Show(owner, message.Content, message.Title,
-                        (MessageBoxButtons)(byte)message.ResponseOption,
+                        (MessageBoxButtons)(byte)message.ChoiceOption,
                         (MessageBoxIcon)(byte)message.LevelOfEergency,
                         (MessageBoxDefaultButton)((message.DefaultResponse - 1) * 256));
 
             DialogResult dr = (DialogResult)Enum.Parse(typeof(DialogResult), message.GetDefaultResponse());
             string record;
+
+            Courier.Package = message;
             record = message.ToString();
             Courier.MessageReceived.Add(record);
             Archivist.WriteRecord(record);
@@ -174,12 +174,13 @@ namespace Aritiafel.Organizations
             if (!string.IsNullOrEmpty(Courier.InputResponse))
                 dr = (DialogResult)Enum.Parse(typeof(DialogResult), Courier.InputResponse);
 
-            if (!message.ResponseOption.ToString().Contains(dr.ToString()))
+            if (!message.ChoiceOption.ToString().Contains(dr.ToString()))
                 throw new InvalidCastException("DialogResult");
 
             record = $"DialogResult = {dr}";
             Courier.MessageReceived.Add(record);
-            Archivist.WriteRecord(record);
+            Archivist.WriteRecord(record);            
+                
             return dr;
         }
 
@@ -299,7 +300,7 @@ namespace Aritiafel.Organizations
                 }
             }
             DialogResult dr = form.DialogResult;
-            string record;            
+            string record;
 
             record = $"Show Form: \"{form.Name}\"";
             Courier.MessageReceived.Add(record);

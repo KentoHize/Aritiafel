@@ -8,7 +8,7 @@ namespace Aritiafel.Items
     {
         public string Content { get; set; }
         public LevelOfEergency LevelOfEergency { get; set; }
-        public ResponseOption ResponseOption { get; set; }
+        public ChoiceOptions ChoiceOption { get; set; }
         public byte DefaultResponse
         {
             get => _DefaultRespose;
@@ -30,11 +30,11 @@ namespace Aritiafel.Items
             return null;
         }
 
-        public ArMessage(string content, string title = "", ResponseOption ro = ResponseOption.OK, LevelOfEergency loe = LevelOfEergency.None, byte defaultResponse = 1)
-            : base(title)
-        {
+        public ArMessage(string content, string title = "", string id = null, ChoiceOptions co = ChoiceOptions.OK, LevelOfEergency loe = LevelOfEergency.None, byte defaultResponse = 1)
+            : base(id, title)
+        {   
             Content = content;
-            ResponseOption = ro;
+            ChoiceOption = co;
             LevelOfEergency = loe;           
             DefaultResponse = defaultResponse;
         }
@@ -42,24 +42,24 @@ namespace Aritiafel.Items
         private string GetResponseOptionString()
         {
             string result;
-            switch(ResponseOption)
+            switch(ChoiceOption)
             {
-                case ResponseOption.OK:
+                case ChoiceOptions.OK:
                     result = "[OK]";
                     break;
-                case ResponseOption.OKCancel:
+                case ChoiceOptions.OKCancel:
                     result = "[OK][Cancel]";
                     break;
-                case ResponseOption.RetryCancel:
+                case ChoiceOptions.RetryCancel:
                     result = "[Retry][Cancel]";
                     break;
-                case ResponseOption.YesNo:
+                case ChoiceOptions.YesNo:
                     result = "[Yes][No]";
                     break;
-                case ResponseOption.YesNoCancel:
+                case ChoiceOptions.YesNoCancel:
                     result = "[Yes][No][Cancel]";
                     break;
-                case ResponseOption.AbortRetryIgnore:
+                case ChoiceOptions.AbortRetryIgnore:
                     result = "[Abort][Retry][Ignore]";
                     break;
                 default:
@@ -99,7 +99,7 @@ namespace Aritiafel.Items
         Information = 64,
     }
 
-    public enum ResponseOption
+    public enum ChoiceOptions
     {
         OK = 0,
         OKCancel,

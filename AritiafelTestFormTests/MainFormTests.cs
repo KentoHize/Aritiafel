@@ -63,10 +63,10 @@ namespace AritiafelTestForm.Tests
         {
             MainForm mf = new MainForm();
 
-            AdventurerAssociation.RegisterMember(new Courier(InputResponseOptions.OK));
+            AdventurerAssociation.RegisterMember(new Courier(ResponseOptions.OK));
             mf.btnMessageBox2_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromCourier(TestContext);
-            AdventurerAssociation.RegisterMember(new Courier(InputResponseOptions.OK));
+            AdventurerAssociation.RegisterMember(new Courier(ResponseOptions.OK));
             mf.btnMessageBox2_Click(mf, new EventArgs());
             mf.Close();
             AdventurerAssociation.PrintMessageFromCourier(TestContext);
@@ -108,8 +108,6 @@ namespace AritiafelTestForm.Tests
         public void btnInputForm_ClickTest()
         {
             MainForm mf = new MainForm();
-
-            
             AdventurerAssociation.Archivist.ClearRecords();
             mf.btnInputForm_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromArchivist(TestContext);
@@ -118,11 +116,13 @@ namespace AritiafelTestForm.Tests
         }
 
         private DialogResult AdventurerAssociation_Form_Start(Form newForm)
-        {   
+        {
+            AdventurerAssociation.PrintMessageFromArchivist(TestContext);
             if (newForm.Name == "frmInputBox")
             {
                 frmInputBox frmInputBox = newForm as frmInputBox;                
                 (frmInputBox.Controls.Find("txtInputbox", false)[0] as TextBox).Text = "A New Record";
+                TestContext.WriteLine("this");
                 frmInputBox.btnOK_Click(frmInputBox, new EventArgs());
                 return newForm.DialogResult;
             }

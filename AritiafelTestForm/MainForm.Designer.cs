@@ -33,6 +33,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnOpenFile = new System.Windows.Forms.Button();
             this.btnInputForm = new System.Windows.Forms.Button();
+            this.btnShowMessageByResource = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMessageBox
@@ -79,11 +80,22 @@
             this.btnInputForm.UseVisualStyleBackColor = true;
             this.btnInputForm.Click += new System.EventHandler(this.btnInputForm_Click);
             // 
+            // btnShowMessageByResource
+            // 
+            this.btnShowMessageByResource.Location = new System.Drawing.Point(202, 38);
+            this.btnShowMessageByResource.Name = "btnShowMessageByResource";
+            this.btnShowMessageByResource.Size = new System.Drawing.Size(130, 57);
+            this.btnShowMessageByResource.TabIndex = 4;
+            this.btnShowMessageByResource.Text = "Show Message By Resource";
+            this.btnShowMessageByResource.UseVisualStyleBackColor = true;
+            this.btnShowMessageByResource.Click += new System.EventHandler(this.btnShowMessageByResource_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnShowMessageByResource);
             this.Controls.Add(this.btnInputForm);
             this.Controls.Add(this.btnOpenFile);
             this.Controls.Add(this.btnMessageBox2);
@@ -102,6 +114,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button btnOpenFile;
         private System.Windows.Forms.Button btnInputForm;
+        private System.Windows.Forms.Button btnShowMessageByResource;
     }
 }
 
