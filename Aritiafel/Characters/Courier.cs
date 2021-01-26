@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Aritiafel.Items;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Aritiafel.Items;
+using System.Linq;
 
 namespace Aritiafel.Characters
 {
@@ -16,7 +16,7 @@ namespace Aritiafel.Characters
                 => _Responses;
             set
             {
-                if(value != null && value.ContainsKey(""))
+                if (value != null && value.ContainsKey(""))
                     _Responses = value;
                 throw new ArgumentException("Respones must exist and has a empty string key.");
             }
@@ -24,10 +24,10 @@ namespace Aritiafel.Characters
         private Dictionary<string, List<string>> _Responses = new Dictionary<string, List<string>> { { "", new List<string>() } };
         public List<string> MessageReceived { get; private set; } = new List<string>();
 
-        public void AddResponse(string response)
-            => AddResponse(response, null);
+        public void AddResponse(ResponseOptions ro, string messageID = null)
+            => AddResponse(ro.ToString(), messageID);
 
-        public void AddResponse(string response, string messageID)
+        public void AddResponse(string response, string messageID = null)
         {
             if (string.IsNullOrEmpty(messageID))
             {
@@ -44,10 +44,10 @@ namespace Aritiafel.Characters
             _Responses[messageID].Add(response);
         }
 
-        public void AddResponses(List<string> responses)
-            => AddResponses(responses, null);
+        public void AddResponses(List<ResponseOptions> roList, string messageID = null)
+            => AddResponses(roList.Select(m => m.ToString()).ToList(), messageID);
 
-        public void AddResponses(List<string> responses, string messageID)
+        public void AddResponses(List<string> responses, string messageID = null)
         {
             if (string.IsNullOrEmpty(messageID))
                 _Responses[""] = responses;
@@ -67,7 +67,7 @@ namespace Aritiafel.Characters
                 _Responses[messageID].RemoveAt(0);
                 return result;
             }
-            else if(_Responses[""].Count != 0 && !notDefault)
+            else if (_Responses[""].Count != 0 && !notDefault)
             {
                 result = _Responses[""][0];
                 _Responses[""].RemoveAt(0);
@@ -79,7 +79,7 @@ namespace Aritiafel.Characters
         public void ClearResponses(string messageID = null)
         {
             if (string.IsNullOrEmpty(messageID))
-                _Responses[""].Clear();            
+                _Responses[""].Clear();
             else if (_Responses[messageID] != null)
                 _Responses[messageID].Clear();
         }
@@ -100,14 +100,34 @@ namespace Aritiafel.Characters
 
         public Courier(string name, ResponseOptions ro, string messageID = null)
         {
-            Name = name;            
+            Name = name;
             AddResponse(ro.ToString(), messageID);
+        }
+
+        public Courier(List<ResponseOptions> roList, string messageID = null)
+            : this("", roList, messageID)
+        { }
+
+        public Courier(string name, List<ResponseOptions> roList, string messageID = null)
+        {
+            Name = name;
+            AddResponses(roList, messageID);
+        }
+
+        public Courier(List<string> responseList, string messageID = null)
+            : this("", responseList, messageID)
+        { }
+
+        public Courier(string name, List<string> responseList, string messageID = null)
+        {
+            Name = name;
+            AddResponses(responseList, messageID);
         }
 
         public Courier(string name, Dictionary<string, List<string>> responses = null)
         {
             Name = name;
-            if(responses != null)
+            if (responses != null)
                 Responses = responses;
         }
     }
@@ -122,5 +142,5 @@ namespace Aritiafel.Characters
         Ignore,
         Yes,
         No
-    }   
+    }
 }

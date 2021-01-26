@@ -24,8 +24,10 @@ namespace AritiafelTestForm.Tests
         [TestInitialize]
         public void TestInitialize()
         {
-            if(!AdventurerAssociation.Registered)
+            if (!AdventurerAssociation.Registered)
             {
+                RabbitCouriers.RegisterRMAndCI(Resources.Res.ResourceManager, new System.Globalization.CultureInfo("zh-TW"));
+
                 fs = new FileStream(@"C:\Programs\TestArea\TestOutput2.txt", FileMode.Create);
                 //ms = new MemoryStream();
                 AdventurerAssociation.RegisterMembers(fs);
@@ -38,7 +40,7 @@ namespace AritiafelTestForm.Tests
         {
             //MessageBox.Show((AdventurerAssociation.Archivist.Stream.Length).ToString());
             //MessageBox.Show(ms.ToString());
-           
+
         }
 
         [ClassCleanup]
@@ -52,9 +54,9 @@ namespace AritiafelTestForm.Tests
         public void btnMessageBox_ClickTest()
         {
             MainForm mf = new MainForm();
-            mf.btnMessageBox_Click(mf, new EventArgs());            
+            mf.btnMessageBox_Click(mf, new EventArgs());
             mf.Close();
-            
+
             AdventurerAssociation.PrintMessageFromCourier(TestContext);
         }
 
@@ -101,7 +103,7 @@ namespace AritiafelTestForm.Tests
             mf.btnOpenFile_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromBard(TestContext);
 
-            mf.Close(); 
+            mf.Close();
         }
 
         [TestMethod]
@@ -120,13 +122,30 @@ namespace AritiafelTestForm.Tests
             AdventurerAssociation.PrintMessageFromArchivist(TestContext);
             if (newForm.Name == "frmInputBox")
             {
-                frmInputBox frmInputBox = newForm as frmInputBox;                
+                frmInputBox frmInputBox = newForm as frmInputBox;
                 (frmInputBox.Controls.Find("txtInputbox", false)[0] as TextBox).Text = "A New Record";
                 TestContext.WriteLine("this");
                 frmInputBox.btnOK_Click(frmInputBox, new EventArgs());
                 return newForm.DialogResult;
             }
             return DialogResult.None;
+        }
+
+        [TestMethod]
+        public void btnShowMessageByResource_ClickTest()
+        {
+            AdventurerAssociation.Archivist.ClearRecords();            
+            MainForm mf = new MainForm();
+
+            Courier courier = new Courier();
+
+            courier.AddResponse(ResponseOptions.Yes, "QuestionString2");
+            courier.AddResponse(ResponseOptions.No, "QuestionString");            
+            //courier.AddResponses(new List<ResponseOptions> { ResponseOptions.Cancel, ResponseOptions.OK });
+
+            AdventurerAssociation.RegisterMember(courier);
+            mf.btnShowMessageByResource_Click(mf, new EventArgs());
+            AdventurerAssociation.PrintMessageFromArchivist(TestContext);
         }
 
         //[DataTestMethod]

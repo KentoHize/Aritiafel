@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Aritiafel.Characters;
 using Aritiafel.Organizations;
+using Aritiafel.Items;
 
 namespace AritiafelTestForm
 {
@@ -41,7 +42,7 @@ namespace AritiafelTestForm
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            
+            RabbitCouriers.RegisterRMAndCI(Resources.Res.ResourceManager, new System.Globalization.CultureInfo("zh-TW"));
         }
 
         public void btnOpenFile_Click(object sender, EventArgs e)
@@ -55,13 +56,13 @@ namespace AritiafelTestForm
             RabbitCouriers.SentInformation(result);            
         }
 
-        private void btnShowMessageByResource_Click(object sender, EventArgs e)
+        public void btnShowMessageByResource_Click(object sender, EventArgs e)
         {
-            DialogResult dr = RabbitCouriers.SentNoramlQuestionByResource("QuestionString", "Q1", "Male", "Female");
-            DialogResult dr2 = RabbitCouriers.SentNoramlQuestionByResource("QuestionString2", "Q2");
+            DialogResult dr = RabbitCouriers.SentNoramlQuestionByResource("QuestionString", "Q1", ChoiceOptions.YesNo, "Male", "Female");
+            DialogResult dr2 = RabbitCouriers.SentNoramlQuestionByResource("QuestionString2", "Q2", ChoiceOptions.YesNo, "15", "16");
 
-            if (dr == DialogResult.OK && dr2 == DialogResult.Cancel)
-                RabbitCouriers.SentInformation("AnswerString", "Answer");
+            if (dr == DialogResult.Cancel && dr2 == DialogResult.OK)
+                RabbitCouriers.SentInformationByResource("AnswerString", "Answer");
         }
     }
 }

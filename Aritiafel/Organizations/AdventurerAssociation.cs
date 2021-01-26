@@ -178,7 +178,7 @@ namespace Aritiafel.Organizations
             if (!message.ChoiceOption.ToString().Contains(dr.ToString()))
                 throw new InvalidCastException("DialogResult");
 
-            record = $"DialogResult = {dr}";
+            record = $"DialogResult = [{dr}]";
             Courier.MessageReceived.Add(record);
             Archivist.WriteRecord(record);            
                 
@@ -241,7 +241,7 @@ namespace Aritiafel.Organizations
             if (dr != DialogResult.OK && dr != DialogResult.Cancel)
                 throw new InvalidCastException("DialogResult");
 
-            record = $"DialogResult = {dr}";
+            record = $"DialogResult = [{dr}]";
             Bard.MessageReceived.Add(record);
             Archivist.WriteRecord(record);
             return dr;
@@ -304,14 +304,19 @@ namespace Aritiafel.Organizations
             string record;
 
             record = $"Show Form: \"{form.Name}\"";
-            Courier.MessageReceived.Add(record);
+            Bard.MessageReceived.Add(record);
             Archivist.WriteRecord(record);
 
-            if(Form_Start != null)
+            if (Bard.InputInformation["DialogResult"] != null)
+                dr = (DialogResult)Bard.InputInformation["DialogResult"];
+            else if (Bard.InputInformation[$"{form.Name}.DialogResult"] != null)
+                dr = (DialogResult)Bard.InputInformation[$"{form.Name}.DialogResult"];
+
+            if (Form_Start != null)
                 dr = Form_Start(form);
 
-            record = $"DialogResult = {dr}";
-            Courier.MessageReceived.Add(record);
+            record = $"DialogResult = [{dr}]";
+            Bard.MessageReceived.Add(record);
             Archivist.WriteRecord(record);
 
             return dr;
