@@ -61,7 +61,7 @@ namespace AritiafelTestForm
             DialogResult dr = RabbitCouriers.SentNoramlQuestionByResource("QuestionString", "Q1", ChoiceOptions.YesNo, "Male", "Female");
             DialogResult dr2 = RabbitCouriers.SentNoramlQuestionByResource("QuestionString2", "Q2", ChoiceOptions.YesNo, "15", "16");
 
-            if (dr == DialogResult.Cancel && dr2 == DialogResult.OK)
+            if (dr == DialogResult.No && dr2 == DialogResult.Yes)
                 RabbitCouriers.SentInformationByResource("AnswerString", "Answer");
         }
     }

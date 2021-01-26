@@ -82,10 +82,10 @@ namespace Aritiafel.Items
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
-            result.AppendFormat("Message ID:\"{0}\"\n", ID ?? "");
+            result.AppendFormat("ID:\"{0}\"\n", ID ?? "");
             result.AppendFormat("Title:\"{0}\"  ", Title ?? "");
             result.AppendFormat("Level:{0}\n", LevelOfEergency);
-            result.AppendFormat("Content:\"{0}\"\n", Content ?? "");
+            result.AppendFormat("Message:\"{0}\"\n", Content ?? "");
             result.AppendFormat("Response options:{0}", GetResponseOptionString());
             return result.ToString();
         }

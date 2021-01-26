@@ -140,8 +140,9 @@ namespace AritiafelTestForm.Tests
             Courier courier = new Courier();
 
             courier.AddResponse(ResponseOptions.Yes, "QuestionString2");
-            courier.AddResponse(ResponseOptions.No, "QuestionString");            
-            //courier.AddResponses(new List<ResponseOptions> { ResponseOptions.Cancel, ResponseOptions.OK });
+            courier.AddResponse(ResponseOptions.No, "QuestionString");
+            courier.AddResponse(ResponseOptions.Yes, "QuestionString");
+            courier.AddResponse(ResponseOptions.OK);
 
             AdventurerAssociation.RegisterMember(courier);
             mf.btnShowMessageByResource_Click(mf, new EventArgs());
