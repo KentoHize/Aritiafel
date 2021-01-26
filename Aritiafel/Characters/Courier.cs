@@ -10,55 +10,85 @@ namespace Aritiafel.Characters
         public string Name { get; set; }
 
         public ArPackage Package { get; set; }
-        public Dictionary<string, List<string>> Responses { get; private set; } = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> Responses
+        {
+            get
+                => _Responses;
+            set
+            {
+                if(value != null && value.ContainsKey(""))
+                    _Responses = value;
+                throw new ArgumentException("Respones must exist and has a empty string key.");
+            }
+        }
+        private Dictionary<string, List<string>> _Responses = new Dictionary<string, List<string>> { { "", new List<string>() } };
         public List<string> MessageReceived { get; private set; } = new List<string>();
 
-        public void AddResponse(string messageID, string response)
+        public void AddResponse(string response)
+            => AddResponse(response, null);
+
+        public void AddResponse(string response, string messageID)
         {
-            if (!Responses.ContainsKey(messageID))
-                Responses.Add(messageID, new List<string>());
+            if (string.IsNullOrEmpty(messageID))
+            {
+                _Responses[""].Add(response);
+                return;
+            }
 
-            if (Responses[messageID] == null)
-                Responses[messageID] = new List<string>();
+            if (!_Responses.ContainsKey(messageID))
+                _Responses.Add(messageID, new List<string>());
 
-            Responses[messageID].Add(response);
+            if (_Responses[messageID] == null)
+                _Responses[messageID] = new List<string>();
+
+            _Responses[messageID].Add(response);
         }
 
-        public void AddResponses(string messageID, List<string> responses)        
-            => Responses[messageID] = responses;
+        public void AddResponses(List<string> responses)
+            => AddResponses(responses, null);
 
-        public void ClearResponses(string messageID)
+        public void AddResponses(List<string> responses, string messageID)
         {
-            if (Responses[messageID] != null)
-                Responses[messageID].Clear();
+            if (string.IsNullOrEmpty(messageID))
+                _Responses[""] = responses;
+            else
+                _Responses[messageID] = responses;
+        }
+
+        public void ClearResponses(string messageID = null)
+        {
+            if (string.IsNullOrEmpty(messageID))
+                _Responses[""].Clear();            
+            else if (_Responses[messageID] != null)
+                _Responses[messageID].Clear();
         }
 
         public void ClearAllResponses()
-            => Responses.Clear();
-
-        //public Courier()
-        //    : this("")
-        //{ }
-
-        //public Courier(InputResponseOptions iro)
-        //    : this("", iro)
-        //{ }
-
-        //public Courier(string name, InputResponseOptions iro)
-        //    : this(name, iro.ToString())
-        //{ }
-
-        //public Courier(string name, string inputResponse = "")
-        //{
-        //    Name = name;
-        //    InputResponse = inputResponse;
-        //}
-
-        public Courier(ResponseOptions ro)
         {
-
+            _Responses.Clear();
+            _Responses.Add("", new List<string>());
         }
-        
+
+        public Courier()
+            : this("")
+        { }
+
+        public Courier(ResponseOptions ro, string messageID = null)
+            : this("", ro, messageID)
+        { }
+
+        public Courier(string name, ResponseOptions ro, string messageID = null)
+        {
+            Name = name;            
+            AddResponse(ro.ToString(), messageID);
+        }
+
+        public Courier(string name, Dictionary<string, List<string>> responses = null)
+        {
+            Name = name;
+            if(responses != null)
+                Responses = responses;
+        }
     }
 
     public enum ResponseOptions
