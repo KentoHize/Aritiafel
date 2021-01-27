@@ -4,8 +4,6 @@ using System.Linq;
 using System.Resources;
 using System.Windows.Forms;
 
-
-
 namespace Aritiafel.Organizations
 {
     public static class RabbitCouriers
@@ -62,22 +60,32 @@ namespace Aritiafel.Organizations
 
         //Message
 
-        public static DialogResult SentInformation(string message, string title = "")
-            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, null, ChoiceOptions.OK, LevelOfEergency.Information));
+        public static DialogResult SentInformation(string message, string title = "", string id = "")
+            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, id, ChoiceOptions.OK, LevelOfEergency.Information));
 
-        public static DialogResult SentWarningMessage(string message, string title = "")
-            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, null, ChoiceOptions.OK, LevelOfEergency.Warning));
+        public static DialogResult SentWarningMessage(string message, string title = "", string id = "")
+            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, id, ChoiceOptions.OK, LevelOfEergency.Warning));
 
-        public static DialogResult SentErrorMessage(string message, string title = "")
-            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, null, ChoiceOptions.OK, LevelOfEergency.Error));
+        public static DialogResult SentErrorMessage(string message, string title = "", string id = "")
+            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, id, ChoiceOptions.OK, LevelOfEergency.Error));
 
         public static DialogResult SentNoramlQuestion(string message, string title = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
-            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, null, co, LevelOfEergency.Question, defaultResponse));
+            => SentNoramlQuestion(message, title, null, co, defaultResponse);
+
+        public static DialogResult SentNoramlQuestion(string message, string title = "", string id = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
+            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, id, co, LevelOfEergency.Question, defaultResponse));
 
         public static DialogResult SentWarningQuestion(string message, string title = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
-            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, null, co, LevelOfEergency.Warning, defaultResponse));
+            => SentWarningQuestion(message, title, null, co, defaultResponse);
+
+        public static DialogResult SentWarningQuestion(string message, string title = "", string id = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
+            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, id, co, LevelOfEergency.Warning, defaultResponse));
 
         public static DialogResult SentErrorQuestion(string message, string title = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
-            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, null, co, LevelOfEergency.Error, defaultResponse));
+            => SentErrorQuestion(message, title, null, co, defaultResponse);
+
+        public static DialogResult SentErrorQuestion(string message, string title = "", string id = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
+            => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, id, co, LevelOfEergency.Error, defaultResponse));
+
     }
 }
