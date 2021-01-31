@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Aritiafel.Characters
 {
+    /// <summary>
+    /// 信使
+    /// </summary>
     public class Courier //Message/Mail/Crate Carrier
     {
         public string Name { get; set; }

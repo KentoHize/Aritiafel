@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Aritiafel.Characters
 {
+    /// <summary>
+    /// 詩人
+    /// </summary>
     public class Bard //Test User
     {
         public string Name { get; set; }

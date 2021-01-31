@@ -34,6 +34,7 @@
             this.btnOpenFile = new System.Windows.Forms.Button();
             this.btnInputForm = new System.Windows.Forms.Button();
             this.btnShowMessageByResource = new System.Windows.Forms.Button();
+            this.btnTranslateZHCN = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMessageBox
@@ -90,11 +91,22 @@
             this.btnShowMessageByResource.UseVisualStyleBackColor = true;
             this.btnShowMessageByResource.Click += new System.EventHandler(this.btnShowMessageByResource_Click);
             // 
+            // btnTranslateZHCN
+            // 
+            this.btnTranslateZHCN.Location = new System.Drawing.Point(648, 38);
+            this.btnTranslateZHCN.Name = "btnTranslateZHCN";
+            this.btnTranslateZHCN.Size = new System.Drawing.Size(140, 60);
+            this.btnTranslateZHCN.TabIndex = 5;
+            this.btnTranslateZHCN.Text = "翻譯簡轉繁";
+            this.btnTranslateZHCN.UseVisualStyleBackColor = true;
+            this.btnTranslateZHCN.Click += new System.EventHandler(this.btnTranslateZHCN_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnTranslateZHCN);
             this.Controls.Add(this.btnShowMessageByResource);
             this.Controls.Add(this.btnInputForm);
             this.Controls.Add(this.btnOpenFile);
@@ -115,6 +127,7 @@
         private System.Windows.Forms.Button btnOpenFile;
         private System.Windows.Forms.Button btnInputForm;
         private System.Windows.Forms.Button btnShowMessageByResource;
+        private System.Windows.Forms.Button btnTranslateZHCN;
     }
 }
 

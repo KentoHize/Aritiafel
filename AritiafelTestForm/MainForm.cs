@@ -64,5 +64,10 @@ namespace AritiafelTestForm
             if (dr == DialogResult.No && dr2 == DialogResult.Yes)
                 RabbitCouriers.SentInformationByResource("AnswerString", "Answer");
         }
+
+        private void btnTranslateZHCN_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

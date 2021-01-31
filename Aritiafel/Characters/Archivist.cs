@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Aritiafel.Characters
 {
+    /// <summary>
+    /// 文件管理員
+    /// </summary>
     public class Archivist //Recorder
     {
         public string Name { get; set; }

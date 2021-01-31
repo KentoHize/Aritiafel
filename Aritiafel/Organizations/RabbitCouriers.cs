@@ -6,6 +6,9 @@ using System.Windows.Forms;
 
 namespace Aritiafel.Organizations
 {
+    /// <summary>
+    /// 兔子快遞，快速傳達包裹、訊息及取得在地化翻譯
+    /// </summary>
     public static class RabbitCouriers
     {
         public static ResourceManager ResourceManager { get; private set; }

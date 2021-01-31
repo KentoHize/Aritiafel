@@ -9,6 +9,9 @@ using System.IO;
 
 namespace Aritiafel.Organizations
 {
+    /// <summary>
+    /// 冒險者公會，主要處理表單測試問題
+    /// </summary>
     public static class AdventurerAssociation
     {
         public static Bard Bard { get; private set; }
@@ -24,19 +27,30 @@ namespace Aritiafel.Organizations
         public static event FormStartDelegate Form_Start;
 
         /// <summary>
-        /// 測試成員註冊
+        /// 冒險者公會成員註冊
         /// </summary>
         public static void RegisterMembers()
             => RegisterMembers(null);
 
         /// <summary>
-        /// 測試成員註冊
+        /// 冒險者公會成員註冊
         /// </summary>
         /// <param name="output">輸出流</param>
         public static void RegisterMembers(Stream output)
         {
             if (!Registered)
                 RegisterMembers(new Bard(), new Courier(), new Archivist(output));
+        }
+
+        /// <summary>
+        /// 冒險者公會成員解散
+        /// </summary>
+        public static void DismissMembers()
+        {
+            Bard = null;
+            Courier = null;            
+            Archivist = null;
+            Registered = false;
         }
 
         private static void UpdateRegisteredState()
@@ -89,16 +103,6 @@ namespace Aritiafel.Organizations
             UpdateRegisteredState();
         }
 
-        public static void RegisterMemberAndRefreshInput(IDictionary inputInformation)
-        {
-            if (!Registered)
-                RegisterMembers();
-            RefreshInput(inputInformation);
-        }
-
-        public static void RefreshInput(IDictionary inputInformation)
-            => Bard.InputInformation = inputInformation;
-
         /// <summary>
         /// 從詩人身上傾倒逐行訊息
         /// </summary>
@@ -136,7 +140,7 @@ namespace Aritiafel.Organizations
         }
 
         /// <summary>
-        /// 顯示訊息視窗或設置結果(測試時)
+        /// 顯示訊息視窗或設置結果(測試時)，從信使身上讀取輸入資料
         /// </summary>
         /// <param name="message">訊息</param>
         /// <returns>結果</returns>
@@ -144,7 +148,7 @@ namespace Aritiafel.Organizations
             => ShowNewMessageOrSetResult(message, null);
 
         /// <summary>
-        /// 顯示訊息視窗或設置結果(測試時)
+        /// 顯示訊息視窗或設置結果(測試時)，從信使身上讀取輸入資料
         /// </summary>
         /// <param name="message">訊息</param>
         /// <param name="owner">父表單</param>
@@ -186,7 +190,7 @@ namespace Aritiafel.Organizations
         }
 
         /// <summary>
-        /// 顯示一般對話視窗或是設置結果(測試時)
+        /// 顯示一般對話視窗或是設置結果(測試時)，從詩人身上讀取輸入資料
         /// </summary>
         /// <param name="cd">對話視窗實體</param>
         /// <returns>結果</returns>
@@ -194,7 +198,7 @@ namespace Aritiafel.Organizations
             => cd.ShowDialogOrSetResult(null);
 
         /// <summary>
-        /// 顯示一般對話視窗或是設置結果(測試時)
+        /// 顯示一般對話視窗或是設置結果(測試時)，從詩人身上讀取輸入資料
         /// </summary>
         /// <param name="cd">對話視窗實體</param>
         /// <param name="owner">父表單</param>
@@ -248,14 +252,14 @@ namespace Aritiafel.Organizations
         }
 
         /// <summary>
-        /// 顯示表單或是觸發事件(測試時)
+        /// 顯示表單或是觸發事件(測試時)，從詩人身上讀取輸入資料
         /// </summary>
         /// <param name="form">顯示的表單</param>
         public static void ShowOrCallEvent(this Form form)
             => ShowOrCallEvent(form, null, false);
 
         /// <summary>
-        /// 顯示表單或是觸發事件(測試時)
+        /// 顯示表單或是觸發事件(測試時)，從詩人身上讀取輸入資料
         /// </summary>
         /// <param name="form">顯示的表單</param>
         /// <param name="owner">父表單</param>
@@ -263,7 +267,7 @@ namespace Aritiafel.Organizations
             => ShowOrCallEvent(form, owner, false);
 
         /// <summary>
-        /// 顯示表單或是觸發事件(測試時)
+        /// 顯示表單或是觸發事件(測試時)，從詩人身上讀取輸入資料
         /// </summary>
         /// <param name="form">顯示的表單</param>
         /// <returns>結果</returns>
@@ -271,7 +275,7 @@ namespace Aritiafel.Organizations
             => ShowOrCallEvent(form, null, true);
 
         /// <summary>
-        /// 顯示表單或是觸發事件(測試時)
+        /// 顯示表單或是觸發事件(測試時)，從詩人身上讀取輸入資料
         /// </summary>
         /// <param name="form">顯示的表單</param>
         /// <param name="owner">父表單</param>
@@ -301,11 +305,26 @@ namespace Aritiafel.Organizations
                 }
             }
             DialogResult dr = form.DialogResult;
+            PropertyInfo[] formProps = form.GetType().GetProperties();
             string record;
 
             record = $"Show Form: \"{form.Name}\"";
             Bard.MessageReceived.Add(record);
             Archivist.WriteRecord(record);
+
+            foreach (PropertyInfo pi in formProps)
+            {
+                object value = Bard.InputInformation[$"{form.Name}.{pi.Name}"] ??
+                    Bard.InputInformation[pi.Name];
+
+                if (value != null)
+                {
+                    pi.SetValue(form, value);
+                    record = $"{form.Name}.{pi.Name} = {value}";
+                    Bard.MessageReceived.Add(record);
+                    Archivist.WriteRecord(record);
+                }
+            }
 
             if (Bard.InputInformation["DialogResult"] != null)
                 dr = (DialogResult)Bard.InputInformation["DialogResult"];

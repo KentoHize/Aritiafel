@@ -5,7 +5,7 @@ using System.Text;
 namespace Aritiafel.Characters.Heroes
 {
     /// <summary>
-    /// 主要法師角色，人類
+    /// 法師，英雄，人類
     /// </summary>
     public static class Tina
     {

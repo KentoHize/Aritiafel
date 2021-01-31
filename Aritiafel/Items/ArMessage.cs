@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Aritiafel.Items
 {
+    /// <summary>
+    /// 訊息
+    /// </summary>
     public class ArMessage : ArPackage
     {
         public string Content { get; set; }
