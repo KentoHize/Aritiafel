@@ -35,6 +35,9 @@
             this.btnInputForm = new System.Windows.Forms.Button();
             this.btnShowMessageByResource = new System.Windows.Forms.Button();
             this.btnTranslateZHCN = new System.Windows.Forms.Button();
+            this.txtText = new System.Windows.Forms.TextBox();
+            this.txtOutput = new System.Windows.Forms.TextBox();
+            this.btnSaveUTF8 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMessageBox
@@ -97,15 +100,46 @@
             this.btnTranslateZHCN.Name = "btnTranslateZHCN";
             this.btnTranslateZHCN.Size = new System.Drawing.Size(140, 60);
             this.btnTranslateZHCN.TabIndex = 5;
-            this.btnTranslateZHCN.Text = "翻譯簡轉繁";
+            this.btnTranslateZHCN.Text = "翻譯繁轉簡";
             this.btnTranslateZHCN.UseVisualStyleBackColor = true;
             this.btnTranslateZHCN.Click += new System.EventHandler(this.btnTranslateZHCN_Click);
+            // 
+            // txtText
+            // 
+            this.txtText.Location = new System.Drawing.Point(390, 38);
+            this.txtText.Multiline = true;
+            this.txtText.Name = "txtText";
+            this.txtText.Size = new System.Drawing.Size(211, 136);
+            this.txtText.TabIndex = 6;
+            this.txtText.Text = "國內新冠疫情拉警報，疫苗採購至今卻仍是深陷五里霧中狀況不明，對此，前民進黨立委沈富雄直批疫情中心指揮官陳時中「稱有關疫苗的供應不要怪台灣，繼續怪台灣（處境）會更困" +
+    "難，其實他應講不要怪我、不要怪時中，因時中禁不起壓力，他就會給你莫名其妙的理由」、「若將來陳要參選北市長，把他說過的話找出來就能凸顯他有多蠢」！";
+            // 
+            // txtOutput
+            // 
+            this.txtOutput.Location = new System.Drawing.Point(390, 203);
+            this.txtOutput.Multiline = true;
+            this.txtOutput.Name = "txtOutput";
+            this.txtOutput.Size = new System.Drawing.Size(211, 136);
+            this.txtOutput.TabIndex = 7;
+            // 
+            // btnSaveUTF8
+            // 
+            this.btnSaveUTF8.Location = new System.Drawing.Point(652, 115);
+            this.btnSaveUTF8.Name = "btnSaveUTF8";
+            this.btnSaveUTF8.Size = new System.Drawing.Size(135, 58);
+            this.btnSaveUTF8.TabIndex = 8;
+            this.btnSaveUTF8.Text = "存成UTF-8";
+            this.btnSaveUTF8.UseVisualStyleBackColor = true;
+            this.btnSaveUTF8.Click += new System.EventHandler(this.btnSaveUTF8_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnSaveUTF8);
+            this.Controls.Add(this.txtOutput);
+            this.Controls.Add(this.txtText);
             this.Controls.Add(this.btnTranslateZHCN);
             this.Controls.Add(this.btnShowMessageByResource);
             this.Controls.Add(this.btnInputForm);
@@ -116,6 +150,7 @@
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -128,6 +163,9 @@
         private System.Windows.Forms.Button btnInputForm;
         private System.Windows.Forms.Button btnShowMessageByResource;
         private System.Windows.Forms.Button btnTranslateZHCN;
+        private System.Windows.Forms.TextBox txtText;
+        private System.Windows.Forms.TextBox txtOutput;
+        private System.Windows.Forms.Button btnSaveUTF8;
     }
 }
 

@@ -11,6 +11,8 @@ using System.Windows.Forms;
 using Aritiafel.Characters;
 using Aritiafel.Organizations;
 using Aritiafel.Items;
+using System.IO;
+using System.Diagnostics;
 
 namespace AritiafelTestForm
 {
@@ -67,7 +69,31 @@ namespace AritiafelTestForm
 
         private void btnTranslateZHCN_Click(object sender, EventArgs e)
         {
+            string result;
 
+            //byte[] bytes = Encoding.Default.GetBytes(txtText.Text);
+            //result = Encoding.UTF8.GetString(bytes);
+
+            result = WizardGuild.TranslateTextFromTraditionalChineseToSimplifiedChinese(txtText.Text);
+                       //UnicodeEncoding.GetEncoding("UTF-8").GetEncoder();
+
+
+            txtOutput.Text = result;
+        }
+
+        private void btnSaveUTF8_Click(object sender, EventArgs e)
+        {
+            string outputFile = Path.Combine(Application.StartupPath, "UTF-8.txt");
+
+            using (FileStream fs = new FileStream(outputFile, FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    sw.Write(txtOutput.Text);
+                }
+            }
+
+            Process.Start(outputFile);
         }
     }
 }

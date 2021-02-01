@@ -4,21 +4,51 @@
         <name>Aritiafel</name>
     </assembly>
     <members>
+        <member name="T:Aritiafel.Characters.Archivist">
+            <summary>
+            文件管理員
+            </summary>
+        </member>
+        <member name="T:Aritiafel.Characters.Bard">
+            <summary>
+            詩人
+            </summary>
+        </member>
+        <member name="T:Aritiafel.Characters.Courier">
+            <summary>
+            信使
+            </summary>
+        </member>
         <member name="T:Aritiafel.Characters.Heroes.Tina">
             <summary>
-            主要法師角色，人類
+            法師，英雄，人類
+            </summary>
+        </member>
+        <member name="T:Aritiafel.Items.ArMessage">
+            <summary>
+            訊息
+            </summary>
+        </member>
+        <member name="T:Aritiafel.Organizations.AdventurerAssociation">
+            <summary>
+            冒險者公會，主要處理表單測試問題
             </summary>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMembers">
             <summary>
-            測試成員註冊
+            冒險者公會成員註冊
             </summary>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMembers(System.IO.Stream)">
             <summary>
-            測試成員註冊
+            冒險者公會成員註冊
             </summary>
             <param name="output">輸出流</param>
+        </member>
+        <member name="M:Aritiafel.Organizations.AdventurerAssociation.DismissMembers">
+            <summary>
+            冒險者公會成員解散
+            </summary>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.RegisterMembers(Aritiafel.Characters.Bard,Aritiafel.Characters.Courier,Aritiafel.Characters.Archivist)">
             <summary>
@@ -66,14 +96,14 @@
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowNewMessageOrSetResult(Aritiafel.Items.ArMessage)">
             <summary>
-            顯示訊息視窗或設置結果(測試時)
+            顯示訊息視窗或設置結果(測試時)，從信使身上讀取輸入資料
             </summary>
             <param name="message">訊息</param>
             <returns>結果</returns>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowNewMessageOrSetResult(Aritiafel.Items.ArMessage,System.Windows.Forms.IWin32Window)">
             <summary>
-            顯示訊息視窗或設置結果(測試時)
+            顯示訊息視窗或設置結果(測試時)，從信使身上讀取輸入資料
             </summary>
             <param name="message">訊息</param>
             <param name="owner">父表單</param>
@@ -81,14 +111,14 @@
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrSetResult(System.Windows.Forms.CommonDialog)">
             <summary>
-            顯示一般對話視窗或是設置結果(測試時)
+            顯示一般對話視窗或是設置結果(測試時)，從詩人身上讀取輸入資料
             </summary>
             <param name="cd">對話視窗實體</param>
             <returns>結果</returns>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrSetResult(System.Windows.Forms.CommonDialog,System.Windows.Forms.IWin32Window)">
             <summary>
-            顯示一般對話視窗或是設置結果(測試時)
+            顯示一般對話視窗或是設置結果(測試時)，從詩人身上讀取輸入資料
             </summary>
             <param name="cd">對話視窗實體</param>
             <param name="owner">父表單</param>
@@ -96,31 +126,41 @@
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowOrCallEvent(System.Windows.Forms.Form)">
             <summary>
-            顯示表單或是觸發事件(測試時)
+            顯示表單或是觸發事件(測試時)，從詩人身上讀取輸入資料
             </summary>
             <param name="form">顯示的表單</param>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowOrCallEvent(System.Windows.Forms.Form,System.Windows.Forms.IWin32Window)">
             <summary>
-            顯示表單或是觸發事件(測試時)
+            顯示表單或是觸發事件(測試時)，從詩人身上讀取輸入資料
             </summary>
             <param name="form">顯示的表單</param>
             <param name="owner">父表單</param>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrCallEvent(System.Windows.Forms.Form)">
             <summary>
-            顯示表單或是觸發事件(測試時)
+            顯示表單或是觸發事件(測試時)，從詩人身上讀取輸入資料
             </summary>
             <param name="form">顯示的表單</param>
             <returns>結果</returns>
         </member>
         <member name="M:Aritiafel.Organizations.AdventurerAssociation.ShowDialogOrCallEvent(System.Windows.Forms.Form,System.Windows.Forms.IWin32Window)">
             <summary>
-            顯示表單或是觸發事件(測試時)
+            顯示表單或是觸發事件(測試時)，從詩人身上讀取輸入資料
             </summary>
             <param name="form">顯示的表單</param>
             <param name="owner">父表單</param>
             <returns>結果</returns>
+        </member>
+        <member name="T:Aritiafel.Organizations.RabbitCouriers">
+            <summary>
+            兔子快遞，快速傳達包裹、訊息及取得在地化翻譯
+            </summary>
+        </member>
+        <member name="T:Aritiafel.Organizations.WizardGuild">
+            <summary>
+            法師公會，目前提供繁轉簡翻譯服務(擴增中)
+            </summary>
         </member>
     </members>
 </doc>

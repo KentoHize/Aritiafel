@@ -79,7 +79,7 @@ namespace AritiafelTestForm.Tests
         [TestProperty("FileName", @"‪C:\WebSite\GoogleDrive\ArinaQuotes.txt")]
         public void btnOpenFile_ClickTest()
         {
-            AdventurerAssociation.RefreshInput(TestContext.Properties);
+            //AdventurerAssociation.RefreshInput(TestContext.Properties);
             MainForm mf = new MainForm();
             mf.btnOpenFile_Click(mf, new EventArgs());
             AdventurerAssociation.PrintMessageFromBard(TestContext);
