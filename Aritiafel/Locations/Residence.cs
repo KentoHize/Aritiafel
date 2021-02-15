@@ -10,12 +10,12 @@ namespace Aritiafel.Locations
     public class Residence
     {
         public string Address { get; set; }
-        public Residence(string backupDirectoryPath)
+        public Residence(string backupDirectoryPath = "")
         {
             Address = backupDirectoryPath;
         }
 
-        public void SaveVSSolution(string SolutionDirectoryPath, string[] ignoreDirName = null)
+        public void SaveVSSolution(string SolutionDirectoryPath, bool includeTestResult = true, string[] addtionalIgnoreDirNames = null)
         {
             if (string.IsNullOrEmpty(Address))
                 throw new ArgumentNullException("Address");
@@ -23,9 +23,22 @@ namespace Aritiafel.Locations
             if (string.IsNullOrEmpty(SolutionDirectoryPath))
                 throw new ArgumentNullException("SolutionDirectoryPath");
 
+            List<string> ignoreDirNames = new List<string>
+            {
+                "bin",
+                "obj",
+                ".vs",
+                ".git",
+                "packages"
+            };
 
+            if (!includeTestResult)
+                ignoreDirNames.Add("TestResult");
 
-            DirectoryCopy(SolutionDirectoryPath, Address);
+            if (addtionalIgnoreDirNames != null)
+                ignoreDirNames.AddRange(addtionalIgnoreDirNames);
+
+            DirectoryCopy(SolutionDirectoryPath, Path.Combine(Address, Path.GetFileName(SolutionDirectoryPath)), true, ignoreDirNames.ToArray());
         }
 
         private bool FitsMask(string fileName, string fileMask)
