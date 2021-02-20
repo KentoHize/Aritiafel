@@ -32,7 +32,7 @@ namespace Aritiafel.Locations
                 "packages"
             };
 
-            if (!includeTestResult)
+            if (includeTestResult)
                 ignoreDirNames.Add("TestResult");
 
             if (addtionalIgnoreDirNames != null)
