@@ -43,7 +43,7 @@ namespace Aritiafel.Locations.StorageHouse
                 object result;
                 if (propertyName == ReferenceType)
                 {
-                    reader.Read();
+                    reader.Read();                    
                     result = Activator.CreateInstance(Type.GetType(reader.GetString()));
                     reader.Read();
                     if (reader.TokenType != JsonTokenType.PropertyName)
@@ -115,13 +115,11 @@ namespace Aritiafel.Locations.StorageHouse
                                 resultType.GetProperty(propertyName).SetValue(result, reader.GetBoolean());
                             break;
                         case JsonTokenType.Number:
-                            double d = reader.GetDouble();
-                            decimal m = reader.GetDecimal();
-                            object o;
-                            if (Convert.ToDouble(m) == d)
+                            object o;                            
+                            if (reader.TryGetDecimal(out decimal m))
                                 o = m;
                             else
-                                o = d;
+                                o = reader.GetDouble();
                             if (depth != 0) 
                                 buffer.AppendFormat("{0},", o);
                             else
