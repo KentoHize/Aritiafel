@@ -15,7 +15,7 @@ namespace Aritiafel.Locations.StorageHouse
         private const string ReferenceType = "__ReferenceType";
         public override bool CanConvert(Type typeToConvert)
         {
-            if (typeToConvert.IsClass &&
+            if (typeToConvert.IsClass && /*!typeToConvert.IsArray &&*/
                 !typeToConvert.Assembly.FullName.StartsWith("System") &&
                 !typeToConvert.Assembly.FullName.StartsWith("Mircosoft"))
                 return true;
@@ -46,6 +46,9 @@ namespace Aritiafel.Locations.StorageHouse
                 {
                     result = Activator.CreateInstance(Type.GetType(reader.GetString()));
                     reader.Read();
+                    if (reader.TokenType != JsonTokenType.PropertyName)
+                        throw new JsonException();
+                    propertyName = reader.GetString();
                 }
                 else
                     result = Activator.CreateInstance(typeToConvert);
@@ -72,24 +75,42 @@ namespace Aritiafel.Locations.StorageHouse
                             depth++;
                             break;
                         case JsonTokenType.EndObject:
+                            if (buffer.ToString() == "")
+                                break;
                             buffer.Remove(buffer.Length - 1, 1);
                             buffer.Append("},");
                             depth--;
                             if (depth == 0)
+                            {
+                                buffer.Remove(buffer.Length - 1, 1);
                                 if (resultType.GetProperty(propertyName).CanWrite)
                                     resultType.GetProperty(propertyName).SetValue(result,
-                                    JsonSerializer.Deserialize(buffer.ToString(), 
+                                    JsonSerializer.Deserialize(buffer.ToString(),
                                     resultType.GetProperty(propertyName).PropertyType, options));
+                                buffer.Clear();
+                            }
                             break;
                         case JsonTokenType.EndArray:
+                            if (buffer.ToString() == "")
+                                break;
                             buffer.Remove(buffer.Length - 1, 1);
                             buffer.Append("],");
                             depth--;
+                            if (depth == 0)
+                            {
+                                buffer.Remove(buffer.Length - 1, 1);
+                                Console.WriteLine(buffer.ToString());
+                                if (resultType.GetProperty(propertyName).CanWrite)
+                                    resultType.GetProperty(propertyName).SetValue(result,
+                                    JsonSerializer.Deserialize(buffer.ToString(),
+                                    resultType.GetProperty(propertyName).PropertyType, options));
+                                buffer.Clear();
+                            }
                             break;
                         case JsonTokenType.True:
                         case JsonTokenType.False:
                             if (depth != 0)
-                                buffer.AppendFormat("{0},", reader.GetBoolean());
+                                buffer.AppendFormat("{0},", reader.GetBoolean().ToString().ToLower());
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
                                 resultType.GetProperty(propertyName).SetValue(result, reader.GetBoolean());
@@ -135,7 +156,7 @@ namespace Aritiafel.Locations.StorageHouse
                 PropertyInfo[] pis = valueType.GetProperties();
                 writer.WriteStartObject();
                 if (valueType != typeof(T))
-                    writer.WriteString(ReferenceType, valueType.FullName);
+                    writer.WriteString(ReferenceType, valueType.AssemblyQualifiedName);
                 foreach (PropertyInfo pi in pis)
                 {
                     if (pi.GetAccessors(true)[0].IsStatic)
