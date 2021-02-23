@@ -74,7 +74,7 @@ namespace AritiafelTestFormTests
             
             JsonSerializerOptions jso = new JsonSerializerOptions
             { WriteIndented = true };
-            jso.Converters.Add(new DefalutJsonConverter());
+            jso.Converters.Add(new DefalutJsonConverterFactory());
             string s = JsonSerializer.Serialize(Tom, jso);
             Console.WriteLine(s);            
             object o = JsonSerializer.Deserialize<Person>(s, jso);            

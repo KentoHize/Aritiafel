@@ -11,7 +11,7 @@ namespace Aritiafel.Locations.StorageHouse
     /// <summary>
     /// System.Text.Json加強版，繼承後製作自訂JsonConverter
     /// </summary>
-    public class DefalutJsonConverter : JsonConverterFactory
+    public class DefalutJsonConverterFactory : JsonConverterFactory
     {
         private const string ReferenceType = "__ReferenceType";
         public override bool CanConvert(Type typeToConvert)
@@ -22,22 +22,22 @@ namespace Aritiafel.Locations.StorageHouse
                 return true;
             return false;
         }
-
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
             => (JsonConverter)Activator.CreateInstance(
-                typeof(DefalutJsonConverterInner<>).MakeGenericType(new Type[] { typeToConvert }),
+                typeof(DefalutJsonConverter<>).MakeGenericType(new Type[] { typeToConvert }),
                 BindingFlags.Instance | BindingFlags.Public, null, new object[] { }, null);
 
-        protected class DefalutJsonConverterInner<T> : JsonConverter<T>
+        protected class DefalutJsonConverter<T> : JsonConverter<T>
         {
-            public DefalutJsonConverterInner()
+            private static readonly object skipObject = new object();
+            public DefalutJsonConverter()
             { }
 
-            public virtual void SetProperty(string propertyName, object instance, object value)
+            public virtual void SetPropertyValue(string propertyName, object instance, object value)
                 => instance.GetType().GetProperty(propertyName)?.SetValue(instance, value);           
 
-            public virtual object GetProperty(string propertyName, object instance)
-                => instance.GetType().GetProperty(propertyName)?.GetValue(instance);
+            public virtual object GetPropertyValueAndWrite(string propertyName, object instance, bool skip = false)
+                => skip ? skipObject : instance.GetType().GetProperty(propertyName)?.GetValue(instance);
 
             public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
@@ -91,7 +91,7 @@ namespace Aritiafel.Locations.StorageHouse
                             {
                                 buffer.Remove(buffer.Length - 1, 1);
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    SetProperty(propertyName, result, JsonSerializer.Deserialize(
+                                    SetPropertyValue(propertyName, result, JsonSerializer.Deserialize(
                                         buffer.ToString(), resultType.GetProperty(propertyName).PropertyType,
                                         options));
                                 buffer.Clear();
@@ -107,7 +107,7 @@ namespace Aritiafel.Locations.StorageHouse
                             {
                                 buffer.Remove(buffer.Length - 1, 1);
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    SetProperty(propertyName, result, JsonSerializer.Deserialize(
+                                    SetPropertyValue(propertyName, result, JsonSerializer.Deserialize(
                                         buffer.ToString(), resultType.GetProperty(propertyName).PropertyType,
                                         options));
                                 buffer.Clear();
@@ -119,7 +119,7 @@ namespace Aritiafel.Locations.StorageHouse
                                 buffer.AppendFormat("{0},", reader.GetBoolean().ToString().ToLower());
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    SetProperty(propertyName, result, reader.GetBoolean());
+                                    SetPropertyValue(propertyName, result, reader.GetBoolean());
                             break;
                         case JsonTokenType.Number:
                             string numberString = new string(reader.ValueSpan.ToArray().Select(m => (char)m).ToArray()); 
@@ -127,7 +127,7 @@ namespace Aritiafel.Locations.StorageHouse
                                 buffer.AppendFormat("{0},", numberString);
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    SetProperty(propertyName, result, 
+                                    SetPropertyValue(propertyName, result, 
                                         Convert.ChangeType(numberString, resultType.GetProperty(propertyName).PropertyType));
                             break;
                         case JsonTokenType.Null:
@@ -135,14 +135,14 @@ namespace Aritiafel.Locations.StorageHouse
                                 buffer.Append("null,");
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    SetProperty(propertyName, result, null);                            
+                                    SetPropertyValue(propertyName, result, null);                            
                             break;
                         case JsonTokenType.String:
                             if (depth != 0)
                                 buffer.AppendFormat("\"{0}\",", reader.GetString());
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    SetProperty(propertyName, result, reader.GetString());                            
+                                    SetPropertyValue(propertyName, result, reader.GetString());                            
                             break;
                         default:
                             throw new JsonException("Default is met.");
@@ -168,12 +168,12 @@ namespace Aritiafel.Locations.StorageHouse
                     if (pi.GetAccessors(true)[0].IsStatic)
                         continue;
 
-                    object p_value = GetProperty(pi.Name, value);
+                    object p_value = GetPropertyValueAndWrite(pi.Name, value);
+
                     if (p_value == null)
-                    {
                         writer.WriteNull(pi.Name);
+                    else if (p_value == skipObject)
                         continue;
-                    }
                     else
                     {
                         JsonConverter jc = options.GetConverter(p_value.GetType());
