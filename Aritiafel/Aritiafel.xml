@@ -29,6 +29,11 @@
             訊息
             </summary>
         </member>
+        <member name="T:Aritiafel.Locations.StorageHouse.DefalutJsonConverter">
+            <summary>
+            System.Text.Json加強版，繼承後製作自訂JsonConverter
+            </summary>
+        </member>
         <member name="T:Aritiafel.Organizations.AdventurerAssociation">
             <summary>
             冒險者公會，主要處理表單測試問題

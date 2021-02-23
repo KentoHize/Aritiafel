@@ -9,8 +9,8 @@ namespace Aritiafel.Locations
     {
         public static bool NoPause { get; set; }
         public static long Counter { get; set; } = 0;
-        private static char GetLetterOrDigitFromRandom62(int i)
-        {
+        private static char GetLetterOrDigitFromRandom62(int i)            
+        {   
             if (i < 10)
                 return (char)(i + 48);
             else if (i < 36)
