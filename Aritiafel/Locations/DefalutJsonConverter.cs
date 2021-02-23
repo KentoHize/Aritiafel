@@ -15,7 +15,7 @@ namespace Aritiafel.Locations.StorageHouse
         private const string ReferenceType = "__ReferenceType";
         public override bool CanConvert(Type typeToConvert)
         {
-            if (typeToConvert.IsClass && /*!typeToConvert.IsArray &&*/
+            if (typeToConvert.IsClass &&
                 !typeToConvert.Assembly.FullName.StartsWith("System") &&
                 !typeToConvert.Assembly.FullName.StartsWith("Mircosoft"))
                 return true;
@@ -39,11 +39,11 @@ namespace Aritiafel.Locations.StorageHouse
                 reader.Read();
                 if (reader.TokenType != JsonTokenType.PropertyName)
                     throw new JsonException();
-                string propertyName = reader.GetString();
-                reader.Read();
+                string propertyName = reader.GetString();                
                 object result;
                 if (propertyName == ReferenceType)
                 {
+                    reader.Read();
                     result = Activator.CreateInstance(Type.GetType(reader.GetString()));
                     reader.Read();
                     if (reader.TokenType != JsonTokenType.PropertyName)
@@ -76,7 +76,7 @@ namespace Aritiafel.Locations.StorageHouse
                             break;
                         case JsonTokenType.EndObject:
                             if (buffer.ToString() == "")
-                                break;
+                                return (T)result;
                             buffer.Remove(buffer.Length - 1, 1);
                             buffer.Append("},");
                             depth--;
@@ -92,14 +92,13 @@ namespace Aritiafel.Locations.StorageHouse
                             break;
                         case JsonTokenType.EndArray:
                             if (buffer.ToString() == "")
-                                break;
+                                return (T)result;
                             buffer.Remove(buffer.Length - 1, 1);
                             buffer.Append("],");
                             depth--;
                             if (depth == 0)
                             {
                                 buffer.Remove(buffer.Length - 1, 1);
-                                Console.WriteLine(buffer.ToString());
                                 if (resultType.GetProperty(propertyName).CanWrite)
                                     resultType.GetProperty(propertyName).SetValue(result,
                                     JsonSerializer.Deserialize(buffer.ToString(),
@@ -116,13 +115,19 @@ namespace Aritiafel.Locations.StorageHouse
                                 resultType.GetProperty(propertyName).SetValue(result, reader.GetBoolean());
                             break;
                         case JsonTokenType.Number:
-                            
-                            if (depth != 0)
-                                buffer.AppendFormat("{0},", reader.GetString());
+                            double d = reader.GetDouble();
+                            decimal m = reader.GetDecimal();
+                            object o;
+                            if (Convert.ToDouble(m) == d)
+                                o = m;
+                            else
+                                o = d;
+                            if (depth != 0) 
+                                buffer.AppendFormat("{0},", o);
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
                                     resultType.GetProperty(propertyName).SetValue(result,
-                                        Convert.ChangeType(reader.GetString(), resultType.GetProperty(propertyName).PropertyType));
+                                        Convert.ChangeType(o, resultType.GetProperty(propertyName).PropertyType));
                             break;
                         case JsonTokenType.Null:
                             if (depth != 0)
