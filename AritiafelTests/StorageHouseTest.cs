@@ -50,6 +50,8 @@ namespace AritiafelTestFormTests
             jso.Converters.Add(new DefalutJsonConverter());
             string s = JsonSerializer.Serialize(Tom, jso);
             TestContext.WriteLine(s);
+            object o = JsonSerializer.Deserialize<Person>(s, jso);
+            TestContext.WriteLine(o.ToString());
         }
     }
 }
