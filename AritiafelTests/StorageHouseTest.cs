@@ -28,6 +28,8 @@ namespace AritiafelTestFormTests
         {
             public string Name { get; set; }
 
+            public decimal Score { get; set; }
+
             public string Sex { get; set; }
 
             public List<Person> Friends { get; set; } = new List<Person>();
@@ -48,10 +50,12 @@ namespace AritiafelTestFormTests
             catValin.IsLazy = false;
             Person Tom = new Person();
             Tom.Name = "Tom";
-            Tom.Sex = "M";            
+            Tom.Sex = "M";
+            Tom.Score = 78616479823149761487946549898m;
             Person John = new Person();
             John.Name = "John";
             John.Sex = "M";
+            John.Score = 78616479823149761487946549.588m;
             Tom.Friends.Add(John);
             Tom.Friends.Add(catFrat);
             John.Friends.Add(catValin);
@@ -67,18 +71,17 @@ namespace AritiafelTestFormTests
             catAlone.IsLazy = true;
             catAlone.Sex = "F";
             dogGray.LovedCats.Add(catAlone);
-
-
+            
             JsonSerializerOptions jso = new JsonSerializerOptions
             { WriteIndented = true };
             jso.Converters.Add(new DefalutJsonConverter());
             string s = JsonSerializer.Serialize(Tom, jso);
-            TestContext.WriteLine(s);            
+            Console.WriteLine(s);            
             object o = JsonSerializer.Deserialize<Person>(s, jso);            
-            s = JsonSerializer.Serialize(o, jso);
-            TestContext.WriteLine(s);
-
-            // Need More Test
+            string s2 = JsonSerializer.Serialize(o, jso);
+            TestContext.WriteLine(s2);
+            Assert.IsTrue(s.CompareTo(s2) == 0);            
         }
     }
 }
+

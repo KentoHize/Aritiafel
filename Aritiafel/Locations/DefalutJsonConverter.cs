@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using System.Linq;
 
 namespace Aritiafel.Locations.StorageHouse
 {
@@ -31,6 +32,12 @@ namespace Aritiafel.Locations.StorageHouse
         {
             public DefalutJsonConverterInner()
             { }
+
+            public virtual void SetProperty(string propertyName, object instance, object value)
+                => instance.GetType().GetProperty(propertyName)?.SetValue(instance, value);           
+
+            public virtual object GetProperty(string propertyName, object instance)
+                => instance.GetType().GetProperty(propertyName)?.GetValue(instance);
 
             public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
@@ -84,9 +91,9 @@ namespace Aritiafel.Locations.StorageHouse
                             {
                                 buffer.Remove(buffer.Length - 1, 1);
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    resultType.GetProperty(propertyName).SetValue(result,
-                                    JsonSerializer.Deserialize(buffer.ToString(),
-                                    resultType.GetProperty(propertyName).PropertyType, options));
+                                    SetProperty(propertyName, result, JsonSerializer.Deserialize(
+                                        buffer.ToString(), resultType.GetProperty(propertyName).PropertyType,
+                                        options));
                                 buffer.Clear();
                             }
                             break;
@@ -100,9 +107,9 @@ namespace Aritiafel.Locations.StorageHouse
                             {
                                 buffer.Remove(buffer.Length - 1, 1);
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    resultType.GetProperty(propertyName).SetValue(result,
-                                    JsonSerializer.Deserialize(buffer.ToString(),
-                                    resultType.GetProperty(propertyName).PropertyType, options));
+                                    SetProperty(propertyName, result, JsonSerializer.Deserialize(
+                                        buffer.ToString(), resultType.GetProperty(propertyName).PropertyType,
+                                        options));
                                 buffer.Clear();
                             }
                             break;
@@ -112,34 +119,30 @@ namespace Aritiafel.Locations.StorageHouse
                                 buffer.AppendFormat("{0},", reader.GetBoolean().ToString().ToLower());
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                resultType.GetProperty(propertyName).SetValue(result, reader.GetBoolean());
+                                    SetProperty(propertyName, result, reader.GetBoolean());
                             break;
                         case JsonTokenType.Number:
-                            object o;                            
-                            if (reader.TryGetDecimal(out decimal m))
-                                o = m;
-                            else
-                                o = reader.GetDouble();
+                            string numberString = new string(reader.ValueSpan.ToArray().Select(m => (char)m).ToArray()); 
                             if (depth != 0) 
-                                buffer.AppendFormat("{0},", o);
+                                buffer.AppendFormat("{0},", numberString);
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    resultType.GetProperty(propertyName).SetValue(result,
-                                        Convert.ChangeType(o, resultType.GetProperty(propertyName).PropertyType));
+                                    SetProperty(propertyName, result, 
+                                        Convert.ChangeType(numberString, resultType.GetProperty(propertyName).PropertyType));
                             break;
                         case JsonTokenType.Null:
                             if (depth != 0)
                                 buffer.Append("null,");
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                resultType.GetProperty(propertyName).SetValue(result, null);
+                                    SetProperty(propertyName, result, null);                            
                             break;
                         case JsonTokenType.String:
                             if (depth != 0)
                                 buffer.AppendFormat("\"{0}\",", reader.GetString());
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    resultType.GetProperty(propertyName).SetValue(result, reader.GetString());
+                                    SetProperty(propertyName, result, reader.GetString());                            
                             break;
                         default:
                             throw new JsonException("Default is met.");
@@ -164,7 +167,8 @@ namespace Aritiafel.Locations.StorageHouse
                 {
                     if (pi.GetAccessors(true)[0].IsStatic)
                         continue;
-                    object p_value = pi.GetValue(value);
+
+                    object p_value = GetProperty(pi.Name, value);
                     if (p_value == null)
                     {
                         writer.WriteNull(pi.Name);
