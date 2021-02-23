@@ -7,6 +7,13 @@ namespace Aritiafel
     //待整理
     public static class Extensions
     {
+        public static string GetNestedTypeName(this Type type)
+        {
+            if (type.DeclaringType == null)
+                return type.Name;
+            return string.Concat(GetNestedTypeName(type.DeclaringType), "+", type.Name);
+        }
+        
         public static double NextRandomDouble(this Random rnd)
         {   
             byte[] bytesArray = new byte[8];

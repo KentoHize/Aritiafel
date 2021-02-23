@@ -8,15 +8,23 @@ using System.Linq;
 
 namespace Aritiafel.Locations.StorageHouse
 {
+    public enum ReferenceTypeReadAndWritePolicy
+    {
+        AssemblyQualifiedName = 0,
+        TypeFullName,
+        TypeNestedName
+    }
+
     /// <summary>
     /// System.Text.Json加強版，繼承後製作自訂JsonConverter
     /// </summary>
     public class DefaultJsonConverterFactory : JsonConverterFactory
     {
         private const string ReferenceType = "__ReferenceType";
+        public ReferenceTypeReadAndWritePolicy ReferenceTypeReadAndWritePolicy { get; set; }
         public override bool CanConvert(Type typeToConvert)
-        {
-            if (typeToConvert.IsClass &&
+        {   
+            if ((typeToConvert.IsClass || typeToConvert.IsInterface) &&
                 !typeToConvert.Assembly.FullName.StartsWith("System") &&
                 !typeToConvert.Assembly.FullName.StartsWith("Mircosoft"))
                 return true;
@@ -25,22 +33,24 @@ namespace Aritiafel.Locations.StorageHouse
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
             => (JsonConverter)Activator.CreateInstance(
                 typeof(DefaultJsonConverter<>).MakeGenericType(new Type[] { typeToConvert }),
-                BindingFlags.Instance | BindingFlags.Public, null, new object[] { }, null);
+                BindingFlags.Instance | BindingFlags.Public, null, new object[] { ReferenceTypeReadAndWritePolicy }, null);
+
+        public DefaultJsonConverterFactory(ReferenceTypeReadAndWritePolicy referenceTypeReadAndWritePolicy = ReferenceTypeReadAndWritePolicy.TypeFullName)
+            => ReferenceTypeReadAndWritePolicy = referenceTypeReadAndWritePolicy;
 
         protected class DefaultJsonConverter<T> : JsonConverter<T>
         {
-            private static readonly object skipObject = new object();
-            public DefaultJsonConverter()
-            { }
+            public ReferenceTypeReadAndWritePolicy ReferenceTypeReadAndWritePolicy { get; set; }
 
+            private static readonly object skipObject = new object();            
+            public DefaultJsonConverter(ReferenceTypeReadAndWritePolicy referenceTypeReadAndWritePolicy = ReferenceTypeReadAndWritePolicy.TypeFullName)
+            { ReferenceTypeReadAndWritePolicy = referenceTypeReadAndWritePolicy; }
             public virtual void SetPropertyValue(string propertyName, object instance, object value)
-                => instance.GetType().GetProperty(propertyName)?.SetValue(instance, value);           
-
+                => instance.GetType().GetProperty(propertyName)?.SetValue(instance, value);
             public virtual object GetPropertyValueAndWrite(string propertyName, object instance, bool skip = false)
                 => skip ? skipObject : instance.GetType().GetProperty(propertyName)?.GetValue(instance);
-
             public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
+            {   
                 if (reader.TokenType != JsonTokenType.StartObject)
                     throw new JsonException();
                 reader.Read();
@@ -50,8 +60,13 @@ namespace Aritiafel.Locations.StorageHouse
                 object result;
                 if (propertyName == ReferenceType)
                 {
-                    reader.Read();                    
-                    result = Activator.CreateInstance(Type.GetType(reader.GetString()));
+                    reader.Read();
+                    if(ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.AssemblyQualifiedName)
+                        result = Activator.CreateInstance(Type.GetType(reader.GetString()));
+                    else if(ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.TypeFullName)
+                        result = Activator.CreateInstance(Type.GetType($"{reader.GetString()}, {typeToConvert.Assembly.FullName}"));
+                    else
+                        result = Activator.CreateInstance(Type.GetType($"{typeToConvert.Namespace}.{reader.GetString()}, {typeToConvert.Assembly.FullName}"));
                     reader.Read();
                     if (reader.TokenType != JsonTokenType.PropertyName)
                         throw new JsonException();
@@ -158,18 +173,21 @@ namespace Aritiafel.Locations.StorageHouse
                     return;
                 }
 
-                Type valueType = value.GetType();
+                Type valueType = value.GetType();                
                 PropertyInfo[] pis = valueType.GetProperties();
                 writer.WriteStartObject();
                 if (valueType != typeof(T))
-                    writer.WriteString(ReferenceType, valueType.AssemblyQualifiedName);
+                    if(ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.AssemblyQualifiedName)
+                        writer.WriteString(ReferenceType, valueType.AssemblyQualifiedName);
+                    else if(ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.TypeFullName)
+                        writer.WriteString(ReferenceType, valueType.FullName);
+                    else
+                        writer.WriteString(ReferenceType, valueType.GetNestedTypeName());
                 foreach (PropertyInfo pi in pis)
                 {
                     if (pi.GetAccessors(true)[0].IsStatic)
                         continue;
-
                     object p_value = GetPropertyValueAndWrite(pi.Name, value);
-
                     if (p_value == null)
                         writer.WriteNull(pi.Name);
                     else if (p_value == skipObject)
