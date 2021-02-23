@@ -24,13 +24,13 @@ namespace Aritiafel.Locations.StorageHouse
         }
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
             => (JsonConverter)Activator.CreateInstance(
-                typeof(DefalutJsonConverter<>).MakeGenericType(new Type[] { typeToConvert }),
+                typeof(DefaultJsonConverter<>).MakeGenericType(new Type[] { typeToConvert }),
                 BindingFlags.Instance | BindingFlags.Public, null, new object[] { }, null);
 
-        protected class DefalutJsonConverter<T> : JsonConverter<T>
+        protected class DefaultJsonConverter<T> : JsonConverter<T>
         {
             private static readonly object skipObject = new object();
-            public DefalutJsonConverter()
+            public DefaultJsonConverter()
             { }
 
             public virtual void SetPropertyValue(string propertyName, object instance, object value)
