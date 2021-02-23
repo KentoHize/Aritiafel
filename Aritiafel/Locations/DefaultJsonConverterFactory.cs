@@ -11,7 +11,7 @@ namespace Aritiafel.Locations.StorageHouse
     /// <summary>
     /// System.Text.Json加強版，繼承後製作自訂JsonConverter
     /// </summary>
-    public class DefalutJsonConverterFactory : JsonConverterFactory
+    public class DefaultJsonConverterFactory : JsonConverterFactory
     {
         private const string ReferenceType = "__ReferenceType";
         public override bool CanConvert(Type typeToConvert)
