@@ -14,24 +14,25 @@ namespace Aritiafel
             return string.Concat(GetNestedTypeName(type.DeclaringType), "+", type.Name);
         }
         
-        public static double NextRandomDouble(this Random rnd)
+        public static double NextRandomDouble(this Random rnd, bool hasNaN = false)
         {   
             byte[] bytesArray = new byte[8];
             for (int i = 0; i < 8; i++)
                 bytesArray[i] = (byte)rnd.Next(byte.MaxValue + 1);
-            return BitConverter.ToDouble(bytesArray, 0);
+            double result;
+            do { result = BitConverter.ToDouble(bytesArray, 0); }
+            while (!hasNaN || result == double.NaN);
+            return result;
         }
 
         public static double NextRandomDouble(this Random rnd, double minValue, double maxValue)
         {
-            if (minValue > float.MinValue && maxValue < float.MaxValue)
+            if (minValue > double.MinValue / 2 && maxValue < double.MaxValue / 2)
                 return rnd.NextDouble() * (maxValue - minValue) + minValue;
             double d;
             do
-            {
-                d = NextRandomDouble(rnd);
-            }
-            while (d > minValue && d < maxValue);
+            { d = NextRandomDouble(rnd); }
+            while (d < minValue || d > maxValue);
             return d;
         }
     }
