@@ -18,8 +18,13 @@ namespace AritiafelTestFormTests
             Random rnd = new Random((int)DateTime.Now.Ticks);
             rnd.NextRandomDouble();
             double d;
-            for(int i = 0; i < 1000; i++)
-                d = rnd.NextRandomDouble(double.MinValue / 10, double.MaxValue / 10);
+            for(int i = 0; i < 10000; i++)
+            {
+                d = rnd.NextRandomDouble();
+                if (double.IsNaN(d))
+                    TestContext.WriteLine(i.ToString());
+            }
+                
             
             for (int i = 0; i < 1000; i++)
             {                

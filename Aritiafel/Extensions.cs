@@ -21,7 +21,7 @@ namespace Aritiafel
                 bytesArray[i] = (byte)rnd.Next(byte.MaxValue + 1);
             double result;
             do { result = BitConverter.ToDouble(bytesArray, 0); }
-            while (!hasNaN && result == double.NaN);
+            while (!hasNaN && double.IsNaN(result));
             return result;
         }
 
