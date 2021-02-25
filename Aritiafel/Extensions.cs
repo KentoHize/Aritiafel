@@ -17,10 +17,12 @@ namespace Aritiafel
         public static double NextRandomDouble(this Random rnd, bool hasNaN = false)
         {   
             byte[] bytesArray = new byte[8];
-            for (int i = 0; i < 8; i++)
-                bytesArray[i] = (byte)rnd.Next(byte.MaxValue + 1);
             double result;
-            do { result = BitConverter.ToDouble(bytesArray, 0); }
+            do {
+                for (int i = 0; i < 8; i++)
+                    bytesArray[i] = (byte)rnd.Next(byte.MaxValue + 1);
+                result = BitConverter.ToDouble(bytesArray, 0); 
+            }
             while (!hasNaN && double.IsNaN(result));
             return result;
         }
