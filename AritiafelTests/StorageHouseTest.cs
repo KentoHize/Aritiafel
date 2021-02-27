@@ -39,7 +39,7 @@ namespace AritiafelTestFormTests
         public void JsonText()
         {
             Cat catFrat = new Cat();
-            catFrat.Name = "Frat";
+            catFrat.Name = "Frat\r";
             catFrat.Sex = "M";
             catFrat.Weight = -3.5;
             catFrat.IsLazy = true;
