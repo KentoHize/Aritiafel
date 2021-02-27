@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using Aritiafel.Artifacts;
+using System.Text;
+using System;
 
 namespace AritiafelTestFormTests
 {
@@ -13,8 +15,6 @@ namespace AritiafelTestFormTests
         public void NewChaosBox()
         {
             var ChaosBox = new ChaosBox();
-
-            TestContext.WriteLine((3 << 2).ToString());
         }
 
         [TestMethod]
@@ -39,41 +39,62 @@ namespace AritiafelTestFormTests
                 TestContext.WriteLine(bytes[i].ToString());
         }
 
+        [TestMethod]
+        public void DrawOutStringTest()
+        {
+            ChaosBox cb = new ChaosBox();
+            for (int i = 1; i < 10; i++)
+                TestContext.WriteLine(cb.DrawOutString(i));
+            TestContext.WriteLine("----------");            
+            for (int i = 1; i < 20; i++)
+                TestContext.WriteLine(cb.DrawOutRandomLengthString(100, Encoding.Unicode));
+        }
+
+        [TestMethod]
+        public void DrawOutDoubleTest()
+        {
+            ChaosBox cb = new ChaosBox();
+            SortedList<int, int> test = new SortedList<int, int>();
+            for (int i = 1; i < 10000; i++)
+            {
+                double b = cb.DrawOutDouble();
+                string s = b.ToString();
+                int key;
+                if (s.Contains('E'))
+                    key = int.Parse(s.Substring(s.IndexOf('E') + 1));
+                else
+                    key = 0;
+                if (!test.ContainsKey(key))
+                    test.Add(key, 0);
+                else
+                    test[key]++;
+            }
+            foreach (KeyValuePair<int, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
+        }
+
+        [TestMethod]
+        public void DrawOutNormalizedTest()
+        {   
+            //Is Normalize?
+            ChaosBox cb = new ChaosBox();
+            SortedList<byte, int> test = new SortedList<byte, int>();
+            for (int i = 1; i < 1000; i++)
+            {
+                byte b = cb.DrawOutNormalizedByte();
+                if (!test.ContainsKey(b))
+                    test.Add(b, 0);
+                else
+                    test[b]++;
+            }
+            foreach(KeyValuePair<byte, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");            
+        }
+
 
         [TestMethod]
         public void SimpleTest2()
         {
-            TestContext.WriteLine(decimal.MaxValue.ToString().Length.ToString());
-            return;
-            ChaosBox cb = new ChaosBox();
-            decimal a = cb.DrawOutDecimalInteger();
-            decimal c = new decimal(30, 60, 0, false, 0);
-            TestContext.WriteLine("30, 60, 0");
-            TestContext.WriteLine(c.ToString());
-            TestContext.WriteLine(c.ToString().Length.ToString());
-            c = new decimal(30, 60, 1, false, 0);
-            TestContext.WriteLine("30, 60, 1");
-            TestContext.WriteLine(c.ToString());
-            TestContext.WriteLine(c.ToString().Length.ToString());
-            c = new decimal(30, 60, 2, false, 0);
-            TestContext.WriteLine("30, 60, 2");
-            TestContext.WriteLine(c.ToString());
-            TestContext.WriteLine(c.ToString().Length.ToString());
-            c = new decimal(30, 60, 5, false, 0);
-            TestContext.WriteLine("30, 60, 5");
-            TestContext.WriteLine(c.ToString());
-            TestContext.WriteLine(c.ToString().Length.ToString());
-            c = new decimal(0, 60, 5, false, 0);
-            TestContext.WriteLine("0, 60, 5");
-            TestContext.WriteLine(c.ToString());
-            TestContext.WriteLine(c.ToString().Length.ToString());
-            c = new decimal(30, 60, 50, false, 0);
-            TestContext.WriteLine("30, 60, 50");
-            TestContext.WriteLine(c.ToString());
-            TestContext.WriteLine(c.ToString().Length.ToString());
-            int[] b = decimal.GetBits(c);
-            for (int i = 0; i < b.Length; i++)
-                TestContext.WriteLine(b[i].ToString());
             
         }
     }

@@ -14,16 +14,23 @@ namespace Aritiafel
             return string.Concat(GetNestedTypeName(type.DeclaringType), "+", type.Name);
         }
         
-        public static double NextRandomDouble(this Random rnd, bool hasNaN = false)
-        {   
-            byte[] bytesArray = new byte[8];
+        public static double NextRandomDouble(this Random rnd, bool canBeNegative = true)
+        {
+            StringBuilder numberString = new StringBuilder();
             double result;
-            do {
-                for (int i = 0; i < 8; i++)
-                    bytesArray[i] = (byte)rnd.Next(byte.MaxValue + 1);
-                result = BitConverter.ToDouble(bytesArray, 0); 
+            do
+            {
+                numberString.Clear();
+                if (canBeNegative && rnd.Next(2) == 0)
+                    numberString.Append('-');
+                numberString.Append(rnd.Next(10));
+                numberString.Append('.');
+                for (int i = 0; i < 20; i++)
+                    numberString.Append(rnd.Next(10));                
+                numberString.Append($"E{rnd.Next(-310, 310)}");
+                double.TryParse(numberString.ToString(), out result);
             }
-            while (!hasNaN && double.IsNaN(result));
+            while (double.IsNaN(result) || double.IsInfinity(result) || double.IsNegativeInfinity(result));
             return result;
         }
 
