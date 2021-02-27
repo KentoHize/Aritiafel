@@ -33,7 +33,7 @@ namespace Aritiafel.Locations
             };
 
             if (includeTestResult)
-                ignoreDirNames.Add("TestResult");
+                ignoreDirNames.Add("TestResults");
 
             if (addtionalIgnoreDirNames != null)
                 ignoreDirNames.AddRange(addtionalIgnoreDirNames);
