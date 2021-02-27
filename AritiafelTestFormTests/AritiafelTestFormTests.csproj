@@ -60,9 +60,6 @@
   <ItemGroup>
     <Compile Include="MainFormTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResidenceTest.cs" />
-    <Compile Include="IdentifyShopTest.cs" />
-    <Compile Include="WizardTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

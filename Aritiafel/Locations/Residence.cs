@@ -15,7 +15,7 @@ namespace Aritiafel.Locations
             Address = backupDirectoryPath;
         }
 
-        public void SaveVSSolution(string SolutionDirectoryPath, bool includeTestResult = true, string[] addtionalIgnoreDirNames = null)
+        public void SaveVSSolution(string SolutionDirectoryPath, bool includeTestResults = false, string[] addtionalIgnoreDirNames = null)
         {
             if (string.IsNullOrEmpty(Address))
                 throw new ArgumentNullException("Address");
@@ -32,7 +32,7 @@ namespace Aritiafel.Locations
                 "packages"
             };
 
-            if (includeTestResult)
+            if (includeTestResults)
                 ignoreDirNames.Add("TestResults");
 
             if (addtionalIgnoreDirNames != null)
@@ -56,6 +56,9 @@ namespace Aritiafel.Locations
 
         private void DirectoryCopy(string sourceDirectory, string targetDirectory, bool includeSubDirectory = true, string[] ignoreDirectoryNames = null, string[] ignoreFileFilters = null)
         {
+            if (!Directory.Exists(sourceDirectory))
+                throw new DirectoryNotFoundException();
+
             string[] files = Directory.GetFiles(sourceDirectory);
             if (!Directory.Exists(targetDirectory))
                 Directory.CreateDirectory(targetDirectory);
@@ -67,7 +70,6 @@ namespace Aritiafel.Locations
                     foreach (string filter in ignoreFileFilters)
                         if (FitsMask(fileName, filter))
                             goto BreakPoint;
-
                 File.Copy(file, Path.Combine(targetDirectory, fileName), true);
             BreakPoint:;
             }
