@@ -26,8 +26,28 @@ namespace Aritiafel.Locations.StorageHouse
     /// </summary>
     public class DefaultJsonConverterFactory : JsonConverterFactory
     {
-        private const string ReferenceType = "__ReferenceType";
-        public const string SpecialCharPrefix = "AR";
+        public string ReferenceTypeString
+        {
+            get => _ReferenceTypeString;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentNullException(nameof(ReferenceTypeString));
+                _ReferenceTypeString = value;
+            }
+        }
+
+        private string _ReferenceTypeString = "__ReferenceType";
+        public string SpecialCharPrefix 
+        { 
+            get => _SpecialCharPrefix; 
+            set {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(SpecialCharPrefix));
+                _SpecialCharPrefix = value;
+            }
+        }
+        private string _SpecialCharPrefix = "AR";
         public ReferenceTypeReadAndWritePolicy ReferenceTypeReadAndWritePolicy { get; set; }
         public SpecialCharHandlingPolicy SpecialCharHandlingPolicy { get; set; }
         public override bool CanConvert(Type typeToConvert)
@@ -44,7 +64,7 @@ namespace Aritiafel.Locations.StorageHouse
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
             => (JsonConverter)Activator.CreateInstance(
                 typeof(DefaultJsonConverter<>).MakeGenericType(new Type[] { typeToConvert }),
-                BindingFlags.Instance | BindingFlags.Public, null, new object[] { ReferenceTypeReadAndWritePolicy, SpecialCharHandlingPolicy }, null);
+                BindingFlags.Instance | BindingFlags.Public, null, new object[] { ReferenceTypeReadAndWritePolicy, SpecialCharHandlingPolicy, _ReferenceTypeString, _SpecialCharPrefix }, null);
 
         public DefaultJsonConverterFactory(ReferenceTypeReadAndWritePolicy referenceTypeReadAndWritePolicy = ReferenceTypeReadAndWritePolicy.TypeFullName,
             SpecialCharHandlingPolicy specialCharHandlingPolicy = SpecialCharHandlingPolicy.Change)
@@ -55,19 +75,24 @@ namespace Aritiafel.Locations.StorageHouse
 
         protected class DefaultJsonConverter<T> : JsonConverter<T>
         {
+            protected string ReferenceTypeString { get; set; }
+            protected string SpecialCharPrefix { get; set; }
             public ReferenceTypeReadAndWritePolicy ReferenceTypeReadAndWritePolicy { get; set; }
             public SpecialCharHandlingPolicy SpecialCharHandlingPolicy { get; set; }
 
             private static readonly object skipObject = new object();
 
             public DefaultJsonConverter()
-                : this(ReferenceTypeReadAndWritePolicy.TypeFullName, SpecialCharHandlingPolicy.Change)
+                : this(ReferenceTypeReadAndWritePolicy.TypeFullName, SpecialCharHandlingPolicy.Change, "__ReferenceType", "AR")
             { }
             public DefaultJsonConverter(ReferenceTypeReadAndWritePolicy referenceTypeReadAndWritePolicy,
-                SpecialCharHandlingPolicy specialCharHandlingPolicy)
+                SpecialCharHandlingPolicy specialCharHandlingPolicy, 
+                string referenceTypeString, string specialCharPrefix)
             {
                 ReferenceTypeReadAndWritePolicy = referenceTypeReadAndWritePolicy;
                 SpecialCharHandlingPolicy = specialCharHandlingPolicy;
+                ReferenceTypeString = referenceTypeString;
+                SpecialCharPrefix = specialCharPrefix;
             }
             public virtual void SetPropertyValue(string propertyName, object instance, object value)
                 => instance.GetType().GetProperty(propertyName)?.SetValue(instance, value);
@@ -87,7 +112,7 @@ namespace Aritiafel.Locations.StorageHouse
                     throw new JsonException();
                 string propertyName = reader.GetString();
                 object result;
-                if (propertyName == ReferenceType)
+                if (propertyName == ReferenceTypeString)
                 {
                     reader.Read();
                     if (ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.AssemblyQualifiedName)
@@ -229,11 +254,11 @@ namespace Aritiafel.Locations.StorageHouse
                 writer.WriteStartObject();
                 if (valueType != typeof(T))
                     if (ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.AssemblyQualifiedName)
-                        writer.WriteString(ReferenceType, valueType.AssemblyQualifiedName);
+                        writer.WriteString(ReferenceTypeString, valueType.AssemblyQualifiedName);
                     else if (ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.TypeFullName)
-                        writer.WriteString(ReferenceType, valueType.FullName);
+                        writer.WriteString(ReferenceTypeString, valueType.FullName);
                     else
-                        writer.WriteString(ReferenceType, valueType.GetNestedTypeName());
+                        writer.WriteString(ReferenceTypeString, valueType.GetNestedTypeName());
                 foreach (PropertyInfo pi in pis)
                 {
                     if (pi.GetAccessors(true)[0].IsStatic)
