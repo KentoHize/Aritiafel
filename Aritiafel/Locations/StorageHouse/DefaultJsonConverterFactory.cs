@@ -27,10 +27,14 @@ namespace Aritiafel.Locations.StorageHouse
     public class DefaultJsonConverterFactory : JsonConverterFactory
     {
         private const string ReferenceType = "__ReferenceType";
+        public const string SpecialCharPrefix = "AR";
         public ReferenceTypeReadAndWritePolicy ReferenceTypeReadAndWritePolicy { get; set; }
         public SpecialCharHandlingPolicy SpecialCharHandlingPolicy { get; set; }
         public override bool CanConvert(Type typeToConvert)
-        {   
+        {
+            if (SpecialCharHandlingPolicy == SpecialCharHandlingPolicy.Change &&
+                (typeToConvert == typeof(string) || typeToConvert == typeof(char)))
+                return true;
             if ((typeToConvert.IsClass || typeToConvert.IsInterface) &&
                 !typeToConvert.Assembly.FullName.StartsWith("System") &&
                 !typeToConvert.Assembly.FullName.StartsWith("Mircosoft"))
@@ -70,20 +74,25 @@ namespace Aritiafel.Locations.StorageHouse
             public virtual object GetPropertyValueAndWrite(string propertyName, object instance, bool skip = false)
                 => skip ? skipObject : instance.GetType().GetProperty(propertyName)?.GetValue(instance);
             public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {   
+            {
+                if (typeToConvert == typeof(string))
+                    return (T)Convert.ChangeType(RecoverSpecialChar(reader.GetString()), typeof(T));
+                else if (typeToConvert == typeof(char))
+                    return (T)Convert.ChangeType(RecoverSpecialChar(reader.GetString())[0], typeof(T));
+
                 if (reader.TokenType != JsonTokenType.StartObject)
                     throw new JsonException();
                 reader.Read();
                 if (reader.TokenType != JsonTokenType.PropertyName)
                     throw new JsonException();
-                string propertyName = reader.GetString();                
+                string propertyName = reader.GetString();
                 object result;
                 if (propertyName == ReferenceType)
                 {
                     reader.Read();
-                    if(ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.AssemblyQualifiedName)
+                    if (ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.AssemblyQualifiedName)
                         result = Activator.CreateInstance(Type.GetType(reader.GetString()));
-                    else if(ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.TypeFullName)
+                    else if (ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.TypeFullName)
                         result = Activator.CreateInstance(Type.GetType($"{reader.GetString()}, {typeToConvert.Assembly.FullName}"));
                     else
                         result = Activator.CreateInstance(Type.GetType($"{typeToConvert.Namespace}.{reader.GetString()}, {typeToConvert.Assembly.FullName}"));
@@ -99,7 +108,7 @@ namespace Aritiafel.Locations.StorageHouse
                 int depth = 0;
                 StringBuilder buffer = new StringBuilder();
                 while (reader.Read())
-                {                 
+                {
                     switch (reader.TokenType)
                     {
                         case JsonTokenType.PropertyName:
@@ -154,39 +163,38 @@ namespace Aritiafel.Locations.StorageHouse
                                 buffer.AppendFormat("{0},", reader.GetBoolean().ToString().ToLower());
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    SetPropertyValue(propertyName, result, reader.GetBoolean());
+                                SetPropertyValue(propertyName, result, reader.GetBoolean());
                             break;
                         case JsonTokenType.Number:
-                            string numberString = new string(reader.ValueSpan.ToArray().Select(m => (char)m).ToArray()); 
-                            if (depth != 0) 
+                            string numberString = new string(reader.ValueSpan.ToArray().Select(m => (char)m).ToArray());
+                            if (depth != 0)
                                 buffer.AppendFormat("{0},", numberString);
-                            else if(resultType.GetProperty(propertyName).CanWrite)
+                            else if (resultType.GetProperty(propertyName).CanWrite)
                             {
                                 Type pType = resultType.GetProperty(propertyName).PropertyType;
-                                if(pType.IsEnum)                                
+                                if (pType.IsEnum)
                                     SetPropertyValue(propertyName, result, Convert.ToInt32(numberString));
                                 else
                                     SetPropertyValue(propertyName, result, Convert.ChangeType(numberString, pType));
-                            }       
+                            }
                             break;
                         case JsonTokenType.Null:
                             if (depth != 0)
                                 buffer.Append("null,");
                             else
                                 if (resultType.GetProperty(propertyName).CanWrite)
-                                    SetPropertyValue(propertyName, result, null);                            
+                                SetPropertyValue(propertyName, result, null);
                             break;
                         case JsonTokenType.String:
                             if (depth != 0)
                                 buffer.AppendFormat("\"{0}\",", reader.GetString());
                             else if (resultType.GetProperty(propertyName).CanWrite)
-                                
                                 if (resultType.GetProperty(propertyName).PropertyType.IsEnum)
                                     SetPropertyValue(propertyName, result,
-                                        Enum.Parse(resultType.GetProperty(propertyName).PropertyType, 
+                                        Enum.Parse(resultType.GetProperty(propertyName).PropertyType,
                                         reader.GetString()));
-                                else if(resultType.GetProperty(propertyName).PropertyType == typeof(char))
-                                    if(SpecialCharHandlingPolicy == SpecialCharHandlingPolicy.Change)
+                                else if (resultType.GetProperty(propertyName).PropertyType == typeof(char))
+                                    if (SpecialCharHandlingPolicy == SpecialCharHandlingPolicy.Change)
                                         SetPropertyValue(propertyName, result, RecoverSpecialChar(reader.GetString())[0]);
                                     else
                                         SetPropertyValue(propertyName, result, reader.GetString()[0]);
@@ -210,13 +218,19 @@ namespace Aritiafel.Locations.StorageHouse
                     return;
                 }
 
-                Type valueType = value.GetType();                
+                Type valueType = value.GetType();
+                if (valueType == typeof(string) || valueType == typeof(char))
+                {
+                    writer.WriteStringValue(ReplaceSpecialChar(value.ToString()));
+                    return;
+                }   
+
                 PropertyInfo[] pis = valueType.GetProperties();
                 writer.WriteStartObject();
                 if (valueType != typeof(T))
-                    if(ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.AssemblyQualifiedName)
+                    if (ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.AssemblyQualifiedName)
                         writer.WriteString(ReferenceType, valueType.AssemblyQualifiedName);
-                    else if(ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.TypeFullName)
+                    else if (ReferenceTypeReadAndWritePolicy == ReferenceTypeReadAndWritePolicy.TypeFullName)
                         writer.WriteString(ReferenceType, valueType.FullName);
                     else
                         writer.WriteString(ReferenceType, valueType.GetNestedTypeName());
@@ -225,17 +239,15 @@ namespace Aritiafel.Locations.StorageHouse
                     if (pi.GetAccessors(true)[0].IsStatic)
                         continue;
                     object p_value = GetPropertyValueAndWrite(pi.Name, value);
+
                     if (p_value == null)
-                        writer.WriteNull(pi.Name);
+                        writer.WriteNull(pi.Name);                    
                     else if (p_value == skipObject)
                         continue;
                     else
                     {
-                        if (SpecialCharHandlingPolicy == SpecialCharHandlingPolicy.Change)
-                            if(p_value is string s)
-                                p_value = ReplaceSpecialChar(s);
-                            else if(p_value is char c)
-                                p_value = ReplaceSpecialChar(c);
+                        if (SpecialCharHandlingPolicy == SpecialCharHandlingPolicy.Change && (p_value is string || p_value is char))
+                            p_value = ReplaceSpecialChar(p_value.ToString());                        
                         JsonConverter jc = options.GetConverter(p_value.GetType());
                         writer.WritePropertyName(pi.Name);
                         jc.GetType().GetMethod("Write").Invoke(jc, new object[] { writer, p_value, options });
@@ -247,25 +259,24 @@ namespace Aritiafel.Locations.StorageHouse
             {
                 int startIndex = 0;
                 string result = s.Clone() as string;
-                startIndex = result.IndexOf("[SC:", startIndex);                
-                while (startIndex != -1 && result.Length > startIndex + 8)
-                {   
+                startIndex = result.IndexOf($"[{SpecialCharPrefix}:", startIndex);
+                while (startIndex != -1 && result.Length > startIndex + SpecialCharPrefix.Length + 6)
+                {
                     if (result[startIndex + 8] == ']')
                     {
-                        result = result.Remove(startIndex + 8, 1);                        
-                        result = result.Replace(result.Substring(startIndex, 8),
-                            ((char)Convert.ToByte(result.Substring(startIndex + 6, 2), 16)).ToString());
+                        result = result.Remove(startIndex + SpecialCharPrefix.Length + 6, 1);
+                        result = result.Replace(result.Substring(startIndex, SpecialCharPrefix.Length + 6),
+                            ((char)Convert.ToByte(result.Substring(startIndex + SpecialCharPrefix.Length + 2, 4), 16)).ToString());
                     }
                     startIndex++;
-                    startIndex = result.IndexOf("[SC:", startIndex);
+                    startIndex = result.IndexOf($"[{SpecialCharPrefix}:", startIndex);
                 }
                 return result;
             }
             private string ReplaceSpecialChar(char c)
-            {
-                int i = (int)c;
-                if (i >= 0 && i <= 31)
-                    return string.Format("[SC:{0:X4}]", i);
+            {   
+                if ((c >= 0 && c <= 31) || c == '\"' || c == '\\')
+                    return string.Format("[{0}:{1:X4}]", SpecialCharPrefix, (int)c);
                 return c.ToString();
             }
             private string ReplaceSpecialChar(string s)

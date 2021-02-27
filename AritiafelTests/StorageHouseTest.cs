@@ -22,6 +22,13 @@ namespace AritiafelTestFormTests
             public bool LikedToBeDog { get; set; }
             public List<Cat> LovedCats { get; set; } = new List<Cat>();
             public double Weight { get; set; }
+
+            public FarClass FarClass { get; set; } = new FarClass();
+        }
+
+        public class FarClass
+        {
+            public List<char> escpedChar { get; set; } = new List<char>();
         }
 
         public class Person
@@ -34,6 +41,8 @@ namespace AritiafelTestFormTests
 
             public List<Person> Friends { get; set; } = new List<Person>();
         }
+
+
 
         [TestMethod]
         public void JsonText()
@@ -66,8 +75,13 @@ namespace AritiafelTestFormTests
             dogGray.Name = "Gray";
             dogGray.Sex = "M";
             dogGray.LikedToBeDog = true;
+            dogGray.FarClass.escpedChar.Add('\"');
+            dogGray.FarClass.escpedChar.Add('\"');
+            dogGray.FarClass.escpedChar.Add('\u0019');
+            dogGray.FarClass.escpedChar.Add('\u001C');
+            dogGray.FarClass.escpedChar.Add(' ');
             Cat catAlone = new Cat();
-            catAlone.Name = "Alone";
+            catAlone.Name = "Alone\"";
             catAlone.IsLazy = true;
             catAlone.Sex = "F";
             dogGray.LovedCats.Add(catAlone);
@@ -78,6 +92,7 @@ namespace AritiafelTestFormTests
             djcf.ReferenceTypeReadAndWritePolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName;
             jso.Converters.Add(djcf);
             string s = JsonSerializer.Serialize(Tom, jso);
+            //TestContext.WriteLine(s);
             object o = JsonSerializer.Deserialize<Person>(s, jso);            
             string s2 = JsonSerializer.Serialize(o, jso);
             TestContext.WriteLine(s2);
