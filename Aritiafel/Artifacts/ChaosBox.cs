@@ -55,11 +55,11 @@ namespace Aritiafel.Artifacts
                     return (int)Math.Round((1 - Math.Sin(d)) * int.MaxValue);
             }
             else
+                //return (int)DrawOutNormalizedInteger(int.MinValue, int.MaxValue);
                 if (d < Math.PI / 2)
-                    return (int)Math.Round(Math.Sin(d) * (int.MaxValue / 2));
-                else
-                    return (int)Math.Round((1 - Math.Sin(d)) * (int.MaxValue / 2) + int.MaxValue / 2);
-
+                return (int)Math.Round(Math.Sin(d) * (int.MaxValue / 2));
+            else
+                return (int)Math.Round((1 - Math.Sin(d)) * (int.MaxValue / 2) + int.MaxValue / 2);
         }
         public string DrawOutRandomLengthString(int maxLength = 10000, Encoding encoding = null)
             => DrawOutString((int)DrawOutInteger(1, maxLength), encoding);
