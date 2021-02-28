@@ -35,13 +35,12 @@ namespace Aritiafel
         }
 
         public static double NextRandomDouble(this Random rnd, bool canBeNegative = true)
-        {            
-            int e = 308;
+        {
             bool highestDigit = true;
             StringBuilder numberString = new StringBuilder();
             double result;
             string compareString = "179769313486261570000"; //1.7976931348623157E+308;
-            if (rnd.Next(0, int.Parse(compareString.Substring(308 - e, 9)))
+            if (rnd.Next(0, int.Parse(compareString.Substring(0, 9)))
                 < int.Parse("100000000"))
                 highestDigit = false;
             do
@@ -66,7 +65,7 @@ namespace Aritiafel
                     }
                     else
                         numberString.Append(rnd.Next(10));
-                numberString.Append($"E{(e >= 0 ? "+" : "")}{e}");
+                numberString.Append("E+308");
                 if(!double.TryParse(numberString.ToString(), out result))
                     continue;
             }
