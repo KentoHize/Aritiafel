@@ -12,13 +12,30 @@ namespace AritiafelTestFormTests
         public TestContext TestContext { get; set; }
 
         [TestMethod]
-        public void NewChaosBox()
+        public void SmoothTestDouble()
         {
-            var ChaosBox = new ChaosBox();
+            ChaosBox cb = new ChaosBox();
+            SortedList<int, int> test = new SortedList<int, int>();
+            for (int i = 1; i < 10000; i++)
+            {
+                double b = cb.DrawOutDouble(0, double.MaxValue / 10);
+                string s = b.ToString();
+                int key;
+                if (s.Contains('E'))
+                    key = int.Parse(s.Substring(s.IndexOf('E') + 1));
+                else
+                    key = 0;
+                if (!test.ContainsKey(key))
+                    test.Add(key, 1);
+                else
+                    test[key]++;
+            }
+            foreach (KeyValuePair<int, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }
 
         [TestMethod]
-        public void SmoothTest()
+        public void SmoothTestInteger()
         {
             ChaosBox cb = new ChaosBox();
             SortedList<int, int> test = new SortedList<int, int>();
@@ -84,12 +101,12 @@ namespace AritiafelTestFormTests
         }
 
         [TestMethod]
-        public void DrawOutNormalizedTest()
+        public void DrawOutNormalizedByteTest()
         {   
             //Is Normalize?
             ChaosBox cb = new ChaosBox();
             SortedList<byte, int> test = new SortedList<byte, int>();
-            for (int i = 1; i < 1000; i++)
+            for (int i = 1; i < 10000; i++)
             {
                 byte b = cb.DrawOutNormalizedByte();
                 if (!test.ContainsKey(b))
@@ -98,14 +115,30 @@ namespace AritiafelTestFormTests
                     test[b]++;
             }
             foreach(KeyValuePair<byte, int> kv in test)
-                TestContext.WriteLine($"{kv.Key}:{kv.Value}");            
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }
 
 
         [TestMethod]
-        public void SimpleTest2()
+        public void DrawOutNormalizedIntegerTest()
         {
-            
+            ChaosBox cb = new ChaosBox();
+            SortedList<int, int> test = new SortedList<int, int>();
+            for (int i = 1; i < 10000; i++)
+            {
+                //int b = cb.DrawOutNormalizedInteger(-2, 2);
+                int b = cb.DrawOutInteger(-20000, 20000);
+                string s = Math.Abs(b).ToString();
+                int key;
+                key = s.Length;
+                //key = b;
+                if (!test.ContainsKey(key))
+                    test.Add(key, 1);
+                else
+                    test[key]++;
+            }
+            foreach (KeyValuePair<int, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }
     }
 }

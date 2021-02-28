@@ -26,12 +26,30 @@ namespace Aritiafel.Artifacts
             _Random2 = new Random((int)(seed ^ _Random.Next(int.MinValue, int.MaxValue)));
         }
 
+        public int DrawOutNormalizedInteger(int minValue, int maxValue)
+        {
+            if (minValue > maxValue)
+                throw new ArgumentException(MinGreaterThanMaxMessage);
+            double d = DrawOutDouble(0, Math.PI);
+            if(d < Math.PI/ 2)
+                return (int)Math.Round(Math.Sin(d) * (maxValue - minValue) / 2 + minValue);
+            else
+                return (int)Math.Round((1 - Math.Sin(d)) * ((maxValue - minValue) / 2) + (maxValue + minValue) / 2);
+        }
+        public byte DrawOutNormalizedByte()
+        {
+            double d = DrawOutDouble(0, Math.PI);
+            if (d < Math.PI / 2)
+                return (byte)Math.Floor(Math.Sin(d) * 128);
+            else
+                return (byte)Math.Floor((1 - Math.Sin(d)) * 128 + 128);
+        }
         public int DrawOutNormalizedInteger(bool canBeNegative = true)
         {
             double d = DrawOutDouble(0, Math.PI);
             if (canBeNegative)
                 return (int)Math.Round((double)int.MaxValue * 2 * Math.Sin(d) + int.MinValue);
-            return (int)Math.Round((double)int.MaxValue * Math.Sin(d));
+            return (int)Math.Round(Math.Sin(d) * int.MaxValue);
         }
 
         public string DrawOutRandomLengthString(int maxLength = 10000, Encoding encoding = null)
@@ -63,11 +81,6 @@ namespace Aritiafel.Artifacts
                 return (byte)_Random2.Next(byte.MaxValue + 1);
         }
 
-        public byte DrawOutNormalizedByte()
-        {
-            double d = DrawOutDouble(0, Math.PI);
-            return (byte)Math.Round(byte.MaxValue * Math.Sin(d));
-        }
 
         public int DrawOutInteger(int minValue, int maxValue)
         {
@@ -139,7 +152,7 @@ namespace Aritiafel.Artifacts
                 throw new ArgumentException(MinGreaterThanMaxMessage);
             //int minDigit
             //Max 29
-
+            
             //ecimal.M
 
             throw new NotImplementedException();
