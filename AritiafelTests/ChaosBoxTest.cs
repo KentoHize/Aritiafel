@@ -18,13 +18,23 @@ namespace AritiafelTestFormTests
         }
 
         [TestMethod]
-        public void SimpleTest()
+        public void SmoothTest()
         {
             ChaosBox cb = new ChaosBox();
-            for (int i = 0; i < 10; i++)
-                TestContext.WriteLine(cb.DrawOutDouble().ToString());
-            for (int i = 0; i < 10; i++)
-                TestContext.WriteLine(cb.DrawOutDecimalInteger().ToString());
+            SortedList<int, int> test = new SortedList<int, int>();
+            for (int i = 1; i < 10000; i++)
+            {
+                int b = cb.DrawOutInteger(0, 1000000);
+                string s = b.ToString();
+                int key;
+                key = s.Length;
+                if (!test.ContainsKey(key))
+                    test.Add(key, 1);
+                else
+                    test[key]++;
+            }
+            foreach (KeyValuePair<int, int> kv in test)
+                    TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }
 
         [TestMethod]
@@ -65,7 +75,7 @@ namespace AritiafelTestFormTests
                 else
                     key = 0;
                 if (!test.ContainsKey(key))
-                    test.Add(key, 0);
+                    test.Add(key, 1);
                 else
                     test[key]++;
             }
