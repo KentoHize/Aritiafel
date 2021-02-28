@@ -49,12 +49,17 @@ namespace Aritiafel.Artifacts
             double d = DrawOutDouble(0, Math.PI);
             if (canBeNegative)
             {
-                return (int)Math.Round((double)int.MaxValue * 2 * Math.Sin(d) + int.MinValue);
-            }   
-            if (d < Math.PI / 2)
-                return (int)Math.Round(Math.Sin(d) * (double)int.MaxValue + int.MinValue);
+                if (d < Math.PI / 2)
+                    return (int)Math.Round(Math.Sin(d) * int.MaxValue + int.MinValue);
+                else
+                    return (int)Math.Round((1 - Math.Sin(d)) * int.MaxValue);
+            }
             else
-                return (int)Math.Round((1 - Math.Sin(d)) * (double)int.MaxValue);
+                if (d < Math.PI / 2)
+                    return (int)Math.Round(Math.Sin(d) * (int.MaxValue / 2));
+                else
+                    return (int)Math.Round((1 - Math.Sin(d)) * (int.MaxValue / 2) + int.MaxValue / 2);
+
         }
         public string DrawOutRandomLengthString(int maxLength = 10000, Encoding encoding = null)
             => DrawOutString((int)DrawOutInteger(1, maxLength), encoding);

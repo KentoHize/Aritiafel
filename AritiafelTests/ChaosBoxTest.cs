@@ -126,8 +126,8 @@ namespace AritiafelTestFormTests
             SortedList<int, int> test = new SortedList<int, int>();
             for (int i = 1; i < 10000; i++)
             {
-                int b = cb.DrawOutNormalizedInteger();
-                //int b = cb.DrawOutNormalizedInteger(-20000, 20000);
+                //int b = cb.DrawOutNormalizedInteger();
+                int b = cb.DrawOutNormalizedInteger(-20000, 20000);                
                 string s = Math.Abs(b).ToString();
                 int key;
                 key = s.Length;
