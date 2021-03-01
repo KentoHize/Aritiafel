@@ -4,7 +4,7 @@ using Aritiafel.Artifacts;
 using System.Text;
 using System;
 
-namespace AritiafelTestFormTests
+namespace AritiafelTest
 {
     [TestClass]
     public class ChaosBoxTest
@@ -12,6 +12,46 @@ namespace AritiafelTestFormTests
         public TestContext TestContext { get; set; }
 
         [TestMethod]
+        public void GetNumberStringPowOf10Test()
+        {
+            ChaosBox cb = new ChaosBox();
+            for (int i = 0; i < 1000; i++)
+            {   
+                double a = cb.DrawOutDiversityDouble();
+                TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
+            }
+        }
+
+        [TestMethod]
+        public void RandomStringMinMaxTest()
+        {
+            ChaosBox cb = new ChaosBox();
+            for(int i = 0; i < 1000; i++)
+            { 
+                int a = cb.DrawOutInteger(false);
+                int b = cb.DrawOutInteger(false);
+                int c;
+                if(a > b)
+                { c = a; a = b; b = c; }
+                string s = cb.RandomMinMaxValue(a.ToString(), b.ToString(), 0);
+                
+                
+                try
+                {
+                    int.Parse(s);
+                }
+                catch
+                {
+                    TestContext.WriteLine($"{a} :A");
+                    TestContext.WriteLine($"{b} :B");
+                    TestContext.WriteLine(s);
+                }
+                //TestContext.WriteLine($"{s} :{(int.Parse(s) > a && int.Parse(s) < b)}");
+                //TestContext.WriteLine(int.Parse(s).ToString());
+            }
+        }
+
+            [TestMethod]
         public void SmoothTestDouble()
         {
             ChaosBox cb = new ChaosBox();

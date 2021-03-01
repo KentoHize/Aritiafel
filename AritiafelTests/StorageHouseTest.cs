@@ -4,7 +4,7 @@ using System.Text.Json;
 using Aritiafel.Locations.StorageHouse;
 using System.Collections.Generic;
 
-namespace AritiafelTestFormTests
+namespace AritiafelTest
 {
     [TestClass]
     public class StorageHouseTest

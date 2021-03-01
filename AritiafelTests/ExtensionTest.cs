@@ -5,7 +5,7 @@ using Aritiafel.Locations.StorageHouse;
 using System.Collections.Generic;
 using Aritiafel;
 
-namespace AritiafelTestFormTests
+namespace AritiafelTest
 {
     [TestClass]
     public class ExtensionTest

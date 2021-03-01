@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Aritiafel.Locations;
 
-namespace AritiafelTestFormTests
+namespace AritiafelTest
 {
     [TestClass]
     public class ResidenceTest

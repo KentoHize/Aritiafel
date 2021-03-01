@@ -2,7 +2,7 @@
 using System;
 using Aritiafel.Locations;
 
-namespace AritiafelTestFormTests
+namespace AritiafelTest
 {
     [TestClass]
     public class IdentifyShopTest

@@ -5,7 +5,7 @@ using System.Text;
 using Aritiafel.Locations;
 using Aritiafel.Characters.Heroes;
 
-namespace AritiafelTestFormTests
+namespace AritiafelTest
 {   
     [TestClass]
     public class TinaTest

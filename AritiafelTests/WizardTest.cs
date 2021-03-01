@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Aritiafel.Organizations;
 
 
-namespace AritiafelTestFormTests
+namespace AritiafelTest
 {
     [TestClass]
     public class WizardTest
