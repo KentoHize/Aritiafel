@@ -14,26 +14,6 @@ namespace Aritiafel
             return string.Concat(GetNestedTypeName(type.DeclaringType), "+", type.Name);
         }
 
-        public static double NextDiversityDouble(this Random rnd, bool canBeNegative = true)
-        {
-            StringBuilder numberString = new StringBuilder();
-            double result;
-            do
-            {
-                numberString.Clear();
-                if (canBeNegative && rnd.Next(2) == 0)
-                    numberString.Append('-');
-                numberString.Append(rnd.Next(10));
-                numberString.Append('.');
-                for (int i = 0; i < 20; i++)
-                    numberString.Append(rnd.Next(10));
-                numberString.Append($"E{rnd.Next(-310, 310)}");
-                double.TryParse(numberString.ToString(), out result);
-            }
-            while (double.IsNaN(result) || double.IsInfinity(result) || double.IsNegativeInfinity(result));
-            return result;
-        }
-
         public static double NextRandomDouble(this Random rnd, bool canBeNegative = true)
         {
             bool highestDigit = true;

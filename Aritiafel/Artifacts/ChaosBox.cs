@@ -26,16 +26,23 @@ namespace Aritiafel.Artifacts
             _Random2 = new Random((int)(seed ^ _Random.Next(int.MinValue, int.MaxValue)));
         }
 
-        public int DrawOutNormalizedInteger(int minValue, int maxValue)
+        private int DrawOutNormalizedLong(long minValue, long maxValue)
         {
             if (minValue > maxValue)
                 throw new ArgumentException(MinGreaterThanMaxMessage);
             double d = DrawOutDouble(0, Math.PI);
-            if(d < Math.PI/ 2)
+            if (d < Math.PI / 2)
                 return (int)Math.Round(Math.Sin(d) * (maxValue - minValue) / 2 + minValue);
             else
                 return (int)Math.Round((1 - Math.Sin(d)) * ((maxValue - minValue) / 2) + (maxValue + minValue) / 2);
         }
+
+        public int DrawOutNormalizedInteger(int minValue, int maxValue)
+            => DrawOutNormalizedLong(minValue, maxValue);
+
+        public byte DrawOutNormalizedByte(byte minValue, byte maxValue)
+            => (byte)DrawOutNormalizedLong(minValue, maxValue);
+
         public byte DrawOutNormalizedByte()
         {
             double d = DrawOutDouble(0, Math.PI);
@@ -55,14 +62,13 @@ namespace Aritiafel.Artifacts
                     return (int)Math.Round((1 - Math.Sin(d)) * int.MaxValue);
             }
             else
-                //return (int)DrawOutNormalizedInteger(int.MinValue, int.MaxValue);
                 if (d < Math.PI / 2)
-                return (int)Math.Round(Math.Sin(d) * (int.MaxValue / 2));
-            else
-                return (int)Math.Round((1 - Math.Sin(d)) * (int.MaxValue / 2) + int.MaxValue / 2);
+                    return (int)Math.Round(Math.Sin(d) * (int.MaxValue / 2));
+                else
+                    return (int)Math.Round((1 - Math.Sin(d)) * (int.MaxValue / 2) + int.MaxValue / 2);
         }
         public string DrawOutRandomLengthString(int maxLength = 10000, Encoding encoding = null)
-            => DrawOutString((int)DrawOutInteger(1, maxLength), encoding);
+            => DrawOutString(DrawOutInteger(1, maxLength), encoding);
         public string DrawOutString(long length, Encoding encoding = null)
         {
             if (encoding == null)
@@ -89,7 +95,6 @@ namespace Aritiafel.Artifacts
             else
                 return (byte)_Random2.Next(byte.MaxValue + 1);
         }
-
 
         public int DrawOutInteger(int minValue, int maxValue)
         {
@@ -151,6 +156,22 @@ namespace Aritiafel.Artifacts
                         canBeNegative ? _Random.Next(2) == 0 : false, 0);
         }
 
+        public long DrawOutLong(long minValue, long maxValue)
+        {   
+            if (minValue > maxValue)
+                throw new ArgumentException(MinGreaterThanMaxMessage);
+            decimal m;
+            if (DateTime.Now.Millisecond % 2 == 0)
+                m = Convert.ToDecimal(_Random.NextDouble());
+            else
+                m = Convert.ToDecimal(_Random2.NextDouble());
+            return Convert.ToInt64(m * (maxValue - minValue) + minValue);
+        }
+
+        public long DrawOutLong(bool canBeNegative)
+            => canBeNegative ? DrawOutLong(long.MinValue, long.MaxValue) : 
+                DrawOutLong(0, long.MaxValue);
+
         public decimal DrawOutDecimalInteger(decimal minValue, decimal maxValue)
         {
             if (decimal.Ceiling(minValue) != minValue)
@@ -184,6 +205,26 @@ namespace Aritiafel.Artifacts
                 return _Random.NextRandomDouble(minValue, maxValue);
             else
                 return _Random2.NextRandomDouble(minValue, maxValue);
+        }
+
+        public double DrawOutDiversityDouble(bool canBeNegative = true)
+        {
+            StringBuilder numberString = new StringBuilder();
+            double result;
+            do
+            {
+                numberString.Clear();
+                if (canBeNegative && _Random.Next(2) == 0)
+                    numberString.Append('-');
+                numberString.Append(_Random2.Next(10));
+                numberString.Append('.');
+                for (int i = 0; i < 20; i++)
+                    numberString.Append(_Random.Next(10));
+                numberString.Append($"E{_Random2.Next(-310, 310)}");
+                double.TryParse(numberString.ToString(), out result);
+            }
+            while (double.IsNaN(result) || double.IsInfinity(result) || double.IsNegativeInfinity(result));
+            return result;
         }
     }
 }
