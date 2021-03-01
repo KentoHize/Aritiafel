@@ -16,9 +16,11 @@ namespace AritiafelTest
         {
             ChaosBox cb = new ChaosBox();
             for (int i = 0; i < 1000; i++)
-            {   
-                double a = cb.DrawOutDiversityDouble();
-                TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
+            {
+                int a = cb.DrawOutInteger();
+                if(Math.Abs(a).ToString().Length - 1 != cb.GetNumberStringPowOf10(a.ToString()))
+                    TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
+                //TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
             }
         }
 
@@ -26,32 +28,55 @@ namespace AritiafelTest
         public void RandomStringMinMaxTest()
         {
             ChaosBox cb = new ChaosBox();
-            for(int i = 0; i < 1000; i++)
-            { 
-                int a = cb.DrawOutInteger(false);
-                int b = cb.DrawOutInteger(false);
-                int c;
-                if(a > b)
-                { c = a; a = b; b = c; }
-                string s = cb.RandomMinMaxValue(a.ToString(), b.ToString(), 0);
-                
+            //for (int i = 0; i < 50; i++)
+            //{
+            //    double a = cb.DrawOutDiversityDouble(false);
+            //    double b = cb.DrawOutDiversityDouble(false);
+            //    double c;
+            //    if (a > b)
+            //    { c = a; a = b; b = c; }
+            //    string s = cb.RandomMinMaxValue(a.ToString(), b.ToString(), 0);
+            //    TestContext.WriteLine($"{a} :A");
+            //    TestContext.WriteLine($"{b} :B");
+            //    TestContext.WriteLine($"{double.Parse(s)} :{(double.Parse(s) > a && double.Parse(s) < b)}");
+            //}
+
+            for (int i = 0; i < 1000; i++)
+            {
+                double a = cb.DrawOutInteger(false);
+                double b = cb.DrawOutInteger(false);
+                double c;
+                if (a > b)
+                { c = a; a = b; b = c; }                
+                a = 0.0267987465;
+                b = 300.3;
+                string s = cb.RandomMinMaxValue(a.ToString(), b.ToString(), out int p);
+                //TestContext.WriteLine($"{a} :A");
+                //TestContext.WriteLine($"{b} :B");
+                //TestContext.WriteLine($"{s} :S");
+                //TestContext.WriteLine($"{s}");
                 
                 try
                 {
-                    int.Parse(s);
+                    if (double.Parse(s) < a || double.Parse(s) > b)
+                        throw new Exception();
+                    TestContext.WriteLine($"{double.Parse(s)} :{(double.Parse(s) >= a && double.Parse(s) <= b)}");
                 }
                 catch
                 {
                     TestContext.WriteLine($"{a} :A");
                     TestContext.WriteLine($"{b} :B");
+                    TestContext.WriteLine($"{p} :P");
+                    TestContext.WriteLine($"Wrong:");
                     TestContext.WriteLine(s);
+
+                    //TestContext.WriteLine(cb.RandomMinMaxValue(a.ToString(), b.ToString(), out int _));
                 }
-                //TestContext.WriteLine($"{s} :{(int.Parse(s) > a && int.Parse(s) < b)}");
-                //TestContext.WriteLine(int.Parse(s).ToString());
+                
             }
         }
 
-            [TestMethod]
+        [TestMethod]
         public void SmoothTestDouble()
         {
             ChaosBox cb = new ChaosBox();
