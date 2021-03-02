@@ -15,7 +15,7 @@ namespace AritiafelTest
         public void GetNumberStringPowOf10Test()
         {
             ChaosBox cb = new ChaosBox();
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 int a = cb.DrawOutInteger();
                 if(Math.Abs(a).ToString().Length - 1 != cb.GetNumberStringPowOf10(a.ToString()))
@@ -40,17 +40,21 @@ namespace AritiafelTest
             //    TestContext.WriteLine($"{b} :B");
             //    TestContext.WriteLine($"{double.Parse(s)} :{(double.Parse(s) > a && double.Parse(s) < b)}");
             //}
+            SortedList<int, int> test = new SortedList<int, int>();
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 10000; i++)
             {
-                double a = cb.DrawOutInteger(false);
-                double b = cb.DrawOutInteger(false);
-                double c;
+                double a = cb.DrawOutInteger(false) * -1;
+                double b = cb.DrawOutInteger(false) * -1;
+                double c;                
                 if (a > b)
                 { c = a; a = b; b = c; }                
-                a = 0.0267987465;
-                b = 300.3;
-                string s = cb.RandomMinMaxValue(a.ToString(), b.ToString(), out int p);
+                //a = 0.0267987465;
+                //b = 300.3;
+                //b = 1000.654989;
+                string s = cb.RandomMinMaxValue(a.ToString(), b.ToString());
+                
+
                 //TestContext.WriteLine($"{a} :A");
                 //TestContext.WriteLine($"{b} :B");
                 //TestContext.WriteLine($"{s} :S");
@@ -58,22 +62,31 @@ namespace AritiafelTest
                 
                 try
                 {
-                    if (double.Parse(s) < a || double.Parse(s) > b)
+                    double d = double.Parse(s);
+                    if (d < a || d > b)
                         throw new Exception();
+                    int key = Math.Abs(int.Parse(Math.Round(d).ToString())).ToString().Length * (d > 0 ? 1 : -1);
+                    
+                    if (!test.ContainsKey(key))
+                        test.Add(key, 1);
+                    else
+                        test[key]++;
                     //TestContext.WriteLine($"{double.Parse(s)} :{(double.Parse(s) >= a && double.Parse(s) <= b)}");
                 }
                 catch
                 {
                     TestContext.WriteLine($"{a} :A");
-                    TestContext.WriteLine($"{b} :B");
-                    TestContext.WriteLine($"{p} :P");
+                    TestContext.WriteLine($"{b} :B");                    
                     TestContext.WriteLine($"Wrong:");
                     TestContext.WriteLine(s);
+                    TestContext.WriteLine(s.Length.ToString());
 
                     //TestContext.WriteLine(cb.RandomMinMaxValue(a.ToString(), b.ToString(), out int _));
                 }
-                
+
             }
+                  foreach (KeyValuePair<int, int> kv in test)
+                        TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }
 
         [TestMethod]

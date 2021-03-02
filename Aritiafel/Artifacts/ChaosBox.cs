@@ -89,7 +89,7 @@ namespace Aritiafel.Artifacts
             }
         }
 
-        public string RandomMinMaxValue(string minValue, string maxValue, out int digitsCountBound)
+        public string RandomMinMaxValue(string minValue, string maxValue)
         {
             bool minValueNegative = minValue[0] == '-',
                 maxValueNegative = maxValue[0] == '-';
@@ -116,11 +116,13 @@ namespace Aritiafel.Artifacts
             minCompareString = minValue.Replace(".", "").Replace("-", "");
             if (minCompareString.IndexOf('E') != -1)
                 minCompareString = minCompareString.Remove(minCompareString.IndexOf('E'));
+            while (minCompareString.Length != 1 && minCompareString[0] == '0')
+                minCompareString = minCompareString.Remove(0, 1);
             maxCompareString = maxValue.Replace(".", "").Replace("-", "");
             if (maxCompareString.IndexOf('E') != -1)
                 maxCompareString = maxCompareString.Remove(maxCompareString.IndexOf('E'));
-
-            digitsCountBound = minCompareDigitsCount;
+            while (maxCompareString.Length != 1 && maxCompareString[0] == '0')
+                maxCompareString = maxCompareString.Remove(0, 1);
 
             bool isDigitsCountUpperBound = true;
             bool isDigitsCountLowerBound = true;
@@ -153,7 +155,7 @@ namespace Aritiafel.Artifacts
                             else if (maxCompareDigitsCount - i < maxCompareString.Length)
                                 upper = int.Parse(maxCompareString.Substring(maxCompareDigitsCount - i).PadRight(9, '0'));
                             else
-                                upper = 0;                                
+                                upper = 0;
                         }
 
                         if (isDigitsCountLowerBound && minCompareDigitsCount >= i)
@@ -169,17 +171,17 @@ namespace Aritiafel.Artifacts
                         else
                             odds = _Random2.Next(lower, upper + 1);
                         string tempString = odds.ToString().PadLeft(9, '0');
-                        if (tempString[0] != lower.ToString()[0])
+                        if (tempString[0] != lower.ToString().PadLeft(9, '0')[0])
                             isDigitsCountLowerBound = false;
-                        if (tempString[0] != upper.ToString()[0])
+                        if (tempString[0] != upper.ToString().PadLeft(9, '0')[0])
                             isDigitsCountUpperBound = false;
                         numberString.Append(tempString[0]);
                     }
                 }
                 else
                 {
-                    lower = -9;
-                    upper = 9;
+                    lower = -999999999;
+                    upper =  999999999;
                     if (!isDigitsCountLowerBound && !isDigitsCountUpperBound)
                     {
                         if (i % 2 == 0)
@@ -197,6 +199,7 @@ namespace Aritiafel.Artifacts
                     }
                 }
             }
+
             if (maxCompareDigitsCount < -30 || maxCompareDigitsCount > 30)
             {
                 numberString.Insert(1, '.');
@@ -206,14 +209,21 @@ namespace Aritiafel.Artifacts
             {
                 numberString.Insert(0, $"0.{new string('0', -1 * (maxCompareDigitsCount - 1))}");
             }
-            else if (i != -1)
+            else if (i >= 0)
             {
-                //Console.WriteLine(i);
-                numberString.Insert(Math.Abs(i + numberString.Length + 1), '.');
-                //if (i < numberString.Length)
-                //    numberString.Insert(i, '.');
+                numberString.Append(new string('0', i));
             }
-
+            else
+            {
+                    numberString.Insert(maxCompareDigitsCount + 1, '.');
+                
+            }
+            while (numberString.Length >= 1 && numberString[0] == '0')
+                numberString.Remove(0, 1);
+            if(numberString[0] == '.')
+                numberString.Insert(0, '0');
+            if (minValueNegative && maxValueNegative)
+                numberString.Insert(0, '-');
             return numberString.ToString();
         }
 
