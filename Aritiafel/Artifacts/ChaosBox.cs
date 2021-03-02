@@ -37,10 +37,8 @@ namespace Aritiafel.Artifacts
         private const string MinGreaterThanMaxMessage = "Min value greater than max Value.";
 
         public ChaosBox()
-        {
-            Thread.Sleep(1);
+        {   
             _Random = new Random((int)(DateTime.Now.Ticks ^ 5621387647545697893));
-            Thread.Sleep(1);
             _Random2 = new Random((int)(DateTime.Now.Ticks ^ _Random.Next(int.MinValue, int.MaxValue)));
         }
 
@@ -84,7 +82,7 @@ namespace Aritiafel.Artifacts
                 return numberString.Length - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1);
         }
 
-        public string RandomMinMaxValue(string minValue, string maxValue)
+        public string RandomMinMaxValue(string minValue, string maxValue, int maxCompareRound = 30)
         {
             bool minValueNegative = minValue[0] == '-',
                 maxValueNegative = maxValue[0] == '-';
@@ -117,12 +115,12 @@ namespace Aritiafel.Artifacts
             while (minCompareString.Length != 1 && minCompareString[0] == '0')
                 minCompareString = minCompareString.Remove(0, 1);
             if (maxCompareDigitsCount > minCompareDigitsCount)
-                if (maxCompareDigitsCount - minCompareDigitsCount > 30)
-                    minCompareString = minCompareString.Insert(0, new string('0', 30));
+                if (maxCompareDigitsCount - minCompareDigitsCount > maxCompareRound)
+                    minCompareString = minCompareString.Insert(0, new string('0', maxCompareRound));
                 else
                     minCompareString = minCompareString.Insert(0, new string('0', maxCompareDigitsCount - minCompareDigitsCount));
             maxLoop = minCompareString.Length;
-            minCompareString = minCompareString.PadRight(30, '0');
+            minCompareString = minCompareString.PadRight(maxCompareRound, '0');
 
             maxCompareString = maxValue.Replace(".", "").Replace("-", "");
             if (maxCompareString.IndexOf('E') != -1)
@@ -130,13 +128,13 @@ namespace Aritiafel.Artifacts
             while (maxCompareString.Length != 1 && maxCompareString[0] == '0')
                 maxCompareString = maxCompareString.Remove(0, 1);
             if (minCompareDigitsCount > maxCompareDigitsCount)
-                if (minCompareDigitsCount - maxCompareDigitsCount > 30)
-                    maxCompareString = maxCompareString.Insert(0, new string('0', 30));
+                if (minCompareDigitsCount - maxCompareDigitsCount > maxCompareRound)
+                    maxCompareString = maxCompareString.Insert(0, new string('0', maxCompareRound));
                 else
                     maxCompareString = maxCompareString.Insert(0, new string('0', minCompareDigitsCount - maxCompareDigitsCount));
             if (maxCompareString.Length > maxLoop)
                 maxLoop = maxCompareString.Length;
-            maxCompareString = maxCompareString.PadRight(30, '0');
+            maxCompareString = maxCompareString.PadRight(maxCompareRound, '0');
 
             bool isDigitsCountUpperBound = true;
             bool isDigitsCountLowerBound = true;
@@ -147,7 +145,7 @@ namespace Aritiafel.Artifacts
 
             int towTimes = 0;
             for (i = startCompareDigit; startCompareDigit - i < maxLoop &&
-                startCompareDigit - i <= 30; i--)
+                startCompareDigit - i <= maxCompareRound; i--)
             {
                 if (!isDigitsCountLowerBound && !isDigitsCountUpperBound)
                 {
@@ -198,7 +196,7 @@ namespace Aritiafel.Artifacts
                 }
             }
 
-            if (startCompareDigit < -20 || startCompareDigit > 20)
+            if (startCompareDigit < -30 || startCompareDigit > 30)
             {
                 numberString.Insert(1, '.');
                 numberString.AppendFormat("E{0}{1}", (startCompareDigit >= 0 ? "+" : ""), startCompareDigit);
