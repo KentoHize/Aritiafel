@@ -60,7 +60,7 @@ namespace AritiafelTest
                 {
                     if (double.Parse(s) < a || double.Parse(s) > b)
                         throw new Exception();
-                    TestContext.WriteLine($"{double.Parse(s)} :{(double.Parse(s) >= a && double.Parse(s) <= b)}");
+                    //TestContext.WriteLine($"{double.Parse(s)} :{(double.Parse(s) >= a && double.Parse(s) <= b)}");
                 }
                 catch
                 {

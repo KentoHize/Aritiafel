@@ -125,15 +125,14 @@ namespace Aritiafel.Artifacts
             bool isDigitsCountUpperBound = true;
             bool isDigitsCountLowerBound = true;
             numberString.Clear();
-            int digit, lower, upper;
+            int odds, lower, upper;
             int i;
             for (i = maxCompareDigitsCount; maxCompareDigitsCount - i < 30; i--)
             {
-                
                 if (minValueNegative == maxValueNegative)
                 {
                     lower = 0;
-                    upper = 9;
+                    upper = 999999999;
                     if (maxCompareDigitsCount - i >= maxCompareString.Length &&
                         minCompareDigitsCount - i >= minCompareString.Length)
                         break;
@@ -149,27 +148,32 @@ namespace Aritiafel.Artifacts
                     {
                         if (isDigitsCountUpperBound)
                         {
-                            if (maxCompareDigitsCount - i < maxCompareString.Length)
-                                upper = int.Parse(maxCompareString[maxCompareDigitsCount - i].ToString());
+                            if (maxCompareDigitsCount - i + 9 < maxCompareString.Length)
+                                upper = int.Parse(maxCompareString.Substring(maxCompareDigitsCount - i, 9));
+                            else if (maxCompareDigitsCount - i < maxCompareString.Length)
+                                upper = int.Parse(maxCompareString.Substring(maxCompareDigitsCount - i).PadRight(9, '0'));
                             else
-                                upper = 0;
+                                upper = 0;                                
                         }
 
                         if (isDigitsCountLowerBound && minCompareDigitsCount >= i)
                         {
-                            if (minCompareDigitsCount - i < minCompareString.Length)
-                                lower = int.Parse(minCompareString[minCompareDigitsCount - i].ToString());
+                            if (minCompareDigitsCount - i + 9 < minCompareString.Length)
+                                lower = int.Parse(minCompareString.Substring(minCompareDigitsCount - i, 9));
+                            else if (minCompareDigitsCount - i < minCompareString.Length)
+                                lower = int.Parse(minCompareString.Substring(minCompareDigitsCount - i).PadRight(9, '0'));
                         }
-
+                        
                         if (i % 2 == 0)
-                            digit = _Random.Next(lower, upper + 1);
+                            odds = _Random.Next(lower, upper + 1);
                         else
-                            digit = _Random2.Next(lower, upper + 1);
-                        if (digit != lower)
+                            odds = _Random2.Next(lower, upper + 1);
+                        string tempString = odds.ToString().PadLeft(9, '0');
+                        if (tempString[0] != lower.ToString()[0])
                             isDigitsCountLowerBound = false;
-                        if (digit != upper)
+                        if (tempString[0] != upper.ToString()[0])
                             isDigitsCountUpperBound = false;
-                        numberString.Append(digit);
+                        numberString.Append(tempString[0]);
                     }
                 }
                 else
