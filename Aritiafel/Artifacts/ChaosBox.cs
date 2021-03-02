@@ -53,7 +53,6 @@ namespace Aritiafel.Artifacts
         public int GetNumberStringPowOf10(string numberString)
         {
             if (numberString.IndexOf('E') != -1)
-            {
                 if (numberString.IndexOf('.') != -1)
                     if (numberString[numberString.IndexOf('E')] == '-')
                         return numberString.IndexOf('.') - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1) -
@@ -68,25 +67,21 @@ namespace Aritiafel.Artifacts
                 else
                     return numberString.IndexOf('E') - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1) +
                         int.Parse(numberString.Substring(numberString.IndexOf('E') + 1));
-            }
             else
-            {
                 if (numberString.IndexOf('.') != -1)
+                if (numberString.StartsWith("0.") ||
+                    numberString.StartsWith("-0.") ||
+                    numberString.StartsWith("+0."))
                 {
-                    if (numberString.StartsWith("0."))
-                    {
-                        int i;
-                        for (i = 2; i < numberString.Length; i++)
-                            if (numberString[i] != '0')
-                                break;
-                        return (i - 1) * -1;
-                    }
-                    else
-                        return numberString.IndexOf('.') - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1);
+                    for (int i = 2 + (numberString[0] == '-' || numberString[0] == '+' ? 1 : 0); i < numberString.Length; i++)
+                        if (numberString[i] != '0')
+                            return (i - 1) * -1;
+                    throw new ArgumentException();
                 }
                 else
-                    return numberString.Length - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1);
-            }
+                    return numberString.IndexOf('.') - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1);
+            else
+                return numberString.Length - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1);
         }
 
         public string RandomMinMaxValue(string minValue, string maxValue)
@@ -122,7 +117,10 @@ namespace Aritiafel.Artifacts
             while (minCompareString.Length != 1 && minCompareString[0] == '0')
                 minCompareString = minCompareString.Remove(0, 1);
             if (maxCompareDigitsCount > minCompareDigitsCount)
-                minCompareString = minCompareString.Insert(0, new string('0', maxCompareDigitsCount - minCompareDigitsCount));
+                if (maxCompareDigitsCount - minCompareDigitsCount > 30)
+                    minCompareString = minCompareString.Insert(0, new string('0', 30));
+                else
+                    minCompareString = minCompareString.Insert(0, new string('0', maxCompareDigitsCount - minCompareDigitsCount));
             maxLoop = minCompareString.Length;
             minCompareString = minCompareString.PadRight(30, '0');
 
@@ -132,9 +130,12 @@ namespace Aritiafel.Artifacts
             while (maxCompareString.Length != 1 && maxCompareString[0] == '0')
                 maxCompareString = maxCompareString.Remove(0, 1);
             if (minCompareDigitsCount > maxCompareDigitsCount)
-                maxCompareString = maxCompareString.Insert(0, new string('0', minCompareDigitsCount - maxCompareDigitsCount));
+                if (minCompareDigitsCount - maxCompareDigitsCount > 30)
+                    maxCompareString = maxCompareString.Insert(0, new string('0', 30));
+                else
+                    maxCompareString = maxCompareString.Insert(0, new string('0', minCompareDigitsCount - maxCompareDigitsCount));
             if (maxCompareString.Length > maxLoop)
-                maxLoop = maxCompareString.Length; 
+                maxLoop = maxCompareString.Length;
             maxCompareString = maxCompareString.PadRight(30, '0');
 
             bool isDigitsCountUpperBound = true;
@@ -145,7 +146,8 @@ namespace Aritiafel.Artifacts
             int i;
 
             int towTimes = 0;
-            for (i = startCompareDigit; startCompareDigit - i < maxLoop; i--)
+            for (i = startCompareDigit; startCompareDigit - i < maxLoop &&
+                startCompareDigit - i <= 30; i--)
             {
                 if (!isDigitsCountLowerBound && !isDigitsCountUpperBound)
                 {
@@ -164,7 +166,7 @@ namespace Aritiafel.Artifacts
                         upper = int.Parse(maxCompareString.Substring(startCompareDigit - i, 9));
 
                     if (isDigitsCountLowerBound)
-                        if(isNegative != 2 || minValueNegative == maxValueNegative)
+                        if (isNegative != 2 || minValueNegative == maxValueNegative)
                             lower = int.Parse(minCompareString.Substring(startCompareDigit - i, 9))
                                     * (minValueNegative ^ maxValueNegative ? -1 : 1);
                     if (towTimes == 1)
@@ -186,17 +188,17 @@ namespace Aritiafel.Artifacts
                         if (minCompareString[startCompareDigit - i] != '0' || tempString[0] != '0')
                             isNegative = 2;
                         numberString.Append(tempString[0]);
-                    }   
+                    }
                     else
                     {
                         if (minCompareString[startCompareDigit - i] != '0')
                             isNegative = 1;
                         numberString.Append(tempString[1]);
-                    }                        
+                    }
                 }
             }
 
-            if (startCompareDigit < -30 || startCompareDigit > 30)
+            if (startCompareDigit < -20 || startCompareDigit > 20)
             {
                 numberString.Insert(1, '.');
                 numberString.AppendFormat("E{0}{1}", (startCompareDigit >= 0 ? "+" : ""), startCompareDigit);
