@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Aritiafel.Artifacts;
 using System.Text;
 using System;
+using System.Threading;
 
 namespace AritiafelTest
 {
@@ -25,6 +26,29 @@ namespace AritiafelTest
         }
 
         [TestMethod]
+        public void RandomMinMaxIntegerTest()
+        {   
+            Random rnd = new Random();
+            SortedList<int, int> test = new SortedList<int, int>();
+            for (int i = 0; i < 10000; i++)
+            {
+                int a = rnd.Next();
+                int b = rnd.Next();
+                int c;
+                if (a > b)
+                { c = a; a = b; b = c; }
+                int x = rnd.Next(a, b);
+                int key = x.ToString().Length;
+                if (!test.ContainsKey(key))
+                    test.Add(key, 1);
+                else
+                    test[key]++;
+            }
+            foreach (KeyValuePair<int, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
+        }
+
+        [TestMethod]
         public void RandomStringMinMaxTest()
         {
             ChaosBox cb = new ChaosBox();
@@ -41,14 +65,17 @@ namespace AritiafelTest
             //    TestContext.WriteLine($"{double.Parse(s)} :{(double.Parse(s) > a && double.Parse(s) < b)}");
             //}
             SortedList<int, int> test = new SortedList<int, int>();
-
+            int wrongNumber = 0;
             for (int i = 0; i < 10000; i++)
             {
                 int a = cb.DrawOutInteger(false) * -1;
-                int b = cb.DrawOutInteger(false) * -1;
+                int b = cb.DrawOutInteger(false);
                 int c;
+                
                 if (a > b)
                 { c = a; a = b; b = c; }
+                //a = 100;
+                //c = 10000;
                 //a = 0.0267987465;
                 //b = 300.3;
                 //b = 1000.654989;
@@ -80,11 +107,12 @@ namespace AritiafelTest
                     TestContext.WriteLine($"Wrong:");
                     TestContext.WriteLine(s);
                     TestContext.WriteLine(s.Length.ToString());
-
+                    wrongNumber++;
                     //TestContext.WriteLine(cb.RandomMinMaxValue(a.ToString(), b.ToString(), out int _));
                 }
 
             }
+            Console.WriteLine(wrongNumber);
             foreach (KeyValuePair<int, int> kv in test)
                 TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }

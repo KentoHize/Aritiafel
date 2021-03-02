@@ -113,152 +113,113 @@ namespace Aritiafel.Artifacts
             StringBuilder numberString = new StringBuilder();
             int minCompareDigitsCount = GetNumberStringPowOf10(minValue);
             int maxCompareDigitsCount = GetNumberStringPowOf10(maxValue);
+            int startCompareDigit = minCompareDigitsCount < maxCompareDigitsCount ?
+                maxCompareDigitsCount : minCompareDigitsCount;
+            int maxLoop;
             minCompareString = minValue.Replace(".", "").Replace("-", "");
             if (minCompareString.IndexOf('E') != -1)
                 minCompareString = minCompareString.Remove(minCompareString.IndexOf('E'));
             while (minCompareString.Length != 1 && minCompareString[0] == '0')
                 minCompareString = minCompareString.Remove(0, 1);
+            minCompareString = minCompareString.PadLeft(startCompareDigit + 1, '0');
+            maxLoop = minCompareString.Length;
+            minCompareString = minCompareString.PadRight(30, '0');
+
             maxCompareString = maxValue.Replace(".", "").Replace("-", "");
             if (maxCompareString.IndexOf('E') != -1)
                 maxCompareString = maxCompareString.Remove(maxCompareString.IndexOf('E'));
             while (maxCompareString.Length != 1 && maxCompareString[0] == '0')
                 maxCompareString = maxCompareString.Remove(0, 1);
+            maxCompareString = maxCompareString.PadLeft(startCompareDigit + 1, '0');
+            if (maxCompareString.Length > maxLoop)
+                maxLoop = maxCompareString.Length; 
+            maxCompareString = maxCompareString.PadRight(30, '0');
 
             bool isDigitsCountUpperBound = true;
             bool isDigitsCountLowerBound = true;
+            int isNegative = 0;
             numberString.Clear();
             int odds, lower, upper;
             int i;
-            for (i = maxCompareDigitsCount; maxCompareDigitsCount - i < 30; i--)
-            {
-                if (minValueNegative == maxValueNegative)
-                {
-                    lower = 0;
-                    upper = 999999999;
-                    if (maxCompareDigitsCount - i >= maxCompareString.Length &&
-                        minCompareDigitsCount - i >= minCompareString.Length)
-                        break;
-                    else if (!isDigitsCountLowerBound && !isDigitsCountUpperBound)
-                    {
-                        if(i % 2 == 0)
-                            numberString.Append(_Random.Next(0, 10));
-                        else
-                            numberString.Append(_Random2.Next(0, 10));
-                        continue;
-                    }
-                    else
-                    {
-                        if (isDigitsCountUpperBound)
-                        {
-                            if (maxCompareDigitsCount - i + 9 < maxCompareString.Length)
-                                upper = int.Parse(maxCompareString.Substring(maxCompareDigitsCount - i, 9));
-                            else if (maxCompareDigitsCount - i < maxCompareString.Length)
-                                upper = int.Parse(maxCompareString.Substring(maxCompareDigitsCount - i).PadRight(9, '0'));
-                            else
-                                upper = 0;
-                        }
 
-                        if (isDigitsCountLowerBound && minCompareDigitsCount >= i)
-                        {
-                            if (minCompareDigitsCount - i + 9 < minCompareString.Length)
-                                lower = int.Parse(minCompareString.Substring(minCompareDigitsCount - i, 9));
-                            else if (minCompareDigitsCount - i < minCompareString.Length)
-                                lower = int.Parse(minCompareString.Substring(minCompareDigitsCount - i).PadRight(9, '0'));
-                        }
-                        
-                        if (i % 2 == 0)
-                            odds = _Random.Next(lower, upper + 1);
-                        else
-                            odds = _Random2.Next(lower, upper + 1);
-                        string tempString = odds.ToString().PadLeft(9, '0');
-                        if (tempString[0] != lower.ToString().PadLeft(9, '0')[0])
-                            isDigitsCountLowerBound = false;
-                        if (tempString[0] != upper.ToString().PadLeft(9, '0')[0])
-                            isDigitsCountUpperBound = false;
-                        numberString.Append(tempString[0]);
-                    }
+            int towTimes = 0;
+            for (i = startCompareDigit; startCompareDigit - i < maxLoop; i--)
+            {
+                if (!isDigitsCountLowerBound && !isDigitsCountUpperBound)
+                {
+                    if (i % 2 == 0)
+                        numberString.Append(_Random.Next(0, 10));
+                    else
+                        numberString.Append(_Random2.Next(0, 10));
+                    continue;
                 }
                 else
                 {
-                    lower = -999999999;
-                    upper =  999999999;
-                    if (!isDigitsCountLowerBound && !isDigitsCountUpperBound)
+                    if (towTimes == 1)
+                        ;
+                    towTimes++;
+                    lower = 0;
+                    upper = isNegative == 1 ? 0 : 999999999;
+                    if (isDigitsCountUpperBound)
+                        upper = int.Parse(maxCompareString.Substring(startCompareDigit - i, 9));
+
+                    if (isDigitsCountLowerBound)
+                        if(isNegative != 2)
+                            lower = int.Parse(minCompareString.Substring(startCompareDigit - i, 9))
+                                    * (minValueNegative ^ maxValueNegative ? -1 : 1);
+
+                    if (i % 2 == 0)
+                        odds = _Random.Next(lower, upper + 1);
+                    else
+                        odds = _Random2.Next(lower, upper + 1);
+                    string tempString = odds > 0 ? odds.ToString().PadLeft(9, '0') :
+                        $"-{Math.Abs(odds).ToString().PadLeft(9, '0')}";
+                    if ((lower >= 0 && tempString[0] != lower.ToString().PadLeft(9, '0')[0]) ||
+                         lower < 0 && tempString[1] != $"-{Math.Abs(lower).ToString().PadLeft(9, '0')}"[1])
+                        isDigitsCountLowerBound = false;
+                    if (tempString[0] != upper.ToString().PadLeft(9, '0')[0])
+                        isDigitsCountUpperBound = false;
+                    if (tempString[0] != '-')
                     {
-                        if (i % 2 == 0)
-                            numberString.Append(_Random.Next(0, 10));
-                        else
-                            numberString.Append(_Random2.Next(0, 10));
-                        continue;
-                    }
+                        if (minCompareString[startCompareDigit - i] != '0' || tempString[0] != '0')
+                            isNegative = 2;
+                        numberString.Append(tempString[0]);
+                    }   
                     else
                     {
-                        if (isDigitsCountUpperBound && maxCompareDigitsCount >= i)
-                        {
-
-                        }
+                        if (minCompareString[startCompareDigit - i] != '0')
+                            isNegative = 1;
+                        numberString.Append(tempString[1]);
                     }
+                        
                 }
             }
 
-            if (maxCompareDigitsCount < -30 || maxCompareDigitsCount > 30)
+            if (startCompareDigit < -30 || startCompareDigit > 30)
             {
                 numberString.Insert(1, '.');
-                numberString.AppendFormat("E{0}{1}", (maxCompareDigitsCount >= 0 ? "+" : ""), maxCompareDigitsCount);
+                numberString.AppendFormat("E{0}{1}", (startCompareDigit >= 0 ? "+" : ""), startCompareDigit);
             }
-            else if (maxCompareDigitsCount < 0)
+            else if (startCompareDigit < 0)
             {
-                numberString.Insert(0, $"0.{new string('0', -1 * (maxCompareDigitsCount - 1))}");
+                numberString.Insert(0, $"0.{new string('0', -1 * (startCompareDigit - 1))}");
             }
             else if (i >= 0)
             {
                 numberString.Append(new string('0', i));
             }
-            else if(maxCompareDigitsCount + 1 != numberString.Length)
+            else if (startCompareDigit + 1 != numberString.Length)
             {
-                    numberString.Insert(maxCompareDigitsCount + 1, '.');
-                
+                numberString.Insert(startCompareDigit + 1, '.');
             }
             while (numberString.Length >= 1 && numberString[0] == '0')
                 numberString.Remove(0, 1);
-            if(numberString[0] == '.')
+            if (numberString[0] == '.')
                 numberString.Insert(0, '0');
-            if (minValueNegative && maxValueNegative)
+            if ((minValueNegative && maxValueNegative) || isNegative == 1)
                 numberString.Insert(0, '-');
             return numberString.ToString();
         }
-
-        //if (_Random.Next(0, int.Parse(compareString )  rnd.Next(0, int.Parse(compareString.Substring(0, 9)))
-        //    < int.Parse("100000000"))
-        //    highestDigit = false;
-        //do
-        //{
-        //    numberString.Clear();
-        //    if (canBeNegative && rnd.Next(2) == 0)
-        //        numberString.Append('-');
-        //    numberString.Append(highestDigit ? 1 : 0);
-        //    numberString.Append('.');
-        //    for (int i = 1; i < 20; i++)
-        //        if (highestDigit)
-        //        {
-        //            int temp;
-        //            if (i < 17)
-        //            {
-        //                temp = rnd.Next(int.Parse(compareString[i].ToString()) + 1);
-        //                highestDigit = temp.ToString() != compareString[i].ToString();
-        //            }
-        //            else
-        //                temp = 0;
-        //            numberString.Append(temp);
-        //        }
-        //        else
-        //            numberString.Append(rnd.Next(10));
-        //    numberString.Append("E+308");
-        //    if (!double.TryParse(numberString.ToString(), out result))
-        //        continue;
-        //}
-        //while (double.IsNaN(result) || double.IsInfinity(result) || double.IsNegativeInfinity(result));
-        //return result;
-
         private int DrawOutNormalizedLong(long minValue, long maxValue)
         {
             if (minValue > maxValue)
