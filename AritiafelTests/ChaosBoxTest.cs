@@ -49,6 +49,50 @@ namespace AritiafelTest
         }
 
         [TestMethod]
+        public void RandomStringDoubleMinMaxTest()
+        {
+            ChaosBox cb = new ChaosBox();
+            SortedList<int, int> test = new SortedList<int, int>();
+            int wrongNumber = 0;
+            for (int i = 1; i < 10000; i++)
+            {
+                double a = cb.DrawOutDouble();
+                double b = cb.DrawOutDouble();
+                double c;
+                if (a > b)
+                { c = a; a = b; b = c; }
+                string s = cb.RandomMinMaxValue(a.ToString(), b.ToString());
+                try
+                {
+                    double d = double.Parse(s);
+                    if (d < a || d > b)
+                        throw new Exception();
+                    int key;
+                    if (s.Contains('E'))
+                        key = int.Parse(s.Substring(s.IndexOf('E') + 1));
+                    else
+                        key = 0;
+                    if (!test.ContainsKey(key))
+                        test.Add(key, 1);
+                    else
+                        test[key]++;
+                }
+                catch
+                {
+                    TestContext.WriteLine($"{a} :A");
+                    TestContext.WriteLine($"{b} :B");
+                    TestContext.WriteLine($"Wrong:");
+                    TestContext.WriteLine(s);
+                    TestContext.WriteLine(s.Length.ToString());
+                    wrongNumber++;
+                }
+            }
+            Console.WriteLine(wrongNumber);
+            foreach (KeyValuePair<int, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
+        }
+
+        [TestMethod]
         public void RandomStringMinMaxTest()
         {
             ChaosBox cb = new ChaosBox();
@@ -68,8 +112,8 @@ namespace AritiafelTest
             int wrongNumber = 0;
             for (int i = 0; i < 10000; i++)
             {
-                int a = cb.DrawOutInteger(false) * -1;
-                int b = cb.DrawOutInteger(false);
+                int a = cb.DrawOutInteger();
+                int b = cb.DrawOutInteger();
                 int c;
                 
                 if (a > b)
