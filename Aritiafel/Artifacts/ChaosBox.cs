@@ -213,7 +213,7 @@ namespace Aritiafel.Artifacts
             {
                 numberString.Append(new string('0', i));
             }
-            else
+            else if(maxCompareDigitsCount + 1 != numberString.Length)
             {
                     numberString.Insert(maxCompareDigitsCount + 1, '.');
                 

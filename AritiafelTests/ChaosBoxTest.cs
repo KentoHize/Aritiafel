@@ -18,7 +18,7 @@ namespace AritiafelTest
             for (int i = 0; i < 10000; i++)
             {
                 int a = cb.DrawOutInteger();
-                if(Math.Abs(a).ToString().Length - 1 != cb.GetNumberStringPowOf10(a.ToString()))
+                if (Math.Abs(a).ToString().Length - 1 != cb.GetNumberStringPowOf10(a.ToString()))
                     TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
                 //TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
             }
@@ -44,29 +44,29 @@ namespace AritiafelTest
 
             for (int i = 0; i < 10000; i++)
             {
-                double a = cb.DrawOutInteger(false) * -1;
-                double b = cb.DrawOutInteger(false) * -1;
-                double c;                
+                int a = cb.DrawOutInteger(false) * -1;
+                int b = cb.DrawOutInteger(false) * -1;
+                int c;
                 if (a > b)
-                { c = a; a = b; b = c; }                
+                { c = a; a = b; b = c; }
                 //a = 0.0267987465;
                 //b = 300.3;
                 //b = 1000.654989;
                 string s = cb.RandomMinMaxValue(a.ToString(), b.ToString());
-                
+
 
                 //TestContext.WriteLine($"{a} :A");
                 //TestContext.WriteLine($"{b} :B");
                 //TestContext.WriteLine($"{s} :S");
                 //TestContext.WriteLine($"{s}");
-                
+
                 try
                 {
-                    double d = double.Parse(s);
+                    int d = int.Parse(s);
                     if (d < a || d > b)
                         throw new Exception();
-                    int key = Math.Abs(int.Parse(Math.Round(d).ToString())).ToString().Length * (d > 0 ? 1 : -1);
-                    
+                    int key = d.ToString().Length;
+
                     if (!test.ContainsKey(key))
                         test.Add(key, 1);
                     else
@@ -76,7 +76,7 @@ namespace AritiafelTest
                 catch
                 {
                     TestContext.WriteLine($"{a} :A");
-                    TestContext.WriteLine($"{b} :B");                    
+                    TestContext.WriteLine($"{b} :B");
                     TestContext.WriteLine($"Wrong:");
                     TestContext.WriteLine(s);
                     TestContext.WriteLine(s.Length.ToString());
@@ -85,8 +85,8 @@ namespace AritiafelTest
                 }
 
             }
-                  foreach (KeyValuePair<int, int> kv in test)
-                        TestContext.WriteLine($"{kv.Key}:{kv.Value}");
+            foreach (KeyValuePair<int, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }
 
         [TestMethod]
@@ -244,6 +244,28 @@ namespace AritiafelTest
             for (int i = 1; i < 10000; i++)
             {
                 long b = cb.DrawOutLong(false);
+                //int b = cb.DrawOutNormalizedInteger(-20000, 20000);                
+                string s = Math.Abs(b).ToString();
+                int key;
+                key = s.Length;
+                //key = b;
+                if (!test.ContainsKey(key))
+                    test.Add(key, 1);
+                else
+                    test[key]++;
+            }
+            foreach (KeyValuePair<int, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
+        }
+
+        [TestMethod]
+        public void DrawOutIntegerTest()
+        {
+            ChaosBox cb = new ChaosBox();
+            SortedList<int, int> test = new SortedList<int, int>();
+            for (int i = 1; i < 10000; i++)
+            {
+                long b = cb.DrawOutInteger(false);
                 //int b = cb.DrawOutNormalizedInteger(-20000, 20000);                
                 string s = Math.Abs(b).ToString();
                 int key;
