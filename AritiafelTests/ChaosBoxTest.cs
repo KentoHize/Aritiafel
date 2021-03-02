@@ -13,6 +13,28 @@ namespace AritiafelTest
         public TestContext TestContext { get; set; }
 
         [TestMethod]
+        public void SmoothTestRandomTest()
+        {
+            Random rnd = new Random((int)DateTime.Now.Ticks);
+            int a = 0, b = 0, t = 0;
+            for(int j = 0; j < 100; j++)
+            {
+                a = 0; b = 0;
+                for(int i = 0; i < 100000; i++)
+                {
+                    if (rnd.Next(0, 10) >= 1)
+                        a++;
+
+                    if (rnd.Next(0, 1000000000) >= 100000000)
+                        b++;
+                }
+                TestContext.WriteLine($"a:{a}, b:{b}, b - a: {b - a}");
+                t = b - a;
+            }
+            Console.WriteLine($"Average b - a:{t / 100}"); // Correct
+        }
+
+        [TestMethod]
         public void GetNumberStringPowOf10Test()
         {
             ChaosBox cb = new ChaosBox();
@@ -87,27 +109,15 @@ namespace AritiafelTest
                     wrongNumber++;
                 }
             }
-            Console.WriteLine(wrongNumber);
+            Assert.IsTrue(wrongNumber == 0);
             foreach (KeyValuePair<int, int> kv in test)
                 TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }
 
         [TestMethod]
-        public void RandomStringMinMaxTest()
+        public void RandomStringIntegerMinMaxTest()
         {
             ChaosBox cb = new ChaosBox();
-            //for (int i = 0; i < 50; i++)
-            //{
-            //    double a = cb.DrawOutDiversityDouble(false);
-            //    double b = cb.DrawOutDiversityDouble(false);
-            //    double c;
-            //    if (a > b)
-            //    { c = a; a = b; b = c; }
-            //    string s = cb.RandomMinMaxValue(a.ToString(), b.ToString(), 0);
-            //    TestContext.WriteLine($"{a} :A");
-            //    TestContext.WriteLine($"{b} :B");
-            //    TestContext.WriteLine($"{double.Parse(s)} :{(double.Parse(s) > a && double.Parse(s) < b)}");
-            //}
             SortedList<int, int> test = new SortedList<int, int>();
             int wrongNumber = 0;
             for (int i = 0; i < 10000; i++)
@@ -123,26 +133,20 @@ namespace AritiafelTest
                 //a = 0.0267987465;
                 //b = 300.3;
                 //b = 1000.654989;
+                a = 0;
+                b = 1500;
                 string s = cb.RandomMinMaxValue(a.ToString(), b.ToString());
-
-
-                //TestContext.WriteLine($"{a} :A");
-                //TestContext.WriteLine($"{b} :B");
-                //TestContext.WriteLine($"{s} :S");
-                //TestContext.WriteLine($"{s}");
-
                 try
                 {
                     int d = int.Parse(s);
                     if (d < a || d > b)
                         throw new Exception();
-                    int key = d.ToString().Length;
+                    int key = (d >= 0 ? 1 : -1) * Math.Abs(d).ToString().Length;
 
                     if (!test.ContainsKey(key))
                         test.Add(key, 1);
                     else
-                        test[key]++;
-                    //TestContext.WriteLine($"{double.Parse(s)} :{(double.Parse(s) >= a && double.Parse(s) <= b)}");
+                        test[key]++;                    
                 }
                 catch
                 {
@@ -156,7 +160,7 @@ namespace AritiafelTest
                 }
 
             }
-            Console.WriteLine(wrongNumber);
+            Assert.IsTrue(wrongNumber == 0);
             foreach (KeyValuePair<int, int> kv in test)
                 TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }

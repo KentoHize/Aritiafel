@@ -157,11 +157,9 @@ namespace Aritiafel.Artifacts
                 }
                 else
                 {
-                    if (towTimes == 1)
-                        ;
-                    towTimes++;
+
                     lower = 0;
-                    upper = isNegative == 1 ? 0 : 999999999;
+                    upper = isNegative == 1 ? 1 : 1000000000;
                     if (isDigitsCountUpperBound)
                         upper = int.Parse(maxCompareString.Substring(startCompareDigit - i, 9));
 
@@ -169,11 +167,13 @@ namespace Aritiafel.Artifacts
                         if(isNegative != 2 || minValueNegative == maxValueNegative)
                             lower = int.Parse(minCompareString.Substring(startCompareDigit - i, 9))
                                     * (minValueNegative ^ maxValueNegative ? -1 : 1);
-
+                    if (towTimes == 1)
+                        ;
+                    towTimes++;
                     if (i % 2 == 0)
-                        odds = _Random.Next(lower, upper + 1);
+                        odds = _Random.Next(lower, upper);
                     else
-                        odds = _Random2.Next(lower, upper + 1);
+                        odds = _Random2.Next(lower, upper);
                     string tempString = odds >= 0 ? odds.ToString().PadLeft(9, '0') :
                         $"-{Math.Abs(odds).ToString().PadLeft(9, '0')}";
                     if ((lower >= 0 && tempString[0] != lower.ToString().PadLeft(9, '0')[0]) ||
@@ -208,7 +208,7 @@ namespace Aritiafel.Artifacts
             else if (startCompareDigit + 1 != numberString.Length)
                 numberString.Insert(startCompareDigit + 1, '.');
 
-            while (numberString.Length >= 1 && numberString[0] == '0')
+            while (numberString.Length > 1 && numberString[0] == '0')
                 numberString.Remove(0, 1);
             if (numberString[0] == '.')
                 numberString.Insert(0, '0');
