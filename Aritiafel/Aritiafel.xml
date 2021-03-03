@@ -4,6 +4,11 @@
         <name>Aritiafel</name>
     </assembly>
     <members>
+        <member name="T:Aritiafel.Artifacts.ChaosBox">
+            <summary>
+            混沌盒子，用來取代Random
+            </summary>
+        </member>
         <member name="T:Aritiafel.Characters.Archivist">
             <summary>
             文件管理員

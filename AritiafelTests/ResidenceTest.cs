@@ -14,11 +14,12 @@ namespace AritiafelTest
         [TestMethod]
         public void SaveProjectTest()
         {
-            string sourceDir = @"C:\Programs\Standard\TinaValidator";
+            string sourceDir = @"C:\Programs\Standard\Aritiafel";
             string targetDir = @"E:\Backup";
 
             Residence rs = new Residence(targetDir);
             rs.SaveVSSolution(sourceDir, false);
+
         }
     }
 }
