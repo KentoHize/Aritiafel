@@ -36,22 +36,6 @@ namespace AritiafelTest
         }
 
         [TestMethod]
-        public void GetNumberStringPowOf10Test()
-        {
-            ChaosBox cb = new ChaosBox();
-            for (int i = 0; i < 10000; i++)
-            {
-                double a = cb.DrawOutDiversityDouble();
-                TestContext.WriteLine(Math.Log10(a).ToString());
-                TestContext.WriteLine(Mathematics.GetIntegerDigitsCount(a.ToString()).ToString());
-                //a = -0.003213213;
-                //if (Math.Abs(a).ToString().Length - 1 != cb.GetNumberStringPowOf10(a.ToString()))
-                //    TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
-                //TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
-            }
-        }
-
-        [TestMethod]
         public void RandomMinMaxIntegerTest()
         {   
             Random rnd = new Random();

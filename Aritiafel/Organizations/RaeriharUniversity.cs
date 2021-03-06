@@ -6,43 +6,49 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 {
     public static class Mathematics
     {
-        public static bool GetStandardNumberString(string numberToString)
-        {   
+        public static string GetStandardNumberString(string numberToString, int maxDigitsCount = 29)
+        {
+            string result = numberToString;
             bool hasPoint = false;
-            byte hasE = 0;
-            for(int i = 0; i < numberToString.Length; i++)
-            {   
-                if (numberToString[i] == '.')
+            byte hasE = 0;            
+            for(int i = 0; i < result.Length; i++)
+            {
+                if (i == 0 && (result[i] == '+' || result[i] == '-'))
+                    continue;
+                if (result[i] == '.')
                     if (hasPoint)
-                        return false;
+                        return null;
                     else
                         hasPoint = true;
                 else if (hasE == 1)
-                { 
-                    if (numberToString[i] != '+' && numberToString[i] != '-')
-                        return false;
+                {
+                    if (result[i] != '+' && result[i] != '-')
+                        return null;
                     hasE++;
                 }
-                else if (numberToString[i] == 'E' || numberToString[i] == 'e')
-                {
+                else if (result[i] == 'E' || result[i] == 'e')
                     if (hasE == 0)
                         hasE++;
                     else
-                        break;
-                }
-                else if (!char.IsDigit(numberToString[i]) && (i != 0 || numberToString[i] != '-'))
-                    break;
-                else if (i > 329) // too long for a double
-                    break;                
+                        return null;
+                else if (!char.IsDigit(result[i]))
+                    return null;
             }
-            return true;
+            if (result[0] == '+')
+                result = result.Remove(0, 1);
+
+            while (result.Length > 1 && result[0] == '0')
+                result = result.Remove(0, 1);
+            if (result[0] == '.')
+                result = $"0{result}";
+            //if (hasE == 2 && hasPoint && numberToString.StartsWith("0.");
+            return result;
         }
 
         public static int GetIntegerDigitsCount(string numberToString, bool checkString = true)
-        {
-            
+        {            
             if(checkString)
-                if(GetStandardNumberString(numberToString))
+                if(string.IsNullOrEmpty(GetStandardNumberString(numberToString)))
                     throw new ArgumentException(nameof(numberToString));
             if (numberToString.IndexOf('E') != -1)
                 if (numberToString.IndexOf('.') != -1)
