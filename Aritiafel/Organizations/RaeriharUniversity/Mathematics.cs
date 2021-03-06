@@ -104,9 +104,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         public static int GetIntegerDigitsCount(string numberToString, bool checkString = true)
         {
-            if (checkString)
-                if (string.IsNullOrEmpty(GetStandardNumberString(numberToString)))
-                    throw new ArgumentException(nameof(numberToString));
+            //if (checkString)
+            //    if (string.IsNullOrEmpty(GetStandardNumberString(numberToString)))
+            //        throw new ArgumentException(nameof(numberToString));
             if (numberToString.IndexOf('E') != -1)
                 if (numberToString.IndexOf('.') != -1)
                     if (numberToString[numberToString.IndexOf('E')] == '-')

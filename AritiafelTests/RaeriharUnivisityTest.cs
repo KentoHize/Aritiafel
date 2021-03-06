@@ -73,10 +73,26 @@ namespace AritiafelTest
         }
 
         [TestMethod]
-        public void ScientificNotationTest()
+        public void ScientificNotationNumberTest()
         {
             ScientificNotationNumber sn = new ScientificNotationNumber();
-            //sn
+            TestContext.WriteLine(sn.ToString());
+            sn = new ScientificNotationNumber("123");
+            TestContext.WriteLine(sn.ToString());
+            sn = new ScientificNotationNumber("456", -2, false);
+            TestContext.WriteLine(sn.ToString());
+            sn = new ScientificNotationNumber("795315", -30, true);
+            TestContext.WriteLine(sn.ToString());
+            sn = new ScientificNotationNumber("795495315", -15, false);
+            TestContext.WriteLine(sn.ToString(4));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => sn.ToString(-3));
+            ChaosBox cb = new ChaosBox();
+            for (int i = 0; i < 10000; i++)
+            {
+                long d = cb.DrawOutLong();
+                sn = new ScientificNotationNumber(d);
+                TestContext.WriteLine(sn.ToString());
+            }
         }
 
     }
