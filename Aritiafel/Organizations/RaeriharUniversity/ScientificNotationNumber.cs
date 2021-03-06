@@ -22,12 +22,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     return;
                 }
                 else if (value[0] == '0')
-                    throw new ArgumentException(nameof(Digits));
+                    throw new ArgumentException($"{nameof(Digits)}:{value}");
                 else if (value[value.Length - 1] == '0')
-                    throw new ArgumentException(nameof(Digits));
+                    throw new ArgumentException($"{nameof(Digits)}:{value}");
                 for (int i = 0; i < value.Length; i++)
                     if (!char.IsDigit(value[i]))
-                        throw new ArgumentException(nameof(Digits));
+                        throw new ArgumentException($"{nameof(Digits)}:{value}");
                 _Digits = value;
             }
         }
@@ -145,11 +145,20 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 while (result[result.Length - 1] == '0')
                     result = result.Remove(result.Length - 1, 1);
                 result = result.Remove(pointIndex, 1);
+                if (result.Length == 0)
+                    return new ScientificNotationNumber();
                 snn.Exponent += pointIndex - 1;
+                while(result[0] == '0')
+                {
+                    result = result.Remove(0, 1);
+                    snn.Exponent--;
+                }
             }
             else
                 snn.Exponent += result.Length - 1;
 
+            while (result.Length > 1 && result[result.Length - 1] == '0')
+                result = result.Remove(result.Length - 1, 1);
             snn.Digits = result;
             return snn;
         }
