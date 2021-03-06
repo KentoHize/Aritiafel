@@ -6,38 +6,74 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 {
     public static class Mathematics
     {
-        public static int GetNumberStringPowOf10(string numberString)
+        public static bool GetStandardNumberString(string numberToString)
         {   
-            if (numberString.IndexOf('E') != -1)
-                if (numberString.IndexOf('.') != -1)
-                    if (numberString[numberString.IndexOf('E')] == '-')
-                        return numberString.IndexOf('.') - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1) -
-                            int.Parse(numberString.Substring(numberString.IndexOf('E') + 1));
+            bool hasPoint = false;
+            byte hasE = 0;
+            for(int i = 0; i < numberToString.Length; i++)
+            {   
+                if (numberToString[i] == '.')
+                    if (hasPoint)
+                        return false;
                     else
-                        return numberString.IndexOf('.') - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1) +
-                            int.Parse(numberString.Substring(numberString.IndexOf('E') + 1));
-                else
-                    if (numberString[numberString.IndexOf('E')] == '-')
-                    return numberString.IndexOf('E') - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1) -
-                        int.Parse(numberString.Substring(numberString.IndexOf('E') + 1));
-                else
-                    return numberString.IndexOf('E') - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1) +
-                        int.Parse(numberString.Substring(numberString.IndexOf('E') + 1));
-            else
-                if (numberString.IndexOf('.') != -1)
-                if (numberString.StartsWith("0.") ||
-                    numberString.StartsWith("-0.") ||
-                    numberString.StartsWith("+0."))
+                        hasPoint = true;
+                else if (hasE == 1)
+                { 
+                    if (numberToString[i] != '+' && numberToString[i] != '-')
+                        return false;
+                    hasE++;
+                }
+                else if (numberToString[i] == 'E' || numberToString[i] == 'e')
                 {
-                    for (int i = 2 + (numberString[0] == '-' || numberString[0] == '+' ? 1 : 0); i < numberString.Length; i++)
-                        if (numberString[i] != '0')
+                    if (hasE == 0)
+                        hasE++;
+                    else
+                        break;
+                }
+                else if (!char.IsDigit(numberToString[i]) && (i != 0 || numberToString[i] != '-'))
+                    break;
+                else if (i > 329) // too long for a double
+                    break;                
+            }
+            return true;
+        }
+
+        public static int GetIntegerDigitsCount(string numberToString, bool checkString = true)
+        {
+            
+            if(checkString)
+                if(GetStandardNumberString(numberToString))
+                    throw new ArgumentException(nameof(numberToString));
+            if (numberToString.IndexOf('E') != -1)
+                if (numberToString.IndexOf('.') != -1)
+                    if (numberToString[numberToString.IndexOf('E')] == '-')
+                        return numberToString.IndexOf('.') - (numberToString[0] == '-' || numberToString[0] == '+' ? 2 : 1) -
+                            int.Parse(numberToString.Substring(numberToString.IndexOf('E') + 1));
+                    else
+                        return numberToString.IndexOf('.') - (numberToString[0] == '-' || numberToString[0] == '+' ? 2 : 1) +
+                            int.Parse(numberToString.Substring(numberToString.IndexOf('E') + 1));
+                else
+                    if (numberToString[numberToString.IndexOf('E')] == '-')
+                        return numberToString.IndexOf('E') - (numberToString[0] == '-' || numberToString[0] == '+' ? 2 : 1) -
+                            int.Parse(numberToString.Substring(numberToString.IndexOf('E') + 1));
+                    else
+                        return numberToString.IndexOf('E') - (numberToString[0] == '-' || numberToString[0] == '+' ? 2 : 1) +
+                            int.Parse(numberToString.Substring(numberToString.IndexOf('E') + 1));
+            else
+                if (numberToString.IndexOf('.') != -1)
+                if (numberToString.StartsWith("0.") ||
+                    numberToString.StartsWith("-0.") ||
+                    numberToString.StartsWith("+0."))
+                {
+                    for (int i = 2 + (numberToString[0] == '-' || numberToString[0] == '+' ? 1 : 0); i < numberToString.Length; i++)
+                        if (numberToString[i] != '0')
                             return (i - 1) * -1;
                     throw new ArgumentException();
                 }
                 else
-                    return numberString.IndexOf('.') - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1);
+                    return numberToString.IndexOf('.') - (numberToString[0] == '-' || numberToString[0] == '+' ? 2 : 1);
             else
-                return numberString.Length - (numberString[0] == '-' || numberString[0] == '+' ? 2 : 1);
+                return numberToString.Length - (numberToString[0] == '-' || numberToString[0] == '+' ? 2 : 1);
         }
     }
 }

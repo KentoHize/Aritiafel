@@ -4,6 +4,7 @@ using Aritiafel.Artifacts;
 using System.Text;
 using System;
 using System.Threading;
+using Aritiafel.Organizations.RaeriharUniversity;
 
 namespace AritiafelTest
 {
@@ -41,6 +42,8 @@ namespace AritiafelTest
             for (int i = 0; i < 10000; i++)
             {
                 double a = cb.DrawOutDiversityDouble();
+                TestContext.WriteLine(Math.Log10(a).ToString());
+                TestContext.WriteLine(Mathematics.GetIntegerDigitsCount(a.ToString()).ToString());
                 //a = -0.003213213;
                 //if (Math.Abs(a).ToString().Length - 1 != cb.GetNumberStringPowOf10(a.ToString()))
                 //    TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
@@ -323,6 +326,26 @@ namespace AritiafelTest
         //}
 
         [TestMethod]
+        public void DrawOutDecimal()
+        {
+            ChaosBox cb = new ChaosBox();
+            SortedList<int, int> test = new SortedList<int, int>();
+            for (int i = 1; i < 10000; i++)
+            {
+                decimal b = cb.DrawOutDecimal(true);
+                //TestContext.WriteLine(b.ToString());
+                int key;
+                key = Mathematics.GetIntegerDigitsCount(b.ToString());                
+                if (!test.ContainsKey(key))
+                    test.Add(key, 1);
+                else
+                    test[key]++;
+            }
+            foreach (KeyValuePair<int, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
+        }
+
+        [TestMethod]
         public void DrawOutLongTest()
         {
             ChaosBox cb = new ChaosBox();
@@ -351,7 +374,7 @@ namespace AritiafelTest
             SortedList<int, int> test = new SortedList<int, int>();
             for (int i = 1; i < 10000; i++)
             {
-                long b = cb.DrawOutInteger(false);
+                int b = cb.DrawOutInteger();
                 //int b = cb.DrawOutNormalizedInteger(-20000, 20000);                
                 string s = Math.Abs(b).ToString();
                 int key;

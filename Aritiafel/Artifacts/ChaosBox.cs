@@ -19,7 +19,6 @@ namespace Aritiafel.Artifacts
             _Random = new Random((int)(DateTime.Now.Ticks ^ 5621387647545697893));
             _Random2 = new Random((int)(DateTime.Now.Ticks ^ _Random.Next(int.MinValue, int.MaxValue)));
         }
-
         public ChaosBox(int seed)
         {
             _Random = new Random(seed);
@@ -143,8 +142,8 @@ namespace Aritiafel.Artifacts
             //-2 Start
 
             StringBuilder numberString = new StringBuilder();
-            int minCompareDigitsCount = Mathematics.GetNumberStringPowOf10(minValue);
-            int maxCompareDigitsCount = Mathematics.GetNumberStringPowOf10(maxValue);
+            int minCompareDigitsCount = Mathematics.GetIntegerDigitsCount(minValue);
+            int maxCompareDigitsCount = Mathematics.GetIntegerDigitsCount(maxValue);
             int startCompareDigit = minCompareDigitsCount < maxCompareDigitsCount ?
                 maxCompareDigitsCount : minCompareDigitsCount;
             int maxLoop;
