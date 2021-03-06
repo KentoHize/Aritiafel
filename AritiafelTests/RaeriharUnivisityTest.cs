@@ -62,19 +62,60 @@ namespace AritiafelTest
         }
 
         [TestMethod]
+        public void RoundTest()
+        {
+            ScientificNotationNumber sn = new ScientificNotationNumber(123.53);
+            TestContext.WriteLine(sn.Round(6).ToString());
+            TestContext.WriteLine(sn.Round(5).ToString());
+            TestContext.WriteLine(sn.Round(4).ToString());
+            TestContext.WriteLine(sn.Round(3).ToString());
+
+            sn = new ScientificNotationNumber(199.99);
+            TestContext.WriteLine(sn.Round(6).ToString());
+            TestContext.WriteLine(sn.Round(5).ToString());
+            TestContext.WriteLine(sn.Round(4).ToString());
+            TestContext.WriteLine(sn.Round(3).ToString());
+
+            sn = new ScientificNotationNumber(9.99999);
+            TestContext.WriteLine(sn.Round(6).ToString());
+            TestContext.WriteLine(sn.Round(5).ToString());
+            TestContext.WriteLine(sn.Round(4).ToString());
+            TestContext.WriteLine(sn.Round(3).ToString());
+
+            sn = new ScientificNotationNumber(0.0999999);
+            TestContext.WriteLine(sn.Round(6).ToString());
+            TestContext.WriteLine(sn.Round(5).ToString());
+            TestContext.WriteLine(sn.Round(4).ToString());
+            TestContext.WriteLine(sn.Round(3).ToString());
+        }
+
+        [TestMethod]
         public void ScientificNotationNumberTest()
         {
             ScientificNotationNumber sn = new ScientificNotationNumber();
-            TestContext.WriteLine(sn.ToString());
+            Assert.IsTrue(sn.ToString() == "0");
             sn = new ScientificNotationNumber("123");
-            TestContext.WriteLine(sn.ToString());
+            Assert.IsTrue(sn.ToString() == "1.23");
             sn = new ScientificNotationNumber("456", -2, false);
-            TestContext.WriteLine(sn.ToString());
+            Assert.IsTrue(sn.ToString() == "4.56E-2");
             sn = new ScientificNotationNumber("795315", -30, true);
-            TestContext.WriteLine(sn.ToString());
+            Assert.IsTrue(sn.ToString() == "-7.95315E-30");
             sn = new ScientificNotationNumber("795495315", -15, false);
-            TestContext.WriteLine(sn.ToString(4));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => sn.ToString(-3));
+            Assert.IsTrue(sn.ToString("E4") == "7.955E-15");
+            Assert.IsTrue(sn.ToString("E9") == "7.95495315E-15");
+            sn = new ScientificNotationNumber(999.999);            
+            Assert.IsTrue(sn.ToString("E1") == "1E+3");
+            Assert.IsTrue(sn.ToString("E2") == "1E+3");
+            Assert.IsTrue(sn.ToString("E3") == "1E+3");
+            Assert.IsTrue(sn.ToString("E4") == "1E+3");
+            Assert.IsTrue(sn.ToString("E5") == "1E+3");
+            Assert.IsTrue(sn.ToString("E6") == "9.99999E+2");
+            sn = new ScientificNotationNumber(0.1999);            
+            Assert.IsTrue(sn.ToString("E1") == "2E-1");
+            Assert.IsTrue(sn.ToString("E2") == "2E-1");
+            Assert.IsTrue(sn.ToString("E3") == "2E-1");
+            Assert.IsTrue(sn.ToString("E4") == "1.999E-1");
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => sn.ToString("E-3"));
 
             string[] testStrings = {
                 "-0.00589662145E-103",
@@ -92,11 +133,32 @@ namespace AritiafelTest
                 "0"
             };
 
-            for(int i = 0; i < testStrings.Length; i++)
-            {
-                sn = ScientificNotationNumber.Parse(testStrings[i]);
-                TestContext.WriteLine($"{testStrings[i]}: {sn}");
-            }
+            sn = ScientificNotationNumber.Parse(testStrings[0]);
+            Assert.IsTrue(sn.ToString() == "-5.89662145E-106");
+            sn = ScientificNotationNumber.Parse(testStrings[1]);
+            Assert.IsTrue(sn.ToString() == "-3.611895678E+49");
+            sn = ScientificNotationNumber.Parse(testStrings[2]);
+            Assert.IsTrue(sn.ToString() == "-6.8718E-4");
+            sn = ScientificNotationNumber.Parse(testStrings[3]);
+            Assert.IsTrue(sn.ToString() == "3.567894358E+40");
+            sn = ScientificNotationNumber.Parse(testStrings[4]);
+            Assert.IsTrue(sn.ToString() == "5.68681E-6");
+            sn = ScientificNotationNumber.Parse(testStrings[5]);
+            Assert.IsTrue(sn.ToString() == "-3.5E-24");
+            sn = ScientificNotationNumber.Parse(testStrings[6]);
+            Assert.IsTrue(sn.ToString() == "0");
+            sn = ScientificNotationNumber.Parse(testStrings[7]);
+            Assert.IsTrue(sn.ToString() == "0");
+            sn = ScientificNotationNumber.Parse(testStrings[8]);
+            Assert.IsTrue(sn.ToString() == "3E+2");
+            sn = ScientificNotationNumber.Parse(testStrings[9]);
+            Assert.IsTrue(sn.ToString() == "-8E-3");
+            sn = ScientificNotationNumber.Parse(testStrings[10]);
+            Assert.IsTrue(sn.ToString() == "6.81E+95");
+            sn = ScientificNotationNumber.Parse(testStrings[11]);
+            Assert.IsTrue(sn.ToString() == "1E-2");
+            sn = ScientificNotationNumber.Parse(testStrings[12]);
+            Assert.IsTrue(sn.ToString() == "0");
 
             ChaosBox cb = new ChaosBox();
             for (int i = 0; i < 10000; i++)

@@ -6,7 +6,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 {
     public static class Mathematics
     {
-        
 
         public static int GetIntegerDigitsCount(string numberToString, bool checkString = true)
         {
