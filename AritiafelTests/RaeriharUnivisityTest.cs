@@ -15,28 +15,46 @@ namespace AritiafelTest
         {
             string result;
             ChaosBox cb = new ChaosBox();
-            for (int i = 0; i < 1000; i++)
-            {
-                double d = cb.DrawOutDiversityDouble();
-                if (string.IsNullOrEmpty(Mathematics.GetStandardNumberString(d.ToString())))
-                    TestContext.WriteLine(d.ToString());
-            }
-
-            string testString = "-0.00589662145E-103";
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    double d = cb.DrawOutDiversityDouble();
+            //    if (string.IsNullOrEmpty(Mathematics.GetStandardNumberString(d.ToString())))
+            //        TestContext.WriteLine(d.ToString());
+            //}
+            string testString = "+300";
+            //string testString = "-0.00589662145E-103";
             string testString2 = "-0.03611895678E+51";
-            string testString3 = "0000.00068718";
+            string testString3 = "-0000.00068718";
             string testString4 = "35678943580000000000000000000000000000000";
             string testString5 = "+568.681E-8";
+            string testString6 = "-.00035E-20";
+            string testString7 = "0.00";
+            string testString8 = "-0.000";
+            string testString9 = "+300";
+            string testString10 = "-0.008";
+            string testString11 = "0.00681E+98";
             result = Mathematics.GetStandardNumberString(testString);
-            TestContext.WriteLine(result);
+            TestContext.WriteLine($"{testString}:{result}");
             result = Mathematics.GetStandardNumberString(testString2);
-            TestContext.WriteLine(result);
+            TestContext.WriteLine($"{testString2}:{result}");
             result = Mathematics.GetStandardNumberString(testString3);
-            TestContext.WriteLine(result);
+            TestContext.WriteLine($"{testString3}:{result}");
             result = Mathematics.GetStandardNumberString(testString4);
-            TestContext.WriteLine(result);
+            TestContext.WriteLine($"{testString4}:{result}");
             result = Mathematics.GetStandardNumberString(testString5);
-            TestContext.WriteLine(result);
+            TestContext.WriteLine($"{testString5}:{result}");
+            result = Mathematics.GetStandardNumberString(testString6);
+            TestContext.WriteLine($"{testString6}:{result}");
+            result = Mathematics.GetStandardNumberString(testString7);
+            TestContext.WriteLine($"{testString7}:{result}");
+            result = Mathematics.GetStandardNumberString(testString8);
+            TestContext.WriteLine($"{testString8}:{result}");
+            result = Mathematics.GetStandardNumberString(testString9);
+            TestContext.WriteLine($"{testString9}:{result}");
+            result = Mathematics.GetStandardNumberString(testString10);
+            TestContext.WriteLine($"{testString10}:{result}");
+            result = Mathematics.GetStandardNumberString(testString11);
+            TestContext.WriteLine($"{testString11}:{result}");
         }
 
         [TestMethod]
@@ -52,6 +70,13 @@ namespace AritiafelTest
                 //    TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
                 //TestContext.WriteLine($"{a}:{cb.GetNumberStringPowOf10(a.ToString())}");
             }
+        }
+
+        [TestMethod]
+        public void ScientificNotationTest()
+        {
+            ScientificNotationNumber sn = new ScientificNotationNumber();
+            //sn
         }
 
     }
