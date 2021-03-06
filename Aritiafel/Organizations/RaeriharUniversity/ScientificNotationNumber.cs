@@ -94,7 +94,78 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
         public static ScientificNotationNumber Parse(string s)
         {
+            if (string.IsNullOrEmpty(s))
+                throw new ArgumentNullException(nameof(s));
+            string result = s;
+            int eIndex = -2, pointIndex = -1;
+            ScientificNotationNumber snn = new ScientificNotationNumber();
+            if (result[0] == '+')
+                result = result.Remove(0, 1);
+            else if (result[0] == '-')
+            {
+                snn.IsNegative = true;
+                result = result.Remove(0, 1);
+            }
+            while (result.Length > 1 && result[0] == '0')
+                result = result.Remove(0, 1);
 
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (i == eIndex + 1)
+                {
+                    if (result[i] != '+' && result[i] != '-')
+                        throw new ArgumentException($"{nameof(s)}:{s}");
+                }
+                else if (result[i] == '.')
+                    if (pointIndex == -1)
+                        pointIndex = i;
+                    else
+                        throw new ArgumentException($"{nameof(s)}:{s}");
+                else if (result[i] == 'E' || result[i] == 'e')
+                    if (i == 0)
+                        throw new ArgumentException($"{nameof(s)}:{s}");
+                    else if (eIndex == -2)
+                        eIndex = i;
+                    else
+                        throw new ArgumentException($"{nameof(s)}:{s}");
+                else if (!char.IsDigit(result[i]))
+                    throw new ArgumentException($"{nameof(s)}:{s}");
+            }
+
+            if (eIndex != -2)
+            {
+                snn.Exponent = int.Parse(result.Substring(eIndex + 1));
+                result = result.Remove(eIndex);
+            }
+            else
+                snn.Exponent = 0;
+
+            if (pointIndex != -1)
+            { 
+                while (result[result.Length - 1] == '0')
+                    result = result.Remove(result.Length - 1, 1);
+                result = result.Remove(pointIndex, 1);
+                snn.Exponent += pointIndex - 1;
+            }
+            else
+                snn.Exponent += result.Length - 1;
+
+            snn.Digits = result;
+            return snn;
+        }
+
+        public static bool TryParse(string s, out ScientificNotationNumber result)
+        {
+            try
+            {
+                result = Parse(s);
+                return true;
+            }
+            catch
+            {
+                result = null;
+                return false;
+            }
         }
         public string ToString(int DigitsCount)
         {
