@@ -134,21 +134,28 @@ namespace AritiafelTest
             };
 
             sn = ScientificNotationNumber.Parse(testStrings[0]);
-            Assert.IsTrue(sn.ToString() == "-5.89662145E-106");
+            Assert.IsTrue(sn.ToString() == "-5.89662145E-106");            
             sn = ScientificNotationNumber.Parse(testStrings[1]);
             Assert.IsTrue(sn.ToString() == "-3.611895678E+49");
             sn = ScientificNotationNumber.Parse(testStrings[2]);
             Assert.IsTrue(sn.ToString() == "-6.8718E-4");
+            Assert.IsTrue(sn.ToString("C") == "-0.00068718");
             sn = ScientificNotationNumber.Parse(testStrings[3]);
             Assert.IsTrue(sn.ToString() == "3.567894358E+40");
             sn = ScientificNotationNumber.Parse(testStrings[4]);
             Assert.IsTrue(sn.ToString() == "5.68681E-6");
+            Assert.IsTrue(sn.ToString("C") == "0.00000568681");
+            TestContext.WriteLine(sn.ToString("C3"));
+            Assert.IsTrue(sn.ToString("C3") == "0.00000569");
+            //Assert.IsTrue(sn.ToString("C3") == "0.00");
             sn = ScientificNotationNumber.Parse(testStrings[5]);
             Assert.IsTrue(sn.ToString() == "-3.5E-24");
             sn = ScientificNotationNumber.Parse(testStrings[6]);
             Assert.IsTrue(sn.ToString() == "0");
+            Assert.IsTrue(sn.ToString("C") == "0");
             sn = ScientificNotationNumber.Parse(testStrings[7]);
             Assert.IsTrue(sn.ToString() == "0");
+            Assert.IsTrue(sn.ToString("C") == "0");
             sn = ScientificNotationNumber.Parse(testStrings[8]);
             Assert.IsTrue(sn.ToString() == "3E+2");
             sn = ScientificNotationNumber.Parse(testStrings[9]);
@@ -165,8 +172,7 @@ namespace AritiafelTest
             {
                 double d = cb.DrawOutDiversityDouble();
                     sn = new ScientificNotationNumber(d);
-                    TestContext.WriteLine($"{d}: {sn}");
-                
+                    TestContext.WriteLine($"{d}: {sn.ToString("E-4")}");                
             }
         }
 

@@ -198,7 +198,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             ScientificNotationNumber result = new ScientificNotationNumber(this);
             if (Digits.Length == digits || Digits[digits] <= '4')
             {
-                result.Digits = Digits.Substring(0, digits);
+                string s = Digits.Substring(0, digits);
+                while (s.Length > 1 && s[s.Length - 1] == '0')
+                    s = s.Remove(s.Length - 1, 1);
+                result.Digits = s;
                 return result;
             }
             else if (digits == 1 && Digits[0] == '9')
@@ -215,17 +218,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return Round(digits - 1);
         }
 
-        private string ToNormalString(int digits, IFormatProvider provider)
-        {
-            if (digits < 0)
-                throw new ArgumentOutOfRangeException(nameof(digits));
-            else if (digits > Digits.Length)
-                digits = Digits.Length;
-            return "";
-            //To DO
-        }
-
-        private string ToExponentialString(int digits, IFormatProvider provider)
+        private string ToString(int digits, IFormatProvider provider, bool toExponential = true)
         {
             if (digits < 0)
                 throw new ArgumentOutOfRangeException(nameof(digits));
@@ -235,35 +228,36 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (Digits == "0")
                 return 0.ToString(provider);
 
-            if (digits == Digits.Length)
+            ScientificNotationNumber snn = this;
+            if (digits != Digits.Length)
             {
-                if (Digits.Length == 1)
-                    if (Exponent == 0)
-                        return $"{(IsNegative ? "-" : "")}{Digits[0]}";
-                    else
-                        return $"{(IsNegative ? "-" : "")}{Digits[0]}E{(Exponent >= 0 ? "+" : "")}{Exponent}";
-                else
-                    if (Exponent == 0)
-                    return $"{(IsNegative ? "-" : "")}{Digits[0]}.{Digits.Substring(1, Digits.Length - 1)}";
-                else
-                    return $"{(IsNegative ? "-" : "")}{Digits[0]}.{Digits.Substring(1, Digits.Length - 1)}E{(Exponent > 0 ? "+" : "")}{Exponent}";
-            }
-            else
-            {
-                ScientificNotationNumber snn = Round(digits);
+                snn = Round(digits);
                 if (digits > snn.Digits.Length)
                     digits = snn.Digits.Length;
-                if (snn.Digits.Length == 1)
-                    if (snn.Exponent == 0)
-                        return $"{(snn.IsNegative ? "-" : "")}{snn.Digits[0]}";
-                    else
-                        return $"{(snn.IsNegative ? "-" : "")}{snn.Digits[0]}E{(snn.Exponent >= 0 ? "+" : "")}{snn.Exponent}";
+            }
+
+            if (snn.Digits.Length == 1)
+                if (snn.Exponent == 0)
+                    return $"{(snn.IsNegative ? "-" : "")}{snn.Digits[0]}";
                 else
-                    if (snn.Exponent == 0)
+                    if (toExponential)
+                        return $"{(snn.IsNegative ? "-" : "")}{snn.Digits[0]}E{(snn.Exponent >= 0 ? "+" : "")}{snn.Exponent}";
+                    else if (snn.Exponent >= 0)
+                        return $"{(snn.IsNegative ? "-" : "")}{snn.Digits[0]}{new string('0', snn.Exponent)}";
+                    else
+                        return $"{(snn.IsNegative ? "-" : "")}0.{new string('0', Math.Abs(snn.Exponent + 1))}{snn.Digits[0]}";
+            else
+                if (snn.Exponent == 0)
                     return $"{(snn.IsNegative ? "-" : "")}{snn.Digits[0]}.{snn.Digits.Substring(1, digits - 1)}";
                 else
-                    return $"{(snn.IsNegative ? "-" : "")}{snn.Digits[0]}.{snn.Digits.Substring(1, digits - 1)}E{(snn.Exponent > 0 ? "+" : "")}{snn.Exponent}";
-            }
+                    if (toExponential)
+                        return $"{(snn.IsNegative ? "-" : "")}{snn.Digits[0]}.{snn.Digits.Substring(1, digits - 1)}E{(snn.Exponent > 0 ? "+" : "")}{snn.Exponent}";
+                    else if (snn.Exponent >= digits - 1)
+                        return $"{(snn.IsNegative ? "-" : "")}{snn.Digits.Substring(0, digits)}{new string('0', snn.Exponent - digits + 1)}";
+                    else if (snn.Exponent >= 0)
+                        return $"{(snn.IsNegative ? "-" : "")}{snn.Digits.Substring(0, snn.Exponent + 1)}.{snn.Digits.Substring(Exponent + 1)}";
+                    else
+                        return $"{(snn.IsNegative ? "-" : "")}0.{new string('0', Math.Abs(snn.Exponent + 1))}{snn.Digits.Substring(0)}";
         }
         public object Clone()
             => new ScientificNotationNumber(_Digits, Exponent, IsNegative);
@@ -286,10 +280,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 // TO DO
                 case 'C':
                     if (format.Length == 1)
-                        return ToNormalString(0, provider);
+                        return ToString(0, provider, false);
                     if (!int.TryParse(format.Substring(1), out length))
                         goto default;
-                    return ToNormalString(length, provider);
+                    return ToString(length, provider, false);
                 //case 'D':
                 //    break;
                 //case 'F':
@@ -300,10 +294,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 case 'E':
                 case 'G':
                     if (format.Length == 1)
-                        return ToExponentialString(0, provider);
+                        return ToString(0, provider);
                     if (!int.TryParse(format.Substring(1), out length))
                         goto default;
-                    return ToExponentialString(length, provider);
+                    return ToString(length, provider);
                 default:
                     throw new FormatException(string.Format("The '{0}' format string is not supported.", format));
             }
