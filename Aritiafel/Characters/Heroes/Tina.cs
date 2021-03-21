@@ -22,7 +22,13 @@ namespace Aritiafel.Characters.Heroes
                     sourceDir = @"C:\Programs\Standard\TinaValidator";
                     break;
                 case ProjectChoice.JsonEditorV2:
-                    sourceDir = @"C:\Programs\Winform\JsonEditorV2";
+                    sourceDir = @"C:\Programs\WinForm\JsonEditorV2";
+                    break;
+                case ProjectChoice.ArinaWebsiteManager:
+                    sourceDir = @"C:\Programs\WinForm\ArinaWebsiteManager";
+                    break;
+                case ProjectChoice.RaeriharUniversity:
+                    sourceDir = @"C:\Programs\Standard\Raerihar";
                     break;
                 default:
                     throw new ArgumentException();
@@ -36,6 +42,8 @@ namespace Aritiafel.Characters.Heroes
     {
         Aritiafel,
         TinaValidator,
-        JsonEditorV2
+        JsonEditorV2,
+        ArinaWebsiteManager,
+        RaeriharUniversity
     }
 }
