@@ -10,8 +10,8 @@ namespace Aritiafel.Artifacts
     /// </summary>
     public class ChaosBox
     {
-        protected Random _Random;
-        protected Random _Random2;
+        private Random _Random;
+        private Random _Random2;
 
         private const string MinGreaterThanMaxMessage = "Min value greater than max Value.";
         public ChaosBox()

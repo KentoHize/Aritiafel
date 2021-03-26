@@ -15,7 +15,7 @@ namespace Aritiafel.Locations
             Address = backupDirectoryPath;
         }
 
-        public void SaveVSSolution(string SolutionDirectoryPath, bool includeTestResults = false, string[] addtionalIgnoreDirNames = null)
+        public void SaveVSSolution(string SolutionDirectoryPath, bool excludeTestResults = true, string[] addtionalIgnoreDirNames = null)
         {
             if (string.IsNullOrEmpty(Address))
                 throw new ArgumentNullException("Address");
@@ -32,7 +32,7 @@ namespace Aritiafel.Locations
                 "packages"
             };
 
-            if (includeTestResults)
+            if (excludeTestResults)
                 ignoreDirNames.Add("TestResults");
 
             if (addtionalIgnoreDirNames != null)
