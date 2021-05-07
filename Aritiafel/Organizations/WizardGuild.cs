@@ -7,6 +7,7 @@ using System.Xml;
 using System.Text.Json;
 using Aritiafel.Locations.StorageHouse;
 using Aritiafel.Artifacts;
+using System.Linq;
 
 namespace Aritiafel.Organizations
 {
@@ -80,21 +81,54 @@ namespace Aritiafel.Organizations
             if (string.IsNullOrEmpty(surname))
                 surname = Surnames[cb.DrawOutInteger(0, 99)].Surname;
             string name = "";
-            
-            name += NameWords[cb.DrawOutInteger(0, 1499)].Word;
-            name += NameWords[cb.DrawOutInteger(0, 1499)].Word;
+
+            var query = (from n in NameWords
+                        where n.Gender == "f" || n.Gender == "n"
+                        select n).ToList();
+            name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
+            query =     (from n in NameWords
+                         where n.Gender == "f"
+                         select n).ToList();
+            name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
             return string.Concat(surname, name);
         }
 
-        //public static string RandomChineseMaleName(string surname = "")
-        //{
+        public static string RandomChineseMaleName(string surname = "")
+        {
+            ReadChineseNameData();
+            ChaosBox cb = new ChaosBox();
 
-        //}
+            if (string.IsNullOrEmpty(surname))
+                surname = Surnames[cb.DrawOutInteger(0, 99)].Surname;
+            string name = "";
 
-        //public static string NewChineseNeutralName(string surname = "")
-        //{
+            var query = (from n in NameWords
+                         where n.Gender == "m" || n.Gender == "n"
+                         select n).ToList();
+            name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
+            query = (from n in NameWords
+                     where n.Gender == "m" || n.Gender == "n"
+                     select n).ToList();
+            name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
+            return string.Concat(surname, name);
+        }
 
-        //}
+        public static string RandomChineseNeutralName(string surname = "")
+        {
+            ReadChineseNameData();
+            ChaosBox cb = new ChaosBox();
+
+            if (string.IsNullOrEmpty(surname))
+                surname = Surnames[cb.DrawOutInteger(0, 99)].Surname;
+            string name = "";
+
+            var query = (from n in NameWords
+                         where n.Gender == "n"
+                         select n).ToList();
+            name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
+            name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
+            return string.Concat(surname, name);
+        }
     }
 
     public class ChineseNameWord

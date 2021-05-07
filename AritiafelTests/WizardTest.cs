@@ -23,8 +23,15 @@ namespace AritiafelTest
         [TestMethod]
         public void RandomName()
         {
+            TestContext.WriteLine("MaleName:");
             for(int i = 0; i < 100; i++)
+                TestContext.WriteLine(WizardGuild.RandomChineseMaleName());            
+            TestContext.WriteLine("FemaleName:");
+            for (int i = 0; i < 100; i++)
                 TestContext.WriteLine(WizardGuild.RandomChineseFemaleName());
+            TestContext.WriteLine("NeutralName:");
+            for (int i = 0; i < 100; i++)
+                TestContext.WriteLine(WizardGuild.RandomChineseNeutralName());
         }
     }
 }
