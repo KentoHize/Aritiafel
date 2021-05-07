@@ -139,7 +139,7 @@
             this.btnScript1.Name = "btnScript1";
             this.btnScript1.Size = new System.Drawing.Size(136, 63);
             this.btnScript1.TabIndex = 9;
-            this.btnScript1.Text = "button1";
+            this.btnScript1.Text = "Scripts";
             this.btnScript1.UseVisualStyleBackColor = true;
             this.btnScript1.Click += new System.EventHandler(this.btnScript1_Click);
             // 

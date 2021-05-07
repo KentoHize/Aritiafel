@@ -4,6 +4,9 @@ using System.IO;
 using System.Text;
 using Microsoft.VisualBasic;
 using System.Xml;
+using System.Text.Json;
+using Aritiafel.Locations.StorageHouse;
+using Aritiafel.Artifacts;
 
 namespace Aritiafel.Organizations
 {
@@ -20,23 +23,88 @@ namespace Aritiafel.Organizations
         public static void ProduceSimplifiedChineseResourceFile(string traditionalChineseFileName)
         {
             XmlDocument xmlD = new XmlDocument();
-            
+
             if (!traditionalChineseFileName.Contains(".resx"))
                 throw new ArgumentException();
 
             xmlD.Load(traditionalChineseFileName);
-            foreach(XmlNode xd in xmlD.ChildNodes[1].ChildNodes)
-                if(xd.Name == "data")
-                    foreach(XmlNode xd2 in xd.ChildNodes)
-                        if(xd2.Name == "value")
+            foreach (XmlNode xd in xmlD.ChildNodes[1].ChildNodes)
+                if (xd.Name == "data")
+                    foreach (XmlNode xd2 in xd.ChildNodes)
+                        if (xd2.Name == "value")
                             xd.InnerText = TranslateTextFromTraditionalChineseToSimplifiedChinese(xd.InnerText);
 
             string outputFileName = $"{Path.GetDirectoryName(traditionalChineseFileName)}\\{Path.GetFileName(traditionalChineseFileName).Split('.')[0]}.zh-CN.resx";
-            using (TextWriter sw = new StreamWriter(outputFileName, false, Encoding.UTF8)) { 
+            using (TextWriter sw = new StreamWriter(outputFileName, false, Encoding.UTF8)) {
                 xmlD.Save(sw);
             }
         }
 
-        //public static string NewChinese
+        private static List<ChineseNameWord> NameWords;
+        private static List<ChineseSurname> Surnames;
+
+        private static void ReadChineseNameData()
+        {
+            JsonSerializerOptions jso = new JsonSerializerOptions
+            { WriteIndented = true };
+            DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory();
+            djcf.ReferenceTypeReadAndWritePolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName;
+            jso.Converters.Add(djcf);
+
+            string file = @"C:\Programs\Standard\Aritiafel\Aritiafel\Data\NameOfChinese.json";
+            using (FileStream fs = new FileStream(file, FileMode.Open))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    string s = sr.ReadToEnd();
+                    NameWords = JsonSerializer.Deserialize<List<ChineseNameWord>>(s, jso);
+                }
+            }
+
+            file = @"C:\Programs\Standard\Aritiafel\Aritiafel\Data\SurnameOfChinese.json";
+            using (FileStream fs = new FileStream(file, FileMode.Open))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    string s = sr.ReadToEnd();
+                    Surnames = JsonSerializer.Deserialize<List<ChineseSurname>>(s, jso);
+                }
+            }
+        }
+
+        public static string RandomChineseFemaleName(string surname = "")
+        {
+            ReadChineseNameData();
+            ChaosBox cb = new ChaosBox();
+
+            if (string.IsNullOrEmpty(surname))
+                surname = Surnames[cb.DrawOutInteger(0, 99)].Surname;
+            string name = "";
+            
+            name += NameWords[cb.DrawOutInteger(0, 1499)].Word;
+            name += NameWords[cb.DrawOutInteger(0, 1499)].Word;
+            return string.Concat(surname, name);
+        }
+
+        //public static string RandomChineseMaleName(string surname = "")
+        //{
+
+        //}
+
+        //public static string NewChineseNeutralName(string surname = "")
+        //{
+
+        //}
+    }
+
+    public class ChineseNameWord
+    {
+        public string Word { get; set; }
+        public string Gender { get; set; }
+    }
+
+    public class ChineseSurname
+    {
+        public string Surname { get; set; } 
     }
 }
