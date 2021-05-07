@@ -95,5 +95,38 @@ namespace AritiafelTestForm
 
             Process.Start(outputFile);
         }
+
+        private void btnScript1_Click(object sender, EventArgs e)
+        {
+            //"C:\Programs\Standard\Aritiafel\Aritiafel"
+            string file = @"C:\Programs\Standard\Aritiafel\Aritiafel\CFamilyNames.txt";
+            string buffer;
+            using (FileStream fs = new FileStream(file, FileMode.Open))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    buffer = sr.ReadToEnd();
+                }
+            }
+            
+            string outfile = @"C:\Programs\Standard\Aritiafel\Aritiafel\Data\SurnameOfChinese.csv";
+
+            using (FileStream fs = new FileStream(outfile, FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    int pos = 0;
+                    while (pos < buffer.Length)
+                    {
+                        pos = buffer.IndexOf("php", pos + 1);
+                        if (pos == -1)
+                            break;
+                        //MessageBox.Show(buffer.Substring(pos + 9, 1));
+                        sw.WriteLine(buffer.Substring(pos + 5, 1));
+                    }
+                }
+            }
+            //" / word/"
+        }
     }
 }

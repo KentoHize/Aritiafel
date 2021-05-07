@@ -38,6 +38,7 @@
             this.txtText = new System.Windows.Forms.TextBox();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.btnSaveUTF8 = new System.Windows.Forms.Button();
+            this.btnScript1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMessageBox
@@ -132,11 +133,22 @@
             this.btnSaveUTF8.UseVisualStyleBackColor = true;
             this.btnSaveUTF8.Click += new System.EventHandler(this.btnSaveUTF8_Click);
             // 
+            // btnScript1
+            // 
+            this.btnScript1.Location = new System.Drawing.Point(651, 206);
+            this.btnScript1.Name = "btnScript1";
+            this.btnScript1.Size = new System.Drawing.Size(136, 63);
+            this.btnScript1.TabIndex = 9;
+            this.btnScript1.Text = "button1";
+            this.btnScript1.UseVisualStyleBackColor = true;
+            this.btnScript1.Click += new System.EventHandler(this.btnScript1_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnScript1);
             this.Controls.Add(this.btnSaveUTF8);
             this.Controls.Add(this.txtOutput);
             this.Controls.Add(this.txtText);
@@ -166,6 +178,7 @@
         private System.Windows.Forms.TextBox txtText;
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.Button btnSaveUTF8;
+        private System.Windows.Forms.Button btnScript1;
     }
 }
 

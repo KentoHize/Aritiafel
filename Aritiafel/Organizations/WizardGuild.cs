@@ -36,5 +36,7 @@ namespace Aritiafel.Organizations
                 xmlD.Save(sw);
             }
         }
+
+        //public static string NewChinese
     }
 }
