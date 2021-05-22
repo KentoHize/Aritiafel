@@ -169,7 +169,7 @@
         </member>
         <member name="T:Aritiafel.Organizations.WizardGuild">
             <summary>
-            法師公會，目前提供繁轉簡翻譯服務(擴增中)
+            法師公會，目前提供繁轉簡翻譯服務和中文姓名服務
             </summary>
         </member>
     </members>

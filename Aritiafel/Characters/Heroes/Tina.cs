@@ -30,6 +30,9 @@ namespace Aritiafel.Characters.Heroes
                 case ProjectChoice.RaeriharUniversity:
                     sourceDir = @"C:\Programs\Standard\Raerihar";
                     break;
+                case ProjectChoice.NinjaSato:
+                    sourceDir = @"C:\Programs\WinForm\NinjaSato";
+                    break;
                 default:
                     throw new ArgumentException();
             }
@@ -44,6 +47,7 @@ namespace Aritiafel.Characters.Heroes
         TinaValidator,
         JsonEditorV2,
         ArinaWebsiteManager,
-        RaeriharUniversity
+        RaeriharUniversity,
+        NinjaSato
     }
 }

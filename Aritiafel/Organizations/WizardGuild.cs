@@ -12,7 +12,7 @@ using System.Linq;
 namespace Aritiafel.Organizations
 {
     /// <summary>
-    /// 法師公會，目前提供繁轉簡翻譯服務(擴增中)
+    /// 法師公會，目前提供繁轉簡翻譯服務和中文姓名服務
     /// </summary>
     public static class WizardGuild
     {
@@ -129,16 +129,16 @@ namespace Aritiafel.Organizations
             name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
             return string.Concat(surname, name);
         }
-    }
 
-    public class ChineseNameWord
-    {
-        public string Word { get; set; }
-        public string Gender { get; set; }
-    }
+        private class ChineseNameWord
+        {
+            public string Word { get; set; }
+            public string Gender { get; set; }
+        }
 
-    public class ChineseSurname
-    {
-        public string Surname { get; set; } 
+        private class ChineseSurname
+        {
+            public string Surname { get; set; }
+        }
     }
 }
