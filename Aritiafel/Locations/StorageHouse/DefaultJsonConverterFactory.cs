@@ -56,8 +56,8 @@ namespace Aritiafel.Locations.StorageHouse
                 (typeToConvert == typeof(string) || typeToConvert == typeof(char)))
                 return true;
             if ((typeToConvert.IsClass || typeToConvert.IsInterface) &&
-                !typeToConvert.Assembly.FullName.StartsWith("System") &&
-                !typeToConvert.Assembly.FullName.StartsWith("Microsoft"))
+                !typeToConvert.FullName.StartsWith("System") &&
+                !typeToConvert.FullName.StartsWith("Microsoft"))
                 return true;
             return false;
         }
@@ -106,10 +106,10 @@ namespace Aritiafel.Locations.StorageHouse
                     return (T)Convert.ChangeType(RecoverSpecialChar(reader.GetString())[0], typeof(T));
 
                 if (reader.TokenType != JsonTokenType.StartObject)
-                    throw new JsonException();
+                    throw new JsonException($"Token is not StartObject: {reader.TokenType}");
                 reader.Read();
                 if (reader.TokenType != JsonTokenType.PropertyName)
-                    throw new JsonException();
+                    throw new JsonException($"Token is not PropertyName: {reader.TokenType}");
                 string propertyName = reader.GetString();
                 object result;
                 if (propertyName == ReferenceTypeString)
@@ -123,7 +123,7 @@ namespace Aritiafel.Locations.StorageHouse
                         result = Activator.CreateInstance(Type.GetType($"{typeToConvert.Namespace}.{reader.GetString()}, {typeToConvert.Assembly.FullName}"));
                     reader.Read();
                     if (reader.TokenType != JsonTokenType.PropertyName)
-                        throw new JsonException();
+                        throw new JsonException($"Token is not PropertyName: {reader.TokenType}");
                     propertyName = reader.GetString();
                 }
                 else
