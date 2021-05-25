@@ -196,9 +196,11 @@ namespace Aritiafel.Locations.StorageHouse
                                 buffer.AppendFormat("{0},", numberString);
                             else if (resultType.GetProperty(propertyName).CanWrite)
                             {
-                                Type pType = resultType.GetProperty(propertyName).PropertyType;
+                                Type pType = resultType.GetProperty(propertyName).PropertyType;                                
                                 if (pType.IsEnum)
                                     SetPropertyValue(propertyName, result, Convert.ToInt32(numberString));
+                                else if(Nullable.GetUnderlyingType(pType) != null)
+                                    SetPropertyValue(propertyName, result, Convert.ChangeType(numberString, Nullable.GetUnderlyingType(pType)));
                                 else
                                     SetPropertyValue(propertyName, result, Convert.ChangeType(numberString, pType));
                             }

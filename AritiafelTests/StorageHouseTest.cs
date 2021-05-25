@@ -126,6 +126,33 @@ namespace AritiafelTest
             object o = JsonSerializer.Deserialize<List<NSBattle.Area>>(jsonString, jso);
             TestContext.WriteLine(o.ToString());
         }
+
+        public class Car
+        {
+            public int? ID { get; set; }
+
+            public int? Password { get; set; }
+
+            public bool? CanDrive { get; set; }
+        }
+
+        [TestMethod]
+        public void NullableTest ()
+        {
+            Car c = new Car();
+            c.ID = null;
+            c.Password = 111;
+            c.CanDrive = null;
+            JsonSerializerOptions jso = new JsonSerializerOptions();
+            DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory();
+            //djcf.ReferenceTypeReadAndWritePolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName;
+            jso.Converters.Add(djcf);
+            string s = JsonSerializer.Serialize(c, jso);
+            object o = JsonSerializer.Deserialize<Car>(s, jso);
+            string s2 = JsonSerializer.Serialize(o, jso);
+            Assert.IsTrue(s.CompareTo(s2) == 0);
+        }
+
     }
 }
 

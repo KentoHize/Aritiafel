@@ -17,5 +17,12 @@ namespace AritiafelTest
         {
             Tina.SaveProject();
         }
+
+        //[TestMethod]
+        //public void ATest()
+        //{
+        //    Type a = typeof(int?);
+        //    TestContext.WriteLine(a.IsEnum.ToString());
+        //}
     }
 }
