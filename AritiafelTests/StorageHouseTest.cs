@@ -95,8 +95,19 @@ namespace AritiafelTest
             //TestContext.WriteLine(s);
             object o = JsonSerializer.Deserialize<Person>(s, jso);            
             string s2 = JsonSerializer.Serialize(o, jso);
-            TestContext.WriteLine(s2);
-            Assert.IsTrue(s.CompareTo(s2) == 0);            
+            //TestContext.WriteLine(s2);
+            Assert.IsTrue(s.CompareTo(s2) == 0);
+
+            List<Person> listTest = new List<Person>();
+            listTest.Add(Tom);
+            listTest.Add(John);
+
+            s = JsonSerializer.Serialize(listTest, jso);
+            o = JsonSerializer.Deserialize<List<Person>>(s, jso);
+            s2 = JsonSerializer.Serialize(o, jso);
+            TestContext.WriteLine(s2);            
+            Assert.IsTrue(s.CompareTo(s2) == 0);
+            Console.WriteLine("OK");
         }
     }
 }

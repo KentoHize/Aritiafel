@@ -33,6 +33,9 @@ namespace Aritiafel.Characters.Heroes
                 case ProjectChoice.NinjaSato:
                     sourceDir = @"C:\Programs\WinForm\NinjaSato";
                     break;
+                case ProjectChoice.NSBattle:
+                    sourceDir = @"C:\Programs\WinForm\NSBattle";
+                    break;
                 default:
                     throw new ArgumentException();
             }
@@ -48,6 +51,7 @@ namespace Aritiafel.Characters.Heroes
         JsonEditorV2,
         ArinaWebsiteManager,
         RaeriharUniversity,
-        NinjaSato
+        NinjaSato,
+        NSBattle
     }
 }

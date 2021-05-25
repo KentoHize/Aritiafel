@@ -57,7 +57,7 @@ namespace Aritiafel.Locations.StorageHouse
                 return true;
             if ((typeToConvert.IsClass || typeToConvert.IsInterface) &&
                 !typeToConvert.Assembly.FullName.StartsWith("System") &&
-                !typeToConvert.Assembly.FullName.StartsWith("Mircosoft"))
+                !typeToConvert.Assembly.FullName.StartsWith("Microsoft"))
                 return true;
             return false;
         }
