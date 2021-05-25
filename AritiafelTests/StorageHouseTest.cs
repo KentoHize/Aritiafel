@@ -85,7 +85,7 @@ namespace AritiafelTest
             catAlone.IsLazy = true;
             catAlone.Sex = "F";
             dogGray.LovedCats.Add(catAlone);
-            
+
             JsonSerializerOptions jso = new JsonSerializerOptions
             { WriteIndented = true };
             DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory();
@@ -93,7 +93,7 @@ namespace AritiafelTest
             jso.Converters.Add(djcf);
             string s = JsonSerializer.Serialize(Tom, jso);
             //TestContext.WriteLine(s);
-            object o = JsonSerializer.Deserialize<Person>(s, jso);            
+            object o = JsonSerializer.Deserialize<Person>(s, jso);
             string s2 = JsonSerializer.Serialize(o, jso);
             //TestContext.WriteLine(s2);
             Assert.IsTrue(s.CompareTo(s2) == 0);
@@ -105,9 +105,36 @@ namespace AritiafelTest
             s = JsonSerializer.Serialize(listTest, jso);
             o = JsonSerializer.Deserialize<List<Person>>(s, jso);
             s2 = JsonSerializer.Serialize(o, jso);
-            TestContext.WriteLine(s2);            
+            TestContext.WriteLine(s2);
             Assert.IsTrue(s.CompareTo(s2) == 0);
             Console.WriteLine("OK");
+        }
+
+        public class Area
+        {
+            public int ID { get; set; }
+            public string Name { get; set; }
+            public int InX { get; set; }
+            public int InY { get; set; }
+            public int OutX { get; set; }
+            public int OutY { get; set; }
+            public int Length { get; set; }
+            public int Width { get; set; }
+        }
+
+        [TestMethod]
+        public void SpecificJsonText()
+        {
+            string jsonString = "[ { \"ID\": 1, \"Name\": \"Area1\", \"InX\":" +
+                " 0, \"InY\": 0, \"OutX\": 50, \"OutY\": 100, \"Length\": 100, \"Width\": 100 } ]";
+
+
+            JsonSerializerOptions jso = new JsonSerializerOptions();
+            DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory();
+            //djcf.ReferenceTypeReadAndWritePolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName;
+            jso.Converters.Add(djcf);
+            object o = JsonSerializer.Deserialize<List<Area>>(jsonString, jso);
+            TestContext.WriteLine(o.ToString());
         }
     }
 }
