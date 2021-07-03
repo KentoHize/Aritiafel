@@ -36,11 +36,19 @@ namespace Aritiafel.Characters.Heroes
                 case ProjectChoice.NSBattle:
                     sourceDir = @"C:\Programs\WinForm\NSBattle";
                     break;
+                case ProjectChoice.IdealWorld:
+                    sourceDir = @"C:\Programs\Web\WF\IdealWorld";
+                    break;
                 default:
                     throw new ArgumentException();
             }
             Residence rs = new Residence($"{backupDrive}:\\Backup");
             rs.SaveVSSolution(sourceDir);
+        }
+        public static void SaveProject(string subFolderName, string projectName, string backupDrive = "E")
+        {
+            Residence rs = new Residence($"{backupDrive}:\\Backup");
+            rs.SaveVSSolution($@"C:\Programs\{subFolderName}\{projectName}");
         }
     }
 
@@ -52,6 +60,7 @@ namespace Aritiafel.Characters.Heroes
         ArinaWebsiteManager,
         RaeriharUniversity,
         NinjaSato,
-        NSBattle
+        NSBattle,
+        IdealWorld
     }
 }
