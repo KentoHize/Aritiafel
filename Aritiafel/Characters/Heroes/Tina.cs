@@ -18,6 +18,9 @@ namespace Aritiafel.Characters.Heroes
                 case ProjectChoice.Aritiafel:
                     sourceDir = @"C:\Programs\Standard\Aritiafel";
                     break;
+                case ProjectChoice.AritiafelJS:
+                    sourceDir = @"C:\Programs\Javascript\AritiafelJS";
+                    break;
                 case ProjectChoice.TinaValidator:
                     sourceDir = @"C:\Programs\Standard\TinaValidator";
                     break;
@@ -39,6 +42,7 @@ namespace Aritiafel.Characters.Heroes
                 case ProjectChoice.IdealWorld:
                     sourceDir = @"C:\Programs\Web\WF\IdealWorld";
                     break;
+                
                 default:
                     throw new ArgumentException();
             }
@@ -55,12 +59,13 @@ namespace Aritiafel.Characters.Heroes
     public enum ProjectChoice
     {
         Aritiafel,
+        AritiafelJS,
         TinaValidator,
         JsonEditorV2,
         ArinaWebsiteManager,
         RaeriharUniversity,
         NinjaSato,
         NSBattle,
-        IdealWorld
+        IdealWorld        
     }
 }
