@@ -56,20 +56,45 @@ namespace Aritiafel.Characters.Heroes
         public static void SaveTextFile(string folderName, string fileName, string content)
         {
             Residence rs = new Residence(folderName);
-            rs.SaveTextFile(fileName, content);            
+            rs.SaveLocalTextFile(fileName, content);            
         }
 
         public static void SaveTextFile(string path, string content)
-            => SaveTextFile(Path.GetFullPath(path), Path.GetFileName(path), content);
+            => Residence.SaveTextFile(path, content);
 
-        public static string LoadTextFile(string folderName, string fileName)
+        public static string ReadTextFile(string folderName, string fileName)
         {
             Residence rs = new Residence(folderName);
-            return rs.LoadTextFile(fileName);
+            return rs.ReadLocalTextFile(fileName);
         }
 
-        public static string LoadTextFile(string path)
-            => LoadTextFile(Path.GetFullPath(path), Path.GetFileName(path));
+        public static string ReadTextFile(string path)
+            => Residence.ReadTextFile(path);
+
+        public static void DeleteFile(string folderName, string fileName)
+        {
+            Residence rs = new Residence(folderName);
+            rs.DeleteLocalFile(fileName);
+        }
+
+        public static void DeleteFile(string path)
+            => Residence.DeleteFile(path);
+
+        public static void DeleteFolderFiles(string folderName)
+        {
+            Residence rs = new Residence(folderName);
+            rs.DeleteAllLocalFiles();
+        }
+
+        public static T LoadJsonFile<T>(string path)
+            => Residence.LoadJsonFile<T>(path);
+
+        public static object LoadJsonFile(string path)
+            => Residence.LoadJsonFile(path);
+
+        public static void SaveJsonFile(string path, object content, bool writeIntent = false)
+            => Residence.SaveJsonFile(path, content, writeIntent);
+
     }
 
     public enum ProjectChoice

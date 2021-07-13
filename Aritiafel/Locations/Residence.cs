@@ -23,8 +23,8 @@ namespace Aritiafel.Locations
             if (string.IsNullOrEmpty(Address))
                 throw new ArgumentNullException(nameof(Address));
 
-            //if (string.IsNullOrEmpty(SolutionDirectoryPath))
-            //    throw new ArgumentNullException("SolutionDirectoryPath");
+            if (string.IsNullOrEmpty(SolutionDirectoryPath))
+                throw new ArgumentNullException(nameof(SolutionDirectoryPath));
 
             List<string> ignoreDirNames = new List<string>
             {
@@ -44,15 +44,10 @@ namespace Aritiafel.Locations
             DirectoryCopy(SolutionDirectoryPath, Path.Combine(Address, Path.GetFileName(SolutionDirectoryPath)), true, ignoreDirNames.ToArray());
         }
 
-        public string LoadTextFile(string fileName)
+        public static string ReadTextFile(string path)
         {
-            if (string.IsNullOrEmpty(Address))
-                throw new ArgumentNullException(nameof(Address));
-            if (string.IsNullOrEmpty(fileName))
-                throw new ArgumentNullException(nameof(fileName));
-
             string result;
-            using (FileStream fs = new FileStream(Path.Combine(Address, fileName), FileMode.Open))
+            using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 StreamReader sr = new StreamReader(fs);
                 result = sr.ReadToEnd();
@@ -60,36 +55,41 @@ namespace Aritiafel.Locations
             }
             return result;
         }
-
-        public void SaveTextFile(string fileName, string content)
+        public string ReadLocalTextFile(string fileName)
+           => ReadTextFile(Path.Combine(Address, fileName));
+        
+        public static void SaveTextFile(string path, string content)
         {
-            if (string.IsNullOrEmpty(Address))            
-                throw new ArgumentNullException(nameof(Address));
-            if (string.IsNullOrEmpty(fileName))
-                throw new ArgumentNullException(nameof(fileName));
-
-            using (FileStream fs = new FileStream(Path.Combine(Address, fileName), FileMode.Create))
+            using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 StreamWriter sw = new StreamWriter(fs);
                 sw.Write(content);
                 sw.Close();
             }
         }
+        public void SaveLocalTextFile(string fileName, string content)
+            => SaveTextFile(Path.Combine(Address, fileName), content);
 
-        public T LoadJsonFile<T>(string fileName, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
+        public static T LoadJsonFile<T>(string path, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
         {
             JsonSerializerOptions jso = new JsonSerializerOptions();
             DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory {                
                 ReferenceTypeReadAndWritePolicy = rwPolicy
             };            
             jso.Converters.Add(djcf);
-            return JsonSerializer.Deserialize<T>(LoadTextFile(fileName), jso);
+            return JsonSerializer.Deserialize<T>(ReadTextFile(path), jso);
         }
 
-        public object LoadJsonFile(string fileName, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
-            => LoadJsonFile<object>(fileName, rwPolicy);
+        public T LoadLocalJsonFile<T>(string fileName, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
+            => LoadJsonFile<T>(Path.Combine(Address, fileName), rwPolicy);
 
-        public void SaveJsonFile(string fileName, object content, bool WriteIntent = false, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
+        public static object LoadJsonFile(string path, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
+            => LoadJsonFile<object>(path, rwPolicy);
+
+        public object LoadLocalJsonFile(string fileName, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
+            => LoadJsonFile<object>(Path.Combine(Address, fileName), rwPolicy);
+
+        public static void SaveJsonFile(string path, object content, bool writeIntent = false, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
         {
             JsonSerializerOptions jso = new JsonSerializerOptions
             { WriteIndented = true };
@@ -97,7 +97,25 @@ namespace Aritiafel.Locations
                 ReferenceTypeReadAndWritePolicy = rwPolicy
             };
             jso.Converters.Add(djcf);
-            SaveTextFile(fileName, JsonSerializer.Serialize(content, content.GetType(), jso));
+            SaveTextFile(path, JsonSerializer.Serialize(content, content.GetType(), jso));
+        }
+
+        public void SaveLocalJsonFile(string fileName, object content, bool writeIntent = false, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
+            => SaveJsonFile(Path.Combine(Address, fileName), content, writeIntent, rwPolicy);
+
+        public static void DeleteFile(string path)
+            => File.Delete(path);
+
+        public void DeleteLocalFile(string fileName)
+            => File.Delete(Path.Combine(Address, fileName));
+
+        public void DeleteAllLocalFiles()
+        {
+            if (string.IsNullOrEmpty(Address))
+                throw new ArgumentNullException(nameof(Address));
+            string[] files = Directory.GetFiles(Address);
+            for (int i = 0; i < files.Length; i++)
+                File.Delete(files[i]);
         }
 
         private bool FitsMask(string fileName, string fileMask)
