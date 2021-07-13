@@ -154,22 +154,9 @@ namespace Aritiafel.Locations
             if (!Directory.Exists(targetDirectory))
                 Directory.CreateDirectory(targetDirectory);
 
-            bool copyFiles = true;
-            if (specificDirectoryNames != null)
-            {
-                copyFiles = false;
-                string mainDirName = Path.GetFileName(sourceDirectory);
-                foreach (string dirName in specificDirectoryNames)
-                {
-                    if (dirName == mainDirName)
-                    {
-                        copyFiles = true;
-                        break;
-                    }
-                }
-            }
+            
 
-            if (copyFiles)
+            if (specificDirectoryNames == null)
             {
                 foreach (string file in files)
                 {
@@ -193,6 +180,18 @@ namespace Aritiafel.Locations
                         foreach (string dirName in ignoreDirectoryNames)
                             if (dirName == subDirName)
                                 goto BreakPoint2;
+                    if (specificDirectoryNames != null)
+                    {   
+                        string mainDirName = Path.GetFileName(sourceDirectory);
+                        foreach (string dirName in specificDirectoryNames)
+                        {
+                            if (dirName == mainDirName)
+                            {
+                                DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, null, ignoreFileFilters);
+                                return;
+                            }
+                        }
+                    }
 
                     DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, specificDirectoryNames, ignoreFileFilters);
                 BreakPoint2:;
