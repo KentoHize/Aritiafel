@@ -19,6 +19,12 @@ namespace AritiafelTest
         }
 
         [TestMethod]
+        public void SaveProjectData()
+        {
+            Tina.SaveProjectData(ProjectChoice.DeepMind);
+        }
+
+        [TestMethod]
         public void TextFileSaveLoadDelete()
         {
             Tina.SaveTextFile(@"C:\Programs\Reports\test.txt", "abc");

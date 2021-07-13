@@ -18,13 +18,24 @@ namespace Aritiafel.Locations
             Address = directoryPath;
         }
 
-        public void SaveVSSolution(string SolutionDirectoryPath, bool excludeTestResults = true, string[] addtionalIgnoreDirNames = null)
+        public void SaveVSSolutionData(string solutionDirectoryPath, string dataFolderName = "Data")
         {
             if (string.IsNullOrEmpty(Address))
                 throw new ArgumentNullException(nameof(Address));
 
-            if (string.IsNullOrEmpty(SolutionDirectoryPath))
-                throw new ArgumentNullException(nameof(SolutionDirectoryPath));
+            if (string.IsNullOrEmpty(solutionDirectoryPath))
+                throw new ArgumentNullException(nameof(solutionDirectoryPath));
+
+            DirectoryCopy(Path.Combine(solutionDirectoryPath, dataFolderName), Path.Combine(Address, Path.GetFileName(solutionDirectoryPath), dataFolderName), true);
+        }
+
+        public void SaveVSSolution(string solutionDirectoryPath, bool excludeTestResults = true, string[] addtionalIgnoreDirNames = null)
+        {
+            if (string.IsNullOrEmpty(Address))
+                throw new ArgumentNullException(nameof(Address));
+
+            if (string.IsNullOrEmpty(solutionDirectoryPath))
+                throw new ArgumentNullException(nameof(solutionDirectoryPath));
 
             List<string> ignoreDirNames = new List<string>
             {
@@ -32,7 +43,8 @@ namespace Aritiafel.Locations
                 "obj",
                 ".vs",
                 ".git",
-                "packages"
+                "packages",
+                "Data",
             };
 
             if (excludeTestResults)
@@ -41,7 +53,7 @@ namespace Aritiafel.Locations
             if (addtionalIgnoreDirNames != null)
                 ignoreDirNames.AddRange(addtionalIgnoreDirNames);
 
-            DirectoryCopy(SolutionDirectoryPath, Path.Combine(Address, Path.GetFileName(SolutionDirectoryPath)), true, ignoreDirNames.ToArray());
+            DirectoryCopy(solutionDirectoryPath, Path.Combine(Address, Path.GetFileName(solutionDirectoryPath)), true, ignoreDirNames.ToArray());
         }
 
         public static string ReadTextFile(string path)

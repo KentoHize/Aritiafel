@@ -11,53 +11,44 @@ namespace Aritiafel.Characters.Heroes
     /// </summary>
     public static class Tina
     {
+        private static Dictionary<ProjectChoice, string> ProjectFolderPath
+            = new Dictionary<ProjectChoice, string>()
+        {
+           { ProjectChoice.Aritiafel, @"C:\Programs\Standard\Aritiafel" },
+           { ProjectChoice.AritiafelJS, @"C:\Programs\Javascript\AritiafelJS" },
+           { ProjectChoice.TinaValidator, @"C:\Programs\Standard\TinaValidator" },
+           { ProjectChoice.JsonEditorV2, @"C:\Programs\WinForm\JsonEditorV2" },
+           { ProjectChoice.ArinaWebsiteManager, @"C:\Programs\WinForm\ArinaWebsiteManager" },
+           { ProjectChoice.RaeriharUniversity, @"C:\Programs\Standard\Raerihar" },
+           { ProjectChoice.NinjaSato, @"C:\Programs\WinForm\NinjaSato" },
+           { ProjectChoice.NSBattle, @"C:\Programs\WinForm\NSBattle" },
+           { ProjectChoice.IdealWorld, @"C:\Programs\Web\WF\IdealWorld" },
+           { ProjectChoice.DeepMind, @"C:\Programs\WPF\DeepMind" },
+        };
+
         public static void SaveProject(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = "E")
         {
-            string sourceDir;
-            switch(pc)
-            {
-                case ProjectChoice.Aritiafel:
-                    sourceDir = @"C:\Programs\Standard\Aritiafel";
-                    break;
-                case ProjectChoice.AritiafelJS:
-                    sourceDir = @"C:\Programs\Javascript\AritiafelJS";
-                    break;
-                case ProjectChoice.TinaValidator:
-                    sourceDir = @"C:\Programs\Standard\TinaValidator";
-                    break;
-                case ProjectChoice.JsonEditorV2:
-                    sourceDir = @"C:\Programs\WinForm\JsonEditorV2";
-                    break;
-                case ProjectChoice.ArinaWebsiteManager:
-                    sourceDir = @"C:\Programs\WinForm\ArinaWebsiteManager";
-                    break;
-                case ProjectChoice.RaeriharUniversity:
-                    sourceDir = @"C:\Programs\Standard\Raerihar";
-                    break;
-                case ProjectChoice.NinjaSato:
-                    sourceDir = @"C:\Programs\WinForm\NinjaSato";
-                    break;
-                case ProjectChoice.NSBattle:
-                    sourceDir = @"C:\Programs\WinForm\NSBattle";
-                    break;
-                case ProjectChoice.IdealWorld:
-                    sourceDir = @"C:\Programs\Web\WF\IdealWorld";
-                    break;
-                case ProjectChoice.DeepMind:
-                    sourceDir = @"C:\Programs\WPF\DeepMind";
-                    break;
-                
-                default:
-                    throw new ArgumentException();
-            }
             Residence rs = new Residence($"{backupDrive}:\\Backup");
-            rs.SaveVSSolution(sourceDir);
+            rs.SaveVSSolution(ProjectFolderPath[pc], true, new string[] { "Data" });
         }
         public static void SaveProject(string subFolderName, string projectName, string backupDrive = "E")
         {
             Residence rs = new Residence($"{backupDrive}:\\Backup");
-            rs.SaveVSSolution($@"C:\Programs\{subFolderName}\{projectName}");
+            rs.SaveVSSolution($@"C:\Programs\{subFolderName}\{projectName}", true, new string[] { "Data" });
         }
+
+        public static void SaveProjectData(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = "E")
+        {
+            Residence rs = new Residence($"{backupDrive}:\\Backup");
+            rs.SaveVSSolutionData(ProjectFolderPath[pc]);
+        }
+
+        public static void SaveProjectData(string subFolderName, string projectName, string dataFolderName, string backupDrive = "E")
+        {
+            Residence rs = new Residence($"{backupDrive}:\\Backup");
+            rs.SaveVSSolutionData($@"C:\Programs\{subFolderName}\{projectName}\{dataFolderName}");
+        }
+
         public static void SaveTextFile(string folderName, string fileName, string content)
         {
             Residence rs = new Residence(folderName);
