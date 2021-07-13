@@ -154,8 +154,6 @@ namespace Aritiafel.Locations
             if (!Directory.Exists(targetDirectory))
                 Directory.CreateDirectory(targetDirectory);
 
-            
-
             if (specificDirectoryNames == null)
             {
                 foreach (string file in files)
@@ -188,7 +186,7 @@ namespace Aritiafel.Locations
                             if (dirName == mainDirName)
                             {
                                 DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, null, ignoreFileFilters);
-                                return;
+                                goto BreakPoint2;
                             }
                         }
                     }
