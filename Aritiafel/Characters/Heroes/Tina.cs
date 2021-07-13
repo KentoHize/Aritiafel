@@ -1,6 +1,7 @@
 ﻿using Aritiafel.Locations;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Aritiafel.Characters.Heroes
@@ -42,6 +43,9 @@ namespace Aritiafel.Characters.Heroes
                 case ProjectChoice.IdealWorld:
                     sourceDir = @"C:\Programs\Web\WF\IdealWorld";
                     break;
+                case ProjectChoice.DeepMind:
+                    sourceDir = @"C:\Programs\WPF\DeepMind";
+                    break;
                 
                 default:
                     throw new ArgumentException();
@@ -49,11 +53,23 @@ namespace Aritiafel.Characters.Heroes
             Residence rs = new Residence($"{backupDrive}:\\Backup");
             rs.SaveVSSolution(sourceDir);
         }
-        public static void SaveProject(string subFolderName, string projectName, string backupDrive = "E")
+        public static void SaveTextFile(string folderName, string fileName, string content)
         {
-            Residence rs = new Residence($"{backupDrive}:\\Backup");
-            rs.SaveVSSolution($@"C:\Programs\{subFolderName}\{projectName}");
+            Residence rs = new Residence(folderName);
+            rs.SaveTextFile(fileName, content);            
         }
+
+        public static void SaveTextFile(string path, string content)
+            => SaveTextFile(Path.GetFullPath(path), Path.GetFileName(path), content);
+
+        public static string LoadTextFile(string folderName, string fileName)
+        {
+            Residence rs = new Residence(folderName);
+            return rs.LoadTextFile(fileName);
+        }
+
+        public static string LoadTextFile(string path)
+            => LoadTextFile(Path.GetFullPath(path), Path.GetFileName(path));
     }
 
     public enum ProjectChoice
@@ -66,6 +82,7 @@ namespace Aritiafel.Characters.Heroes
         RaeriharUniversity,
         NinjaSato,
         NSBattle,
-        IdealWorld        
+        IdealWorld,
+        DeepMind
     }
 }

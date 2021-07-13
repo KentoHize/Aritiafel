@@ -2,26 +2,29 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Aritiafel;
 using System.Text.RegularExpressions;
+using Aritiafel.Locations.StorageHouse;
 
 namespace Aritiafel.Locations
 {
     public class Residence
     {
         public string Address { get; set; }
-        public Residence(string backupDirectoryPath = "")
+        public Residence(string directoryPath = "")
         {
-            Address = backupDirectoryPath;
+            Address = directoryPath;
         }
 
         public void SaveVSSolution(string SolutionDirectoryPath, bool excludeTestResults = true, string[] addtionalIgnoreDirNames = null)
         {
             if (string.IsNullOrEmpty(Address))
-                throw new ArgumentNullException("Address");
+                throw new ArgumentNullException(nameof(Address));
 
-            if (string.IsNullOrEmpty(SolutionDirectoryPath))
-                throw new ArgumentNullException("SolutionDirectoryPath");
+            //if (string.IsNullOrEmpty(SolutionDirectoryPath))
+            //    throw new ArgumentNullException("SolutionDirectoryPath");
 
             List<string> ignoreDirNames = new List<string>
             {
@@ -39,6 +42,62 @@ namespace Aritiafel.Locations
                 ignoreDirNames.AddRange(addtionalIgnoreDirNames);
 
             DirectoryCopy(SolutionDirectoryPath, Path.Combine(Address, Path.GetFileName(SolutionDirectoryPath)), true, ignoreDirNames.ToArray());
+        }
+
+        public string LoadTextFile(string fileName)
+        {
+            if (string.IsNullOrEmpty(Address))
+                throw new ArgumentNullException(nameof(Address));
+            if (string.IsNullOrEmpty(fileName))
+                throw new ArgumentNullException(nameof(fileName));
+
+            string result;
+            using (FileStream fs = new FileStream(Path.Combine(Address, fileName), FileMode.Open))
+            {
+                StreamReader sr = new StreamReader(fs);
+                result = sr.ReadToEnd();
+                sr.Close();
+            }
+            return result;
+        }
+
+        public void SaveTextFile(string fileName, string content)
+        {
+            if (string.IsNullOrEmpty(Address))            
+                throw new ArgumentNullException(nameof(Address));
+            if (string.IsNullOrEmpty(fileName))
+                throw new ArgumentNullException(nameof(fileName));
+
+            using (FileStream fs = new FileStream(Path.Combine(Address, fileName), FileMode.Create))
+            {
+                StreamWriter sw = new StreamWriter(fs);
+                sw.Write(content);
+                sw.Close();
+            }
+        }
+
+        public T LoadJsonFile<T>(string fileName, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
+        {
+            JsonSerializerOptions jso = new JsonSerializerOptions();
+            DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory {                
+                ReferenceTypeReadAndWritePolicy = rwPolicy
+            };            
+            jso.Converters.Add(djcf);
+            return JsonSerializer.Deserialize<T>(LoadTextFile(fileName), jso);
+        }
+
+        public object LoadJsonFile(string fileName, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
+            => LoadJsonFile<object>(fileName, rwPolicy);
+
+        public void SaveJsonFile(string fileName, object content, bool WriteIntent = false, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
+        {
+            JsonSerializerOptions jso = new JsonSerializerOptions
+            { WriteIndented = true };
+            DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory {
+                ReferenceTypeReadAndWritePolicy = rwPolicy
+            };
+            jso.Converters.Add(djcf);
+            SaveTextFile(fileName, JsonSerializer.Serialize(content, content.GetType(), jso));
         }
 
         private bool FitsMask(string fileName, string fileMask)
