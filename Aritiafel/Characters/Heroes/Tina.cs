@@ -53,6 +53,11 @@ namespace Aritiafel.Characters.Heroes
             Residence rs = new Residence($"{backupDrive}:\\Backup");
             rs.SaveVSSolution(sourceDir);
         }
+        public static void SaveProject(string subFolderName, string projectName, string backupDrive = "E")
+        {
+            Residence rs = new Residence($"{backupDrive}:\\Backup");
+            rs.SaveVSSolution($@"C:\Programs\{subFolderName}\{projectName}");
+        }
         public static void SaveTextFile(string folderName, string fileName, string content)
         {
             Residence rs = new Residence(folderName);
