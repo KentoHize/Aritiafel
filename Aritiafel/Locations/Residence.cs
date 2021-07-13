@@ -26,7 +26,7 @@ namespace Aritiafel.Locations
             if (string.IsNullOrEmpty(solutionDirectoryPath))
                 throw new ArgumentNullException(nameof(solutionDirectoryPath));
 
-            DirectoryCopy(Path.Combine(solutionDirectoryPath, dataFolderName), Path.Combine(Address, Path.GetFileName(solutionDirectoryPath), dataFolderName), true);
+            DirectoryCopy(solutionDirectoryPath, Path.Combine(Address, Path.GetFileName(solutionDirectoryPath)), true, null, new string[] { dataFolderName });
         }
 
         public void SaveVSSolution(string solutionDirectoryPath, bool excludeTestResults = true, string[] addtionalIgnoreDirNames = null)
@@ -69,7 +69,7 @@ namespace Aritiafel.Locations
         }
         public string ReadLocalTextFile(string fileName)
            => ReadTextFile(Path.Combine(Address, fileName));
-        
+
         public static void SaveTextFile(string path, string content)
         {
             using (FileStream fs = new FileStream(path, FileMode.Create))
@@ -85,9 +85,10 @@ namespace Aritiafel.Locations
         public static T LoadJsonFile<T>(string path, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
         {
             JsonSerializerOptions jso = new JsonSerializerOptions();
-            DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory {                
+            DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory
+            {
                 ReferenceTypeReadAndWritePolicy = rwPolicy
-            };            
+            };
             jso.Converters.Add(djcf);
             return JsonSerializer.Deserialize<T>(ReadTextFile(path), jso);
         }
@@ -105,7 +106,8 @@ namespace Aritiafel.Locations
         {
             JsonSerializerOptions jso = new JsonSerializerOptions
             { WriteIndented = true };
-            DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory {
+            DefaultJsonConverterFactory djcf = new DefaultJsonConverterFactory
+            {
                 ReferenceTypeReadAndWritePolicy = rwPolicy
             };
             jso.Converters.Add(djcf);
@@ -143,7 +145,7 @@ namespace Aritiafel.Locations
             return mask.IsMatch(fileName);
         }
 
-        private void DirectoryCopy(string sourceDirectory, string targetDirectory, bool includeSubDirectory = true, string[] ignoreDirectoryNames = null, string[] ignoreFileFilters = null)
+        private void DirectoryCopy(string sourceDirectory, string targetDirectory, bool includeSubDirectory = true, string[] ignoreDirectoryNames = null, string[] specificDirectoryNames = null, string[] ignoreFileFilters = null)
         {
             if (!Directory.Exists(sourceDirectory))
                 throw new DirectoryNotFoundException();
@@ -152,15 +154,33 @@ namespace Aritiafel.Locations
             if (!Directory.Exists(targetDirectory))
                 Directory.CreateDirectory(targetDirectory);
 
-            foreach (string file in files)
+            bool copyFiles = true;
+            if (specificDirectoryNames != null)
             {
-                string fileName = Path.GetFileName(file);
-                if (ignoreFileFilters != null)
-                    foreach (string filter in ignoreFileFilters)
-                        if (FitsMask(fileName, filter))
-                            goto BreakPoint;
-                File.Copy(file, Path.Combine(targetDirectory, fileName), true);
-            BreakPoint:;
+                copyFiles = false;
+                string mainDirName = Path.GetFileName(sourceDirectory);
+                foreach (string dirName in specificDirectoryNames)
+                {
+                    if (dirName == mainDirName)
+                    {
+                        copyFiles = true;
+                        break;
+                    }
+                }
+            }
+
+            if (copyFiles)
+            {
+                foreach (string file in files)
+                {
+                    string fileName = Path.GetFileName(file);
+                    if (ignoreFileFilters != null)
+                        foreach (string filter in ignoreFileFilters)
+                            if (FitsMask(fileName, filter))
+                                goto BreakPoint;
+                    File.Copy(file, Path.Combine(targetDirectory, fileName), true);
+                BreakPoint:;
+                }
             }
 
             if (includeSubDirectory)
@@ -173,7 +193,8 @@ namespace Aritiafel.Locations
                         foreach (string dirName in ignoreDirectoryNames)
                             if (dirName == subDirName)
                                 goto BreakPoint2;
-                    DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, ignoreFileFilters);
+
+                    DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, specificDirectoryNames, ignoreFileFilters);
                 BreakPoint2:;
                 }
             }
