@@ -3,6 +3,8 @@ using System;
 using System.Text.Json;
 using Aritiafel.Locations.StorageHouse;
 using System.Collections.Generic;
+using CChessEngine;
+using Aritiafel.Characters.Heroes;
 
 namespace AritiafelTest
 {
@@ -151,6 +153,13 @@ namespace AritiafelTest
             object o = JsonSerializer.Deserialize<Car>(s, jso);
             string s2 = JsonSerializer.Serialize(o, jso);
             Assert.IsTrue(s.CompareTo(s2) == 0);
+        }
+
+        [TestMethod]
+        public void SpecificTest()
+        {
+            CChessBoardNode ccbn = new CChessBoardNode(CChessBoard.StartingBoard);
+            Tina.SaveJsonFile(@"C:\Programs\Reports\ccbn.json", ccbn, true);
         }
 
     }

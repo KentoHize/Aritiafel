@@ -263,7 +263,8 @@ namespace Aritiafel.Locations.StorageHouse
                         writer.WriteString(ReferenceTypeString, valueType.GetNestedTypeName());
                 foreach (PropertyInfo pi in pis)
                 {
-                    if (pi.GetAccessors(true)[0].IsStatic)
+                    //跳過Indexer及Static
+                    if (pi.GetAccessors(true)[0].IsStatic || pi.GetIndexParameters().Length != 0)
                         continue;
                     object p_value = GetPropertyValueAndWrite(pi.Name, value);
 
