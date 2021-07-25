@@ -6,7 +6,7 @@ using Aritiafel.Organizations.RaeriharUniversity;
 namespace Aritiafel.Artifacts
 {
     /// <summary>
-    /// 混沌盒子，用來取代Random
+    /// 混沌盒子，相傳是大法師Tina所製造，可以產生各種無法預測的事物
     /// </summary>
     public class ChaosBox
     {
@@ -24,6 +24,13 @@ namespace Aritiafel.Artifacts
             _Random = new Random(seed);
             _Random2 = new Random(seed ^ _Random.Next(int.MinValue, int.MaxValue));
         }
+
+        /// <summary>
+        /// 取得一個byte型的數字，在最小值(minValue)以上，最大值(maxValue)以下，不指定最小值時，最小值(minValue)為0
+        /// </summary>
+        /// <param name="minValue">最小值</param>
+        /// <param name="maxValue">最大值</param>
+        /// <returns>結果</returns>
         public byte DrawOutByte(byte minValue, byte maxValue)
             => DateTime.Now.Ticks % 2 == 0 ?
                (byte)_Random.Next(minValue, maxValue + 1) :
@@ -251,5 +258,20 @@ namespace Aritiafel.Artifacts
                 numberString.Insert(0, '-');
             return numberString.ToString();
         }
+
+        public DateTime DrawOutDateTime()
+            => DrawOutDateTime(DateTime.MinValue.Ticks, DateTime.MaxValue.Ticks);
+        public DateTime DrawOutDateTime(DateTime maxValue)
+            => DrawOutDateTime(DateTime.MinValue, maxValue);
+        public DateTime DrawOutDateTime(DateTime minValue, DateTime maxValue)
+            => DrawOutDateTime(minValue.Ticks, maxValue.Ticks);
+        public DateTime DrawOutDateTime(long minTicks, long maxTicks)
+            => new DateTime(DrawOutLong(minTicks, maxTicks));
+        public DateTime DrawOutDate()
+            => DrawOutDate(DateTime.MinValue.Date, DateTime.MaxValue.Date);
+        public DateTime DrawOutDate(DateTime maxValue)
+            => DrawOutDate(DateTime.MinValue.Date, maxValue);
+        public DateTime DrawOutDate(DateTime minValue, DateTime maxValue)
+            => DrawOutDateTime(minValue.Date, maxValue.Date).Date;
     }
 }

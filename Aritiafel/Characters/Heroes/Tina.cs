@@ -24,6 +24,7 @@ namespace Aritiafel.Characters.Heroes
            { ProjectChoice.NSBattle, @"C:\Programs\WinForm\NSBattle" },
            { ProjectChoice.IdealWorld, @"C:\Programs\Web\WF\IdealWorld" },
            { ProjectChoice.DeepMind, @"C:\Programs\WPF\DeepMind" },
+           { ProjectChoice.ASON, @"C:\Programs\Standard\ArinaStandardObjectNotation" }
         };
 
         public static void SaveProject(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = "E")
@@ -104,6 +105,7 @@ namespace Aritiafel.Characters.Heroes
         NinjaSato,
         NSBattle,
         IdealWorld,
-        DeepMind
+        DeepMind,
+        ASON
     }
 }
