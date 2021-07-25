@@ -6,8 +6,16 @@
     <members>
         <member name="T:Aritiafel.Artifacts.ChaosBox">
             <summary>
-            混沌盒子，用來取代Random
+            混沌盒子，相傳是大法師Tina所製造，可以產生各種無法預測的事物
             </summary>
+        </member>
+        <member name="M:Aritiafel.Artifacts.ChaosBox.DrawOutByte(System.Byte,System.Byte)">
+            <summary>
+            取得一個byte型的數字，在最小值(minValue)以上，最大值(maxValue)以下，不指定最小值時，最小值(minValue)為0
+            </summary>
+            <param name="minValue">最小值</param>
+            <param name="maxValue">最大值</param>
+            <returns>結果</returns>
         </member>
         <member name="T:Aritiafel.Characters.Archivist">
             <summary>

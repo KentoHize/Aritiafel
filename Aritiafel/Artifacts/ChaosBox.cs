@@ -14,6 +14,7 @@ namespace Aritiafel.Artifacts
         private Random _Random2;
 
         private const string MinGreaterThanMaxMessage = "Min value greater than max Value.";
+        private const string CountGreaterThanValueRange = "Count can't greater than the value's range.";
         public ChaosBox()
         {
             _Random = new Random((int)(DateTime.Now.Ticks ^ 5621387647545697893));
@@ -274,16 +275,48 @@ namespace Aritiafel.Artifacts
         public DateTime DrawOutDate(DateTime minValue, DateTime maxValue)
             => DrawOutDateTime(minValue.Date, maxValue.Date).Date;
 
-        //public int[] DrawOutIntegers(long count, int minValue = 0, int maxValue = byte.MaxValue, bool repetition = true)
-        //{
-        //    if (count < 0)
-        //        throw new ArgumentOutOfRangeException(nameof(count));
-        //    int[] result = new int[count];
-        //    for (long i = 0; i < count; i++)
-        //        result[i] = DrawOutByte(minValue, maxValue);
-        //    return result;
-        //}
+        public int[] DrawOutIntegers(long count, int minValue = 0, int maxValue = byte.MaxValue, bool repeatable = true)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            if (!repeatable && count > maxValue - minValue)
+                throw new ArgumentException(CountGreaterThanValueRange);
 
+            int[] result = new int[count];
+            if (!repeatable)
+            {
+                SortedList<int, int> choiceList = new SortedList<int, int>();
+                for (int i = 0; i < count; i++)
+                {
+                    //int r = _Random.Next(minValue, (int)(maxValue + 2 - count));
+                    int r = DrawOutInteger(minValue, (int)(maxValue + 1 - count));
+                    if (choiceList.ContainsKey(r))
+                        choiceList[r]++;
+                    else
+                        choiceList.Add(r, 1);
+                }
+
+                
+
+                int choiceCount = 0;
+                foreach (KeyValuePair<int, int> choice in choiceList)
+                {
+                    //Console.WriteLine($"{choice.Key}:{choice.Value}");
+                    for (int i = 0; i < choice.Value; i++)
+                    {
+                        result[choiceCount] = choice.Key + choiceCount;
+                        choiceCount++;
+                    }
+                }
+            }
+            else
+            {
+                for (long i = 0; i < count; i++)
+                    result[i] = DrawOutInteger(minValue, maxValue);
+            }
+            return result;
+        }
+      
         //public List<T> DrawOutFromList<T>(IList<T> list, int quantity = 1)
         //{
         //    if (list == null)

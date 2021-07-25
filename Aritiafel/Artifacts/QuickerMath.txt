@@ -1,0 +1,84 @@
+﻿假設要從n項元素隨機取得m項元素，順序不記，其方法有
+
+Cmn個，即
+
+
+例如<1, 2, 3, 4, 5, 6, 7, 8, 9, 10> n = 10
+取m = 5個的所有樣本
+
+//5個紅色和5個白色做排序有幾種組合
+//紅色就是選中的數字，依序為1到10
+
+舉例來說
+RRRRRWWWWW = 1
+WRRRRRWWWW = 1
+WWRRRRRWWW = 1
+WWWRRRRRWW = 1
+WWWWRRRRRW = 1
+WWWWWRRRRR = 1
+
+Ans = 10!/5!5! = 252種
+
+12345, 23456, 34567, 45678, 56789, 6789T = 6
+
+
+
+^W^W^W^W^W^
+
+5R插進去有幾種方法
+5 選1插入 6種
+4 - 1 選插6 最後再插5 = 30種
+3 - 2 選插6 最後再插5 = 30種
+3 - 1 - 1 選插6 再插5 再插4 = 120種 / 2(同種) = 60種
+2 - 1 - 2 選插6 再插5 再插4 = 120種 / 2(同種) = 60種
+2 - 1 - 1 - 1 選插6 再插5 再插4 再插3 / 3!(同種) = 60種 
+1 - 1 - 1 - 1 - 1 6種
+
+= 252種
+ 7種模式
+
+
+故要從n項元素隨機取得m項元素，順序不記其方法有
+n! / (m!(n-m)!) 個
+
+依照順序去取得其排列位置
+
+
+^W^W^W^W^W^
+
+插紅球進入，每次取得一個數字，得知白球插入的位置
+
+得到結果後，即為所需數列
+
+(還需驗算)
+目前此方法可能不是平穩的結果
+
+ int minValue = 30;
+            int maxValue = 90;
+            int count = 20;
+            //30~90取20 not repeated
+
+
+
+
+            SortedList<int, int> redBallList = new SortedList<int, int>();
+            for (int i = 0; i < count; i++)
+            {
+                int r = cb.DrawOutInteger(minValue, maxValue + 1 - count);
+                if (redBallList.ContainsKey(r))
+                    redBallList[r]++;
+                else
+                    redBallList.Add(r, 1);
+            }
+
+            TestContext.Write("Reslt: [");
+            int currentCount = 0;
+            foreach (KeyValuePair<int, int> redBall in redBallList)
+            {
+                for (int i = 0; i < redBall.Value; i++)
+                {   
+                    TestContext.Write($"{redBall.Key + currentCount},");
+                    currentCount++;
+                }
+            }
+            TestContext.WriteLine("]");

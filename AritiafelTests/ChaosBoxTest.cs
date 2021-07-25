@@ -14,14 +14,33 @@ namespace AritiafelTest
         public TestContext TestContext { get; set; }
 
         [TestMethod]
+        public void SmoothTestNextIntTest()
+        {
+            Random rnd = new Random((int)DateTime.Now.Ticks);
+
+            SortedList<int, int> result = new SortedList<int, int>();
+            for(int i = 0; i < 10000; i++)
+            {
+                int r = rnd.Next(30, 101);
+                if (result.ContainsKey(r))
+                    result[r]++;
+                else
+                    result.Add(r, 1);
+            }
+
+            foreach(KeyValuePair<int, int> kvp in result)
+                TestContext.WriteLine($"{kvp.Key}:{kvp.Value}");
+        }
+
+        [TestMethod]
         public void SmoothTestRandomTest()
         {
             Random rnd = new Random((int)DateTime.Now.Ticks);
             int a = 0, b = 0, t = 0;
-            for(int j = 0; j < 100; j++)
+            for (int j = 0; j < 100; j++)
             {
                 a = 0; b = 0;
-                for(int i = 0; i < 100000; i++)
+                for (int i = 0; i < 100000; i++)
                 {
                     if (rnd.Next(0, 10) >= 1)
                         a++;
@@ -37,7 +56,7 @@ namespace AritiafelTest
 
         [TestMethod]
         public void RandomMinMaxIntegerTest()
-        {   
+        {
             Random rnd = new Random();
             SortedList<int, int> test = new SortedList<int, int>();
             for (int i = 0; i < 10000; i++)
@@ -122,7 +141,7 @@ namespace AritiafelTest
         //        int a = cb.DrawOutInteger();
         //        int b = cb.DrawOutInteger();
         //        int c;
-                
+
         //        if (a > b)
         //        { c = a; a = b; b = c; }
         //        //a = 100;
@@ -319,7 +338,7 @@ namespace AritiafelTest
                 decimal b = cb.DrawOutDecimal(true);
                 //TestContext.WriteLine(b.ToString());
                 int key;
-                key = Mathematics.GetIntegerDigitsCount(b.ToString());                
+                key = Mathematics.GetIntegerDigitsCount(b.ToString());
                 if (!test.ContainsKey(key))
                     test.Add(key, 1);
                 else
@@ -378,5 +397,49 @@ namespace AritiafelTest
         {
             ChaosBox cb = new ChaosBox();
 
+           
+
+
+        }
+
+
+        [TestMethod]
+        public void DrawOutUnrepetableIntegers()
+        {
+            ChaosBox cb = new ChaosBox();
+            
+            SortedList<int, int> resultCount = new SortedList<int, int>();
+            for (int i = 0; i < 100; i++)
+            {
+                int[] result;
+                result = cb.DrawOutIntegers(40, 30, 100, false);
+                
+                for(int j = 0; j < result.Length; j++)
+                {
+                    if (resultCount.ContainsKey(result[j]))
+                        resultCount[result[j]]++;
+                    else
+                        resultCount.Add(result[j], 1);
+                }
+            }
+            
+            //平穩度測試
+            TestContext.WriteLine("StableTable:");            
+            for(int i = 0; i < resultCount.Count; i++)
+                TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");
+            
+            //似乎前後特別高
+
+            //result = cb.DrawOutIntegers(20, 60, 90);
+            //TestContext.Write("Result: [");
+            //for (int i = 0; i < result.Length; i++)
+            //{
+            //    if (i != result.Length - 1)
+            //        TestContext.Write($"{result[i]},");
+            //    else
+            //        TestContext.Write($"{result[i]}");
+            //}
+            //TestContext.WriteLine("]");
         }
     }
+}
