@@ -372,5 +372,11 @@ namespace AritiafelTest
             foreach (KeyValuePair<int, int> kv in test)
                 TestContext.WriteLine($"{kv.Key}:{kv.Value}");
         }
+
+        [TestMethod]
+        public void DrawOutDateTimeTest()
+        {
+            ChaosBox cb = new ChaosBox();
+
+        }
     }
-}

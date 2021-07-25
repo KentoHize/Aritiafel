@@ -238,7 +238,7 @@ namespace Aritiafel.Artifacts
                 }
             }
 
-            if (startCompareDigit < -30 || startCompareDigit > 30)
+            if (startCompareDigit < -30 || startCompareDigit > 30) // Check
             {
                 numberString.Insert(1, '.');
                 numberString.AppendFormat("E{0}{1}", (startCompareDigit >= 0 ? "+" : ""), startCompareDigit);
@@ -273,5 +273,29 @@ namespace Aritiafel.Artifacts
             => DrawOutDate(DateTime.MinValue.Date, maxValue);
         public DateTime DrawOutDate(DateTime minValue, DateTime maxValue)
             => DrawOutDateTime(minValue.Date, maxValue.Date).Date;
+
+        //public int[] DrawOutIntegers(long count, int minValue = 0, int maxValue = byte.MaxValue, bool repetition = true)
+        //{
+        //    if (count < 0)
+        //        throw new ArgumentOutOfRangeException(nameof(count));
+        //    int[] result = new int[count];
+        //    for (long i = 0; i < count; i++)
+        //        result[i] = DrawOutByte(minValue, maxValue);
+        //    return result;
+        //}
+
+        //public List<T> DrawOutFromList<T>(IList<T> list, int quantity = 1)
+        //{
+        //    if (list == null)
+        //        throw new ArgumentNullException(nameof(list));
+        //    if (quantity > list.Count)
+        //        throw new ArgumentOutOfRangeException(nameof(quantity));
+        //    else if (quantity == list.Count)
+        //        return new List<T>(list);
+
+        //    List<T> result = new List<T>();
+
+        //    DrawOutBytes
+        //}
     }
 }
