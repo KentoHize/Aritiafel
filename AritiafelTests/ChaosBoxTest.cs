@@ -420,43 +420,65 @@ namespace AritiafelTest
             }
 
         }
+    
+        [TestMethod]
+        public void DrawOutUnrepetableIntegers()
+        {
+            ChaosBox cb = new ChaosBox();
+            SortedList<int, long> resultCount = new SortedList<int, long>();
+            for (int i = 0; i < 1000; i++)
+            {
+                int[] result;
+                result = cb.DrawOutIntegers(100, 500, 1020, false);
+                for (int j = 0; j < result.Length; j++)
+                {
+                    if (resultCount.ContainsKey(result[j]))
+                        resultCount[result[j]]++;
+                    else
+                        resultCount.Add(result[j], 1);
+                }
+            }
 
-        //[TestMethod]
-        //public void DrawOutUnrepetableIntegers()
-        //{
-        //    ChaosBox cb = new ChaosBox();
+            //平穩度測試
+            TestContext.WriteLine("StableTable:");
+            for (int i = 0; i < resultCount.Count; i++)
+                TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");
+        }
 
-        //    SortedList<int, int> resultCount = new SortedList<int, int>();
-        //    for (int i = 0; i < 1000; i++)
-        //    {
-        //        int[] result;
-        //        result = cb.DrawOutIntegers(40, 30, 90, false);
+        [TestMethod]
+        public void DrawOutUnrepetableDoubles()
+        {
+            ChaosBox cb = new ChaosBox();
+            SortedList<double, long> resultCount = new SortedList<double, long>();
+            for (int i = 0; i < 1000; i++)
+            {
+                double[] result;
+                result = cb.DrawOutDoubles(100, -4623484.54813, 999994559.5484, false);
+                for (int j = 0; j < result.Length; j++)
+                {
+                    if (resultCount.ContainsKey(result[j]))
+                        resultCount[result[j]]++;
+                    else
+                        resultCount.Add(result[j], 1);
+                }
+            }
 
-        //        for (int j = 0; j < result.Length; j++)
-        //        {
-        //            if (resultCount.ContainsKey(result[j]))
-        //                resultCount[result[j]]++;
-        //            else
-        //                resultCount.Add(result[j], 1);
-        //        }
-        //    }
+            //平穩度測試
+            TestContext.WriteLine("StableTable:");
+            for (int i = 0; i < resultCount.Count; i++)
+                TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");
+        }
 
-        //    //平穩度測試
-        //    TestContext.WriteLine("StableTable:");
-        //    for (int i = 0; i < resultCount.Count; i++)
-        //        TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");         
-        //}
 
         [TestMethod]
         public void DrawOutUnrepetableDecimals()
         {
             ChaosBox cb = new ChaosBox();
-            SortedList<decimal, decimal> resultCount = new SortedList<decimal, decimal>();
+            SortedList<decimal, long> resultCount = new SortedList<decimal, long>();
             for (int i = 0; i < 1000; i++)
             {
                 decimal[] result;
                 result = cb.DrawOutDecimals(100, (decimal)123484.54813, (decimal)9994559.5484, false);
-
                 for (int j = 0; j < result.Length; j++)
                 {
                     if (resultCount.ContainsKey(result[j]))

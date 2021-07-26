@@ -94,52 +94,106 @@ namespace Aritiafel.Artifacts
             return result;
         }
 
-        //public double[] DrawOutDoubles(long count, double minValue = 0, double maxValue = double.MaxValue, bool repeatable = true)
-        //{
-        //    if (count < 0)
-        //        throw new ArgumentOutOfRangeException(nameof(count));
-        //    if (minValue > maxValue)
-        //        throw new ArgumentException(MinGreaterThanMaxMessage);
-        //    if (!repeatable && count > maxValue - minValue)
-        //        throw new ArgumentException(CountGreaterThanValueRange);
-
-        //    double[] result = new double[count];
-        //    if (repeatable)
-        //        for (long i = 0; i < count; i++)
-        //            result[i] = DrawOutDecimal(minValue, maxValue);
-        //    else
-        //    {
-        //        double maxValueMinusCount = maxValue + 1 - count;
-        //        SortedList<double, long> choiceList = new SortedList<double, long>();
-        //        SortedList<double, double> extraSlot = new SortedList<double, double>();
-        //        for (long i = 0; i < count; i++)
-        //        {
-        //            double r = DrawOutDecimal(minValue, maxValueMinusCount + i);
-        //            if (r > maxValueMinusCount)
-        //                r = extraSlot[Math.Ceiling(r - maxValueMinusCount)];
-        //            extraSlot.Add(i + 1, r);
-        //            if (choiceList.ContainsKey(r))
-        //                choiceList[r]++;
-        //            else
-        //                choiceList.Add(r, 1);
-        //        }
-
-        //        long choiceCount = 0;
-        //        foreach (KeyValuePair<decimal, long> choice in choiceList)
-        //        {
-        //            for (long i = 0; i < choice.Value; i++)
-        //            {
-        //                result[choiceCount] = choice.Key + choiceCount;
-        //                choiceCount++;
-        //            }
-        //        }
-        //    }
-        //    return result;
-        //}
-        public byte[] DrawOutBytes(long count, byte minValue = 0, byte maxValue = byte.MaxValue)
+        public double[] DrawOutDoubles(long count, double minValue = 0, double maxValue = double.MaxValue, bool repeatable = true)
         {
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
+            if (minValue > maxValue)
+                throw new ArgumentException(MinGreaterThanMaxMessage);
+            if (!repeatable && count > maxValue - minValue)
+                throw new ArgumentException(CountGreaterThanValueRange);
+
+            double[] result = new double[count];
+            if (repeatable)
+                for (long i = 0; i < count; i++)
+                    result[i] = DrawOutDouble(minValue, maxValue);
+            else
+            {
+                double maxValueMinusCount = maxValue + 1 - count;
+                SortedList<double, long> choiceList = new SortedList<double, long>();
+                SortedList<long, double> extraSlot = new SortedList<long, double>();
+                for (long i = 0; i < count; i++)
+                {
+                    double r = DrawOutDouble(minValue, maxValueMinusCount + i);
+                    if (r > maxValueMinusCount)
+                        r = extraSlot[(long)Math.Ceiling(r - maxValueMinusCount)];
+                    extraSlot.Add(i + 1, r);
+                    if (choiceList.ContainsKey(r))
+                        choiceList[r]++;
+                    else
+                        choiceList.Add(r, 1);
+                }
+
+                long choiceCount = 0;
+                foreach (KeyValuePair<double, long> choice in choiceList)
+                {
+                    for (long i = 0; i < choice.Value; i++)
+                    {
+                        result[choiceCount] = choice.Key + choiceCount;
+                        choiceCount++;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public int[] DrawOutIntegers(long count, int minValue = 0, int maxValue = int.MaxValue, bool repeatable = true)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            if (minValue > maxValue)
+                throw new ArgumentException(MinGreaterThanMaxMessage);
+            if (!repeatable && count > maxValue - minValue)
+                throw new ArgumentException(CountGreaterThanValueRange);
+
+            int[] result = new int[count];
+            if (repeatable)
+                for (long i = 0; i < count; i++)
+                    result[i] = DrawOutInteger(minValue, maxValue);
+            else
+            {
+                int maxValueMinusCount = (int)(maxValue + 1 - count);
+                SortedList<int, long> choiceList = new SortedList<int, long>();
+                SortedList<long, int> extraSlot = new SortedList<long, int>();
+                for (long i = 0; i < count; i++)
+                {
+                    int r = DrawOutInteger(minValue, (int)(maxValueMinusCount + i));
+                    if (r > maxValueMinusCount)
+                        r = extraSlot[r - maxValueMinusCount];
+                    extraSlot.Add(i + 1, r);
+                    if (choiceList.ContainsKey(r))
+                        choiceList[r]++;
+                    else
+                        choiceList.Add(r, 1);
+                }
+
+                long choiceCount = 0;
+                foreach (KeyValuePair<int, long> choice in choiceList)
+                {
+                    for (long i = 0; i < choice.Value; i++)
+                    {
+                        result[choiceCount] = (int)(choice.Key + choiceCount);
+                        choiceCount++;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public float[] DrawOutFloats(long count, float minValue = 0, float maxValue = float.MaxValue, bool repeatable = true)
+            => Array.ConvertAll(DrawOutDoubles(count, minValue, maxValue, repeatable), m => (float)m);
+
+        public short[] DrawOutShorts(long count, short minValue = 0, short maxValue = short.MaxValue, bool repeatable = true)
+            => Array.ConvertAll(DrawOutIntegers(count, minValue, maxValue, repeatable), m => (short)m);
+
+        public byte[] DrawOutBytes(long count, byte minValue = 0, byte maxValue = byte.MaxValue, bool repeatable = true)
+        {
+            if (!repeatable)
+                return Array.ConvertAll(DrawOutIntegers(count, minValue, maxValue, repeatable), m => (byte)m);
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            if (minValue > maxValue)
+                throw new ArgumentException(MinGreaterThanMaxMessage);
             byte[] result = new byte[count];
             for (long i = 0; i < count; i++)
                 result[i] = DrawOutByte(minValue, maxValue);
