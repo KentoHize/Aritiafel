@@ -22,8 +22,6 @@ namespace Aritiafel.Artifacts
                 return new decimal[] { DrawOutDecimal(minValue, maxValue) };
             if (minValue > maxValue)
                 throw new ArgumentException(MinGreaterThanMaxMessage);
-            if (!repeatable && count > maxValue - minValue + 1)
-                throw new ArgumentException(CountGreaterThanValueRange);
 
             decimal[] result = new decimal[count];
             if (repeatable)
@@ -122,9 +120,7 @@ namespace Aritiafel.Artifacts
             else if (count == 1)
                 return new double[] { DrawOutDouble(minValue, maxValue) };
             if (minValue > maxValue)
-                throw new ArgumentException(MinGreaterThanMaxMessage);
-            if (!repeatable && count > maxValue - minValue + 1)
-                throw new ArgumentException(CountGreaterThanValueRange);
+                throw new ArgumentException(MinGreaterThanMaxMessage);            
 
             double[] result = new double[count];
             if (repeatable)
