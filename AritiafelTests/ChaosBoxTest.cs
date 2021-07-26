@@ -19,7 +19,7 @@ namespace AritiafelTest
             Random rnd = new Random((int)DateTime.Now.Ticks);
 
             SortedList<int, int> result = new SortedList<int, int>();
-            for(int i = 0; i < 10000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 int r = rnd.Next(30, 101);
                 if (result.ContainsKey(r))
@@ -28,7 +28,7 @@ namespace AritiafelTest
                     result.Add(r, 1);
             }
 
-            foreach(KeyValuePair<int, int> kvp in result)
+            foreach (KeyValuePair<int, int> kvp in result)
                 TestContext.WriteLine($"{kvp.Key}:{kvp.Value}");
         }
 
@@ -225,6 +225,23 @@ namespace AritiafelTest
         }
 
         [TestMethod]
+        public void SmoothTestLimitedInteger()
+        {
+            ChaosBox cb = new ChaosBox();
+            SortedList<int, int> test = new SortedList<int, int>();
+            for (int i = 1; i < 10000; i++)
+            {
+                int b = cb.DrawOutInteger(0, 33);
+                if (!test.ContainsKey(b))
+                    test.Add(b, 1);
+                else
+                    test[b]++;
+            }
+            foreach (KeyValuePair<int, int> kv in test)
+                TestContext.WriteLine($"{kv.Key}:{kv.Value}");
+        }
+
+        [TestMethod]
         public void DrawOutByteTest()
         {
             ChaosBox cb = new ChaosBox();
@@ -397,24 +414,50 @@ namespace AritiafelTest
         {
             ChaosBox cb = new ChaosBox();
 
-           
-
+            for (int i = 0; i < 10; i++)
+            {
+                TestContext.WriteLine(cb.DrawOutDateTime(DateTime.Now, DateTime.Now.AddHours(2)).ToString());
+            }
 
         }
 
+        //[TestMethod]
+        //public void DrawOutUnrepetableIntegers()
+        //{
+        //    ChaosBox cb = new ChaosBox();
+
+        //    SortedList<int, int> resultCount = new SortedList<int, int>();
+        //    for (int i = 0; i < 1000; i++)
+        //    {
+        //        int[] result;
+        //        result = cb.DrawOutIntegers(40, 30, 90, false);
+
+        //        for (int j = 0; j < result.Length; j++)
+        //        {
+        //            if (resultCount.ContainsKey(result[j]))
+        //                resultCount[result[j]]++;
+        //            else
+        //                resultCount.Add(result[j], 1);
+        //        }
+        //    }
+
+        //    //平穩度測試
+        //    TestContext.WriteLine("StableTable:");
+        //    for (int i = 0; i < resultCount.Count; i++)
+        //        TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");         
+        //}
 
         [TestMethod]
-        public void DrawOutUnrepetableIntegers()
+        public void DrawOutUnrepetableDecimals()
         {
             ChaosBox cb = new ChaosBox();
-            
-            SortedList<int, int> resultCount = new SortedList<int, int>();
-            for (int i = 0; i < 100; i++)
+            SortedList<decimal, decimal> resultCount = new SortedList<decimal, decimal>();
+            for (int i = 0; i < 1000; i++)
             {
-                int[] result;
-                result = cb.DrawOutIntegers(40, 30, 100, false);
-                
-                for(int j = 0; j < result.Length; j++)
+                decimal[] result;
+                result = cb.DrawOutDecimals(100, (decimal)123484.54813, (decimal)9994559.5484, false);
+
+                for (int j = 0; j < result.Length; j++)
                 {
                     if (resultCount.ContainsKey(result[j]))
                         resultCount[result[j]]++;
@@ -422,24 +465,99 @@ namespace AritiafelTest
                         resultCount.Add(result[j], 1);
                 }
             }
-            
-            //平穩度測試
-            TestContext.WriteLine("StableTable:");            
-            for(int i = 0; i < resultCount.Count; i++)
-                TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");
-            
-            //似乎前後特別高
 
-            //result = cb.DrawOutIntegers(20, 60, 90);
-            //TestContext.Write("Result: [");
-            //for (int i = 0; i < result.Length; i++)
-            //{
-            //    if (i != result.Length - 1)
-            //        TestContext.Write($"{result[i]},");
-            //    else
-            //        TestContext.Write($"{result[i]}");
-            //}
-            //TestContext.WriteLine("]");
+            //平穩度測試
+            TestContext.WriteLine("StableTable:");
+            for (int i = 0; i < resultCount.Count; i++)
+                TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");
+        }
+
+
+
+        private int[] IdealC(int count, int minValue, int maxValue)
+        {
+            ChaosBox cb = new ChaosBox();
+            //第一件事
+            //做第一次隨機分count然後找出第一個差距確認
+            int maxValue2 = 0;
+            int minValue2 = count;
+            int r = 0;
+            for (int i = minValue; i < maxValue; i++)
+            {
+                r = cb.DrawOutInteger(0, count - 1);
+                if (r < minValue2)
+                    minValue2 = r;
+                //minValue越高，代表最後一張牌的位置越近
+            }
+            maxValue -= minValue2;
+            //TestContext.WriteLine(maxValue.ToString());
+            //已知最後一張牌位置
+            SortedList<int, int> choiceList = new SortedList<int, int>();
+            for (int i = 0; i < count; i++)
+                choiceList.Add(i, 0);
+
+            for (int i = minValue; i < maxValue; i++)
+            {
+                r = cb.DrawOutInteger(0, count - 1);
+                choiceList[r]++;
+                //得到間距
+            }
+
+            List<int> reList = new List<int>(choiceList.Values);
+            int[] result = new int[count];
+            reList.Sort();
+
+            int currentNumber = minValue;
+            for (int i = 0; i < reList.Count; i++)
+            {
+                currentNumber += reList[i];
+                result[i] = currentNumber;
+            }
+            return result;
+        }
+
+        [TestMethod]
+        public void MathCount()
+        {
+            int count = 0;
+            for(int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4 - i; j++)
+                {
+                    for (int k = 0; k < 4 - j - i; k++)
+                    {
+                        for (int l = 0; l < 4 - i - j - k; l++)
+                        {
+                            for(int m = 0; m < 4 - i - j - k - l; m++)
+                            {
+                                count++;
+                                TestContext.WriteLine($"{count}:{i + 1}{j + 1}{k + 1}{l + 1}{m + 1}");
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+
+        [TestMethod]
+        public void MathTest()
+        {            
+            SortedList<int, int> AllNumbers = new SortedList<int, int>();
+            for(int i = 0; i < 100; i++)
+            {
+                int[] result = IdealC(20, 30, 90);
+                for (int j = 0; j < result.Length; j++)
+                {
+                    if (AllNumbers.ContainsKey(result[j]))
+                        AllNumbers[result[j]] += 1;
+                    else
+                        AllNumbers.Add(result[j], 1);
+                }
+            }
+
+            foreach(KeyValuePair<int, int> kvp in AllNumbers)
+                TestContext.WriteLine($"{kvp.Key}:{kvp.Value}");        
         }
     }
 }

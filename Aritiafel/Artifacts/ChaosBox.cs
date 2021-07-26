@@ -8,7 +8,7 @@ namespace Aritiafel.Artifacts
     /// <summary>
     /// 混沌盒子，相傳是大法師Tina所製造，可以產生各種無法預測的事物
     /// </summary>
-    public class ChaosBox
+    public partial class ChaosBox
     {
         private Random _Random;
         private Random _Random2;
@@ -40,15 +40,6 @@ namespace Aritiafel.Artifacts
             => DrawOutByte(0, maxValue);
         public byte DrawOutByte()
             => DrawOutByte(0, byte.MaxValue);
-        public byte[] DrawOutBytes(long count, byte minValue = 0, byte maxValue = byte.MaxValue)
-        {
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));
-            byte[] result = new byte[count];
-            for (long i = 0; i < count; i++)
-                result[i] = DrawOutByte(minValue, maxValue);
-            return result;
-        }
         public short DrawOutShort(short minValue, short maxValue)
             => DateTime.Now.Ticks % 2 == 0 ?
                (short)_Random.Next(minValue, maxValue + 1) :
@@ -275,47 +266,7 @@ namespace Aritiafel.Artifacts
         public DateTime DrawOutDate(DateTime minValue, DateTime maxValue)
             => DrawOutDateTime(minValue.Date, maxValue.Date).Date;
 
-        public int[] DrawOutIntegers(long count, int minValue = 0, int maxValue = byte.MaxValue, bool repeatable = true)
-        {
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));
-            if (!repeatable && count > maxValue - minValue)
-                throw new ArgumentException(CountGreaterThanValueRange);
-
-            int[] result = new int[count];
-            if (!repeatable)
-            {
-                SortedList<int, int> choiceList = new SortedList<int, int>();
-                for (int i = 0; i < count; i++)
-                {
-                    //int r = _Random.Next(minValue, (int)(maxValue + 2 - count));
-                    int r = DrawOutInteger(minValue, (int)(maxValue + 1 - count));
-                    if (choiceList.ContainsKey(r))
-                        choiceList[r]++;
-                    else
-                        choiceList.Add(r, 1);
-                }
-
-                
-
-                int choiceCount = 0;
-                foreach (KeyValuePair<int, int> choice in choiceList)
-                {
-                    //Console.WriteLine($"{choice.Key}:{choice.Value}");
-                    for (int i = 0; i < choice.Value; i++)
-                    {
-                        result[choiceCount] = choice.Key + choiceCount;
-                        choiceCount++;
-                    }
-                }
-            }
-            else
-            {
-                for (long i = 0; i < count; i++)
-                    result[i] = DrawOutInteger(minValue, maxValue);
-            }
-            return result;
-        }
+        
       
         //public List<T> DrawOutFromList<T>(IList<T> list, int quantity = 1)
         //{
