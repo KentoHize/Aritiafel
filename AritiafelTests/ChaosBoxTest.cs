@@ -413,12 +413,10 @@ namespace AritiafelTest
         public void DrawOutDateTimeTest()
         {
             ChaosBox cb = new ChaosBox();
-
             for (int i = 0; i < 10; i++)
-            {
                 TestContext.WriteLine(cb.DrawOutDateTime(DateTime.Now, DateTime.Now.AddHours(2)).ToString());
-            }
-
+            for (int i = 0; i < 10; i++)
+                TestContext.WriteLine(cb.DrawOutDate(DateTime.Now.AddDays(-3), DateTime.Now).ToString());
         }
     
         [TestMethod]
@@ -439,7 +437,6 @@ namespace AritiafelTest
                 }
             }
 
-            //平穩度測試
             TestContext.WriteLine("StableTable:");
             for (int i = 0; i < resultCount.Count; i++)
                 TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");
@@ -463,7 +460,6 @@ namespace AritiafelTest
                 }
             }
 
-            //平穩度測試
             TestContext.WriteLine("StableTable:");
             for (int i = 0; i < resultCount.Count; i++)
                 TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");
@@ -488,12 +484,65 @@ namespace AritiafelTest
                 }
             }
 
-            //平穩度測試
             TestContext.WriteLine("StableTable:");
             for (int i = 0; i < resultCount.Count; i++)
                 TestContext.WriteLine($"{resultCount.Keys[i]}:{resultCount.Values[i]}");
         }
 
+        [TestMethod]
+        public void DrawOutItemsFromArrayTest()
+        {
+            ChaosBox cb = new ChaosBox();
+            int[] a = new int[] { 3, 5, 8, 10, 20, 4 };
+            for(int i = 0; i < 10; i ++)
+            {
+                int[] result = cb.DrawOutItemsFromArray(a, 3);
+                for (int j = 0; j < result.Length; j++)
+                    TestContext.Write($"{result[j]} ");
+                TestContext.WriteLine("");
+            } 
+        }
+
+        [TestMethod]
+        public void DrawOutItemsFromListTest()
+        {
+            ChaosBox cb = new ChaosBox();
+            List<int> target = new List<int>
+            { 3, 6, 8, 10, 2, 4, 60, 20 };
+            for (int i = 0; i < 10; i++)
+            {
+                List<int> result =
+                    cb.DrawOutItemsFromList(target, 4);
+                for (int j = 0; j < result.Count; j++)
+                    TestContext.Write($"{result[j]},");
+                TestContext.WriteLine("");
+            }
+        }
+
+
+            [TestMethod]
+        public void DrawOutItemsFromCollectionTest()
+        {
+            ChaosBox cb = new ChaosBox();
+            Dictionary<int, string> target = new Dictionary<int, string>();
+            target.Add(4, "bird");
+            target.Add(5, "white");
+            target.Add(6, "season");
+            target.Add(7, "dreamer");
+            target.Add(8, "elephant");
+            target.Add(9, "vegetable");
+            target.Add(11, "concealment");
+            target.Add(13, "international");
+
+            for (int i = 0; i < 10; i++)
+            {
+                List<KeyValuePair<int, string>> result =
+                    cb.DrawOutItemsFromCollection(target, 3);
+                for (int j = 0; j < result.Count; j++)
+                    TestContext.Write($"{result[j].Key}:{result[j].Value},");
+                TestContext.WriteLine("");
+            }
+        }
 
 
         private int[] IdealC(int count, int minValue, int maxValue)

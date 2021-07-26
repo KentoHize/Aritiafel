@@ -53,7 +53,7 @@ namespace Aritiafel.Artifacts
         public int DrawOutInteger(int minValue, int maxValue)
         {
             if (minValue == int.MinValue && maxValue == int.MaxValue)
-                return int.Parse(RandomMinMaxValue(minValue.ToString(), maxValue.ToString(), true));
+                return int.Parse(RandomMinMaxValue(minValue.ToString(), (maxValue + 1).ToString(), true));
             else
                 return DateTime.Now.Ticks % 2 == 0 ?
                     _Random.Next(minValue - 1, maxValue) + 1 :
@@ -66,7 +66,7 @@ namespace Aritiafel.Artifacts
             => includeNegative ? DrawOutInteger(int.MinValue, int.MaxValue) :
                 DrawOutInteger(0, int.MaxValue);
         public long DrawOutLong(long minValue, long maxValue)
-            => long.Parse(RandomMinMaxValue(minValue.ToString(), maxValue.ToString(), true));
+            => long.Parse(RandomMinMaxValue(minValue.ToString(), (maxValue + 1).ToString(), true));
         public long DrawOutLong(long maxValue, bool includeNegative = false)
             => includeNegative ? DrawOutLong(long.MinValue, maxValue) :
                 DrawOutLong(0, maxValue);
@@ -264,22 +264,6 @@ namespace Aritiafel.Artifacts
         public DateTime DrawOutDate(DateTime maxValue)
             => DrawOutDate(DateTime.MinValue.Date, maxValue);
         public DateTime DrawOutDate(DateTime minValue, DateTime maxValue)
-            => DrawOutDateTime(minValue.Date, maxValue.Date).Date;
-
-        
-      
-        //public List<T> DrawOutFromList<T>(IList<T> list, int quantity = 1)
-        //{
-        //    if (list == null)
-        //        throw new ArgumentNullException(nameof(list));
-        //    if (quantity > list.Count)
-        //        throw new ArgumentOutOfRangeException(nameof(quantity));
-        //    else if (quantity == list.Count)
-        //        return new List<T>(list);
-
-        //    List<T> result = new List<T>();
-
-        //    DrawOutBytes
-        //}
+            => DrawOutDateTime(minValue.Date, maxValue.Date.AddDays(1).AddTicks(-1)).Date;
     }
 }
