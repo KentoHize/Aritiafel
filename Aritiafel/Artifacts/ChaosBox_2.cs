@@ -22,7 +22,7 @@ namespace Aritiafel.Artifacts
                 return new decimal[] { DrawOutDecimal(minValue, maxValue) };
             if (minValue > maxValue)
                 throw new ArgumentException(MinGreaterThanMaxMessage);
-            if (!repeatable && count > maxValue - minValue)
+            if (!repeatable && count > maxValue - minValue + 1)
                 throw new ArgumentException(CountGreaterThanValueRange);
 
             decimal[] result = new decimal[count];
@@ -72,7 +72,7 @@ namespace Aritiafel.Artifacts
                 return new long[] { DrawOutLong(minValue, maxValue) };
             if (minValue > maxValue)
                 throw new ArgumentException(MinGreaterThanMaxMessage);
-            if (!repeatable && count > maxValue - minValue)
+            if (!repeatable && count > maxValue - minValue + 1)
                 throw new ArgumentException(CountGreaterThanValueRange);
 
             long[] result = new long[count];
@@ -123,7 +123,7 @@ namespace Aritiafel.Artifacts
                 return new double[] { DrawOutDouble(minValue, maxValue) };
             if (minValue > maxValue)
                 throw new ArgumentException(MinGreaterThanMaxMessage);
-            if (!repeatable && count > maxValue - minValue)
+            if (!repeatable && count > maxValue - minValue + 1)
                 throw new ArgumentException(CountGreaterThanValueRange);
 
             double[] result = new double[count];
@@ -174,7 +174,7 @@ namespace Aritiafel.Artifacts
                 return new int[] { DrawOutInteger(minValue, maxValue) };
             if (minValue > maxValue)
                 throw new ArgumentException(MinGreaterThanMaxMessage);
-            if (!repeatable && count > maxValue - minValue)
+            if (!repeatable && count > maxValue - minValue + 1)
                 throw new ArgumentException(CountGreaterThanValueRange);
 
             int[] result = new int[count];
