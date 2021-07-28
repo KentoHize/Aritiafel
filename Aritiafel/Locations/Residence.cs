@@ -82,6 +82,19 @@ namespace Aritiafel.Locations
         public void SaveLocalTextFile(string fileName, string content)
             => SaveTextFile(Path.Combine(Address, fileName), content);
 
+        public static void AppendTextFile(string path, string content)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Append))
+            {
+                StreamWriter sw = new StreamWriter(fs);
+                sw.Write(content);
+                sw.Close();
+            }
+        }
+
+        public void AppendLocalTextFile(string fileName, string content)
+           => AppendTextFile(Path.Combine(Address, fileName), content);
+
         public static T LoadJsonFile<T>(string path, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
         {
             JsonSerializerOptions jso = new JsonSerializerOptions();

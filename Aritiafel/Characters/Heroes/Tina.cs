@@ -11,6 +11,8 @@ namespace Aritiafel.Characters.Heroes
     /// </summary>
     public static class Tina
     {
+        public static string LogDirectory = @"C:\Programs\Log";
+
         private static Dictionary<ProjectChoice, string> ProjectFolderPath
             = new Dictionary<ProjectChoice, string>()
         {
@@ -58,6 +60,18 @@ namespace Aritiafel.Characters.Heroes
 
         public static void SaveTextFile(string path, string content)
             => Residence.SaveTextFile(path, content);
+
+        public static void SaveTextFile(string content)
+            => Residence.SaveTextFile(Path.Combine(LogDirectory, $"{DateTime.Now.ToString("yyyy-mm-dd-hh-MM-ss")}.txt"), content);
+
+        public static void AppendTextFile(string folderName, string fileName, string content)
+        {
+            Residence rs = new Residence(folderName);
+            rs.AppendLocalTextFile(fileName, content);
+        }
+
+        public static void AppendTextFile(string path, string content)
+            => Residence.AppendTextFile(path, content);
 
         public static string ReadTextFile(string folderName, string fileName)
         {
