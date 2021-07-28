@@ -62,7 +62,7 @@ namespace Aritiafel.Characters.Heroes
             => Residence.SaveTextFile(path, content);
 
         public static void SaveTextFile(string content)
-            => Residence.SaveTextFile(Path.Combine(LogDirectory, $"{DateTime.Now.ToString("yyyy-mm-dd-hh-MM-ss")}.txt"), content);
+            => Residence.SaveTextFile(Path.Combine(LogDirectory, $"{DateTime.Now.ToString("yyyy-MM-dd-HHmmss")}.txt"), content);
 
         public static void AppendTextFile(string folderName, string fileName, string content)
         {
