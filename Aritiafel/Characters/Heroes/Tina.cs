@@ -11,7 +11,9 @@ namespace Aritiafel.Characters.Heroes
     /// </summary>
     public static class Tina
     {
-        public static string LogDirectory = @"C:\Programs\Log";
+        public static string LogDirectory { get; set; } = @"C:\Programs\Log";
+
+        public const string DefaultBackupDrive = "E";
 
         private static Dictionary<ProjectChoice, string> ProjectFolderPath
             = new Dictionary<ProjectChoice, string>()
@@ -26,27 +28,28 @@ namespace Aritiafel.Characters.Heroes
            { ProjectChoice.NSBattle, @"C:\Programs\WinForm\NSBattle" },
            { ProjectChoice.IdealWorld, @"C:\Programs\Web\WF\IdealWorld" },
            { ProjectChoice.DeepMind, @"C:\Programs\WPF\DeepMind" },
-           { ProjectChoice.ASON, @"C:\Programs\Standard\ArinaStandardObjectNotation" }
+           { ProjectChoice.ASON, @"C:\Programs\Standard\ArinaStandardObjectNotation" },
+           { ProjectChoice.Elibrar, @"C:\Programs\WinForm\Elibrar"}
         };
 
-        public static void SaveProject(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = "E")
+        public static void SaveProject(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\Backup");
             rs.SaveVSSolution(ProjectFolderPath[pc], true, new string[] { "Data" });
         }
-        public static void SaveProject(string subFolderName, string projectName, string backupDrive = "E")
+        public static void SaveProject(string subFolderName, string projectName, string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\Backup");
             rs.SaveVSSolution($@"C:\Programs\{subFolderName}\{projectName}", true, new string[] { "Data" });
         }
 
-        public static void SaveProjectData(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = "E")
+        public static void SaveProjectData(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\Backup");
             rs.SaveVSSolutionData(ProjectFolderPath[pc]);
         }
 
-        public static void SaveProjectData(string subFolderName, string projectName, string dataFolderName, string backupDrive = "E")
+        public static void SaveProjectData(string subFolderName, string projectName, string dataFolderName, string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\Backup");
             rs.SaveVSSolutionData($@"C:\Programs\{subFolderName}\{projectName}\{dataFolderName}");
@@ -120,6 +123,7 @@ namespace Aritiafel.Characters.Heroes
         NSBattle,
         IdealWorld,
         DeepMind,
-        ASON
+        ASON,
+        Elibrar
     }
 }

@@ -56,6 +56,20 @@ namespace Aritiafel.Locations
             DirectoryCopy(solutionDirectoryPath, Path.Combine(Address, Path.GetFileName(solutionDirectoryPath)), true, ignoreDirNames.ToArray());
         }
 
+        public void BackupGameData(string rootDirectory, string subDirectory)
+        {
+            if (string.IsNullOrEmpty(Address))
+                throw new ArgumentNullException(nameof(Address));
+
+            if (string.IsNullOrEmpty(rootDirectory))
+                throw new ArgumentNullException(nameof(rootDirectory));
+
+            if (string.IsNullOrEmpty(subDirectory))
+                throw new ArgumentNullException(nameof(subDirectory));
+
+            DirectoryCopy(Path.Combine(rootDirectory, subDirectory), Path.Combine(Address, subDirectory), true); 
+        }
+
         public static string ReadTextFile(string path)
         {
             string result;
@@ -145,7 +159,7 @@ namespace Aritiafel.Locations
                 File.Delete(files[i]);
         }
 
-        private bool FitsMask(string fileName, string fileMask)
+        private static bool FitsMask(string fileName, string fileMask)
         {
             Regex mask = new Regex(
                 '^' +
@@ -158,7 +172,7 @@ namespace Aritiafel.Locations
             return mask.IsMatch(fileName);
         }
 
-        private void DirectoryCopy(string sourceDirectory, string targetDirectory, bool includeSubDirectory = true, string[] ignoreDirectoryNames = null, string[] specificDirectoryNames = null, string[] ignoreFileFilters = null)
+        protected static void DirectoryCopy(string sourceDirectory, string targetDirectory, bool includeSubDirectory = true, string[] ignoreDirectoryNames = null, string[] specificDirectoryNames = null, string[] ignoreFileFilters = null)
         {
             if (!Directory.Exists(sourceDirectory))
                 throw new DirectoryNotFoundException();
