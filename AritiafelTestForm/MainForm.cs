@@ -26,7 +26,7 @@ namespace AritiafelTestForm
 
         public void btnMessageBox_Click(object sender, EventArgs e)
         {
-            DialogResult dr = RabbitCouriers.SentNoramlQuestion("點選OK或Cancel", "Test", Aritiafel.Items.ChoiceOptions.OKCancel, 2);
+            DialogResult dr = RabbitCouriers.SentNormalQuestion("點選OK或Cancel", "Test", Aritiafel.Items.ChoiceOptions.OKCancel, 2);
 
             if (dr == DialogResult.Cancel)
                 Console.WriteLine(1);
@@ -60,8 +60,8 @@ namespace AritiafelTestForm
 
         public void btnShowMessageByResource_Click(object sender, EventArgs e)
         {
-            DialogResult dr = RabbitCouriers.SentNoramlQuestionByResource("QuestionString", "Q1", ChoiceOptions.YesNo, "Male", "Female");
-            DialogResult dr2 = RabbitCouriers.SentNoramlQuestionByResource("QuestionString2", "Q2", ChoiceOptions.YesNo, "15", "16");
+            DialogResult dr = RabbitCouriers.SentNormalQuestionByResource("QuestionString", "Q1", ChoiceOptions.YesNo, "Male", "Female");
+            DialogResult dr2 = RabbitCouriers.SentNormalQuestionByResource("QuestionString2", "Q2", ChoiceOptions.YesNo, "15", "16");
 
             if (dr == DialogResult.No && dr2 == DialogResult.Yes)
                 RabbitCouriers.SentInformationByResource("AnswerString", "Answer");

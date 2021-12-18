@@ -34,13 +34,13 @@ namespace Aritiafel.Organizations
         public static DialogResult SentErrorMessageByResource(string key, string title, params object[] args)
             => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(GetMessage(key, args), title, key, ChoiceOptions.OK, LevelOfEergency.Error));
 
-        public static DialogResult SentNoramlQuestionByResource(string key, string title, params string[] args)
-            => SentNoramlQuestionByResource(key, title, ChoiceOptions.OKCancel, 1, args);
+        public static DialogResult SentNormalQuestionByResource(string key, string title, params string[] args)
+            => SentNormalQuestionByResource(key, title, ChoiceOptions.OKCancel, 1, args);
 
-        public static DialogResult SentNoramlQuestionByResource(string key, string title, ChoiceOptions co, params string[] args)
-            => SentNoramlQuestionByResource(key, title, co, 1, args);
+        public static DialogResult SentNormalQuestionByResource(string key, string title, ChoiceOptions co, params string[] args)
+            => SentNormalQuestionByResource(key, title, co, 1, args);
 
-        public static DialogResult SentNoramlQuestionByResource(string key, string title, ChoiceOptions co, byte defaultResponse, params object[] args)
+        public static DialogResult SentNormalQuestionByResource(string key, string title, ChoiceOptions co, byte defaultResponse, params object[] args)
             => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(GetMessage(key, args), title, key, co, LevelOfEergency.Question, defaultResponse));
 
         public static DialogResult SentWarningQuestionByResource(string key, string title, params string[] args)
@@ -72,10 +72,10 @@ namespace Aritiafel.Organizations
         public static DialogResult SentErrorMessage(string message, string title = "", string id = "")
             => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, id, ChoiceOptions.OK, LevelOfEergency.Error));
 
-        public static DialogResult SentNoramlQuestion(string message, string title = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
-            => SentNoramlQuestion(message, title, null, co, defaultResponse);
+        public static DialogResult SentNormalQuestion(string message, string title = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
+            => SentNormalQuestion(message, title, null, co, defaultResponse);
 
-        public static DialogResult SentNoramlQuestion(string message, string title = "", string id = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
+        public static DialogResult SentNormalQuestion(string message, string title = "", string id = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
             => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(message, title, id, co, LevelOfEergency.Question, defaultResponse));
 
         public static DialogResult SentWarningQuestion(string message, string title = "", ChoiceOptions co = ChoiceOptions.OKCancel, byte defaultResponse = 1)
