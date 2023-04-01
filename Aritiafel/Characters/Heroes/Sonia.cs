@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Aritiafel.Locations;
 
@@ -17,10 +18,19 @@ namespace Aritiafel.Characters.Heroes
         //    { ProjectChoice.Aritiafel, @"C:\Programs\Standard\Aritiafel" }
         //}
 
-        public static void BackupGameSave (string rootFolder, string subFolder, string backupDrive = DefaultBackupDrive)
+        public static long BackupGameSave (string rootFolder, string subFolder, string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\GameSave");
-            rs.BackupGameData(rootFolder, subFolder);
+            return rs.BackupGameData(rootFolder, subFolder);
+        }
+
+        public static long CopyGameSave(string rootFolder, string subFolder, string targetFolder)
+            => CopyLatestGameSave(rootFolder, subFolder, targetFolder, 0);
+
+        public static long CopyLatestGameSave(string rootFolder, string subFolder, string targetFolder, long inMinutes = 30)
+        {
+            Residence rs = new Residence(Path.Combine(targetFolder, "GameSave"));
+            return rs.BackupGameData(rootFolder, subFolder, inMinutes);
         }
     }
 }

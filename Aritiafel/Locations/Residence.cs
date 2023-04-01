@@ -56,7 +56,7 @@ namespace Aritiafel.Locations
             DirectoryCopy(solutionDirectoryPath, Path.Combine(Address, Path.GetFileName(solutionDirectoryPath)), true, ignoreDirNames.ToArray());
         }
 
-        public void BackupGameData(string rootDirectory, string subDirectory)
+        public long BackupGameData(string rootDirectory, string subDirectory, long inMinutes = 0)
         {
             if (string.IsNullOrEmpty(Address))
                 throw new ArgumentNullException(nameof(Address));
@@ -67,7 +67,7 @@ namespace Aritiafel.Locations
             if (string.IsNullOrEmpty(subDirectory))
                 throw new ArgumentNullException(nameof(subDirectory));
 
-            DirectoryCopy(Path.Combine(rootDirectory, subDirectory), Path.Combine(Address, subDirectory), true); 
+            return DirectoryCopy(Path.Combine(rootDirectory, subDirectory), Path.Combine(Address, subDirectory), true, null, null, null, inMinutes); 
         }
 
         public static string ReadTextFile(string path)
@@ -172,8 +172,11 @@ namespace Aritiafel.Locations
             return mask.IsMatch(fileName);
         }
 
-        protected static void DirectoryCopy(string sourceDirectory, string targetDirectory, bool includeSubDirectory = true, string[] ignoreDirectoryNames = null, string[] specificDirectoryNames = null, string[] ignoreFileFilters = null)
+        //inMinutes 在多少分鐘內才Copy -> 有問題
+        protected static long DirectoryCopy(string sourceDirectory, string targetDirectory, bool includeSubDirectory = true, string[] ignoreDirectoryNames = null, string[] specificDirectoryNames = null, string[] ignoreFileFilters = null, long inMinutes = 0)
         {
+            long copiedFileCount = 0;
+
             if (!Directory.Exists(sourceDirectory))
                 throw new DirectoryNotFoundException();
 
@@ -189,7 +192,10 @@ namespace Aritiafel.Locations
                     if (ignoreFileFilters != null)
                         foreach (string filter in ignoreFileFilters)
                             if (FitsMask(fileName, filter))
-                                goto BreakPoint;
+                                goto BreakPoint;                    
+                    if (inMinutes != 0 && File.GetLastWriteTime(file).AddMinutes(inMinutes) < DateTime.Now)
+                        goto BreakPoint;
+                    copiedFileCount++;
                     File.Copy(file, Path.Combine(targetDirectory, fileName), true);
                 BreakPoint:;
                 }
@@ -212,16 +218,16 @@ namespace Aritiafel.Locations
                         {
                             if (dirName == mainDirName)
                             {
-                                DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, null, ignoreFileFilters);
+                                copiedFileCount += DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, null, ignoreFileFilters, inMinutes);
                                 goto BreakPoint2;
                             }
                         }
                     }
-
-                    DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, specificDirectoryNames, ignoreFileFilters);
+                    copiedFileCount += DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, specificDirectoryNames, ignoreFileFilters, inMinutes);
                 BreakPoint2:;
                 }
             }
+            return copiedFileCount;
         }
     }
 }
