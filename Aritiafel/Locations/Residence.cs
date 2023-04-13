@@ -212,18 +212,17 @@ namespace Aritiafel.Locations
                     if (ignoreDirectoryNames != null)
                         foreach (string dirName in ignoreDirectoryNames)
                             if (dirName == subDirName)
-                                goto BreakPoint2;
-                    if (specificDirectoryNames != null)
-                    {   
-                        string mainDirName = Path.GetFileName(sourceDirectory);
+                                goto BreakPoint2;                   
+                    if(specificDirectoryNames != null)
+                    {
                         foreach (string dirName in specificDirectoryNames)
                         {
-                            if (dirName == mainDirName)
+                            if (dirName == subDirName)
                             {
                                 copiedFileCount += DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, null, ignoreFileFilters, inMinutes);
                                 goto BreakPoint2;
                             }
-                        }
+                        }       
                     }
                     copiedFileCount += DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, specificDirectoryNames, ignoreFileFilters, inMinutes);
                 BreakPoint2:;

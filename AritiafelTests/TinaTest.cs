@@ -21,7 +21,8 @@ namespace AritiafelTest
         [TestMethod]
         public void SaveProjectData()
         {
-            Tina.SaveProjectData(ProjectChoice.DeepMind);
+            //Tina.SaveProjectData(ProjectChoice.DeepMind);
+            Tina.SaveProjectData(ProjectChoice.ArinaGameGuide, "D");
         }
 
         [TestMethod]

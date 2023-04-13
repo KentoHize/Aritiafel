@@ -15,6 +15,7 @@ namespace Aritiafel.Characters.Heroes
         public static string LogDirectory { get; set; } = @"C:\Programs\Log";
 
         public const string DefaultBackupDrive = "E";
+        public const string DefaultBackupFolder = "Backup";
 
         private static Dictionary<ProjectChoice, string> ProjectFolderPath
             = new Dictionary<ProjectChoice, string>()
@@ -40,6 +41,13 @@ namespace Aritiafel.Characters.Heroes
         {
             Residence rs = new Residence($"{backupDrive}:\\Backup");
             rs.SaveVSSolution(ProjectFolderPath[pc], true, new string[] { "Data" });
+        }
+
+        public static void SaveProjectWithData(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = DefaultBackupDrive)
+        {
+            Residence rs = new Residence($"{backupDrive}:\\Backup");
+            rs.SaveVSSolution(ProjectFolderPath[pc], true);
+            rs.SaveVSSolutionData(ProjectFolderPath[pc]);
         }
 
         public static void SaveProjectWithData(string subFolderName, string projectName, string dataFolderName = "Data", string backupDrive = DefaultBackupDrive)
