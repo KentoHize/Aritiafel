@@ -6,6 +6,7 @@ using Aritiafel.Locations;
 
 namespace Aritiafel.Characters.Heroes
 {
+    //遊戲備份
     public static class Sonia
     {
         public static string LogDirectory { get; set; } = @"C:\Programs\Log";

@@ -17,5 +17,7 @@ namespace AritiafelTest
         {
             Sonia.BackupGameSave(@"C:\Users\kentn\OneDrive\ドキュメント", @"AliceSoft\ランス１０");
         }
+
+        //Need
     }
 }

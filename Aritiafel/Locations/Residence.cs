@@ -144,6 +144,8 @@ namespace Aritiafel.Locations
         public void SaveLocalJsonFile(string fileName, object content, bool writeIntent = false, ReferenceTypeReadAndWritePolicy rwPolicy = ReferenceTypeReadAndWritePolicy.TypeNestedName)
             => SaveJsonFile(Path.Combine(Address, fileName), content, writeIntent, rwPolicy);
 
+        //public void SaveIniFile(string fileName )
+
         public static void DeleteFile(string path)
             => File.Delete(path);
 

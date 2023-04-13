@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Aritiafel.Characters.Heroes
 {
+    ///程式備份、檔案IO
     /// <summary>
     /// 法師，英雄，人類
     /// </summary>
@@ -29,7 +30,10 @@ namespace Aritiafel.Characters.Heroes
            { ProjectChoice.IdealWorld, @"C:\Programs\Web\WF\IdealWorld" },
            { ProjectChoice.DeepMind, @"C:\Programs\WPF\DeepMind" },
            { ProjectChoice.ASON, @"C:\Programs\Standard\ArinaStandardObjectNotation" },
-           { ProjectChoice.Elibrar, @"C:\Programs\WinForm\Elibrar"}
+           { ProjectChoice.Elibrar, @"C:\Programs\WinForm\Elibrar"},
+           { ProjectChoice.ArinaGameGuide, @"C:\Programs\ArinaGameGuide"},
+           { ProjectChoice.ArinaWorld, @"C:\Programs\ArinaWorld"}
+
         };
 
         public static void SaveProject(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = DefaultBackupDrive)
@@ -37,10 +41,20 @@ namespace Aritiafel.Characters.Heroes
             Residence rs = new Residence($"{backupDrive}:\\Backup");
             rs.SaveVSSolution(ProjectFolderPath[pc], true, new string[] { "Data" });
         }
+
+        public static void SaveProjectAndProjectData(string subFolderName, string projectName, string dataFolderName = "Data", string backupDrive = DefaultBackupDrive)
+        {
+            SaveProject(subFolderName, projectName, backupDrive);
+            SaveProjectData(subFolderName, projectName, dataFolderName, backupDrive);
+        }
+
         public static void SaveProject(string subFolderName, string projectName, string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\Backup");
-            rs.SaveVSSolution($@"C:\Programs\{subFolderName}\{projectName}", true, new string[] { "Data" });
+            if (string.IsNullOrEmpty(subFolderName))
+                rs.SaveVSSolution($@"C:\Programs\{projectName}", true, new string[] { "Data" });
+            else
+                rs.SaveVSSolution($@"C:\Programs\{subFolderName}\{projectName}", true, new string[] { "Data" });
         }
 
         public static void SaveProjectData(ProjectChoice pc = ProjectChoice.Aritiafel, string backupDrive = DefaultBackupDrive)
@@ -49,10 +63,13 @@ namespace Aritiafel.Characters.Heroes
             rs.SaveVSSolutionData(ProjectFolderPath[pc]);
         }
 
-        public static void SaveProjectData(string subFolderName, string projectName, string dataFolderName, string backupDrive = DefaultBackupDrive)
+        public static void SaveProjectData(string subFolderName, string projectName, string dataFolderName = "Data", string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\Backup");
-            rs.SaveVSSolutionData($@"C:\Programs\{subFolderName}\{projectName}\{dataFolderName}");
+            if(string.IsNullOrEmpty(subFolderName))
+                rs.SaveVSSolutionData($@"C:\Programs\{projectName}\{dataFolderName}");
+            else
+                rs.SaveVSSolutionData($@"C:\Programs\{subFolderName}\{projectName}\{dataFolderName}");
         }
 
         public static void SaveTextFile(string folderName, string fileName, string content)
@@ -124,6 +141,8 @@ namespace Aritiafel.Characters.Heroes
         IdealWorld,
         DeepMind,
         ASON,
-        Elibrar
+        Elibrar,
+        ArinaGameGuide,
+        ArinaWorld
     }
 }
