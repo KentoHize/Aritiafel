@@ -26,7 +26,16 @@ namespace Aritiafel.Locations
             if (string.IsNullOrEmpty(solutionDirectoryPath))
                 throw new ArgumentNullException(nameof(solutionDirectoryPath));
 
-            DirectoryCopy(solutionDirectoryPath, Path.Combine(Address, Path.GetFileName(solutionDirectoryPath)), true, null, new string[] { dataFolderName });
+            List<string> ignoreDirNames = new List<string>
+            {
+                "bin",
+                "obj",
+                ".vs",
+                ".git",
+                "packages",
+            };
+
+            DirectoryCopy(solutionDirectoryPath, Path.Combine(Address, Path.GetFileName(solutionDirectoryPath)), true, ignoreDirNames.ToArray(), new string[] { dataFolderName });
         }
 
         public void SaveVSSolution(string solutionDirectoryPath, bool excludeTestResults = true, string[] addtionalIgnoreDirNames = null)
@@ -219,7 +228,7 @@ namespace Aritiafel.Locations
                         {
                             if (dirName == subDirName)
                             {
-                                copiedFileCount += DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, null, ignoreFileFilters, inMinutes);
+                                copiedFileCount += DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, null, null, ignoreFileFilters, inMinutes);
                                 goto BreakPoint2;
                             }
                         }       
