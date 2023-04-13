@@ -42,7 +42,7 @@ namespace Aritiafel.Characters.Heroes
             rs.SaveVSSolution(ProjectFolderPath[pc], true, new string[] { "Data" });
         }
 
-        public static void SaveProjectAndProjectData(string subFolderName, string projectName, string dataFolderName = "Data", string backupDrive = DefaultBackupDrive)
+        public static void SaveProjectWithData(string subFolderName, string projectName, string dataFolderName = "Data", string backupDrive = DefaultBackupDrive)
         {
             SaveProject(subFolderName, projectName, backupDrive);
             SaveProjectData(subFolderName, projectName, dataFolderName, backupDrive);
