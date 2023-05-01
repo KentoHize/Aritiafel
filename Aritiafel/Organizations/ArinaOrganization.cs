@@ -47,6 +47,8 @@ namespace Aritiafel.Organizations
                 return TimeSpan.Parse(s);
             else if (t == typeof(CultureInfo))
                 return CultureInfo.GetCultureInfo(s);
+            else if (t.IsEnum)
+                return Enum.Parse(t, s);
             else
                 return s;
         }        
