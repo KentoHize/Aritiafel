@@ -11,7 +11,14 @@ namespace Aritiafel.Items
         class CompareArSetting : IComparer<ArSetting>
         {
             public int Compare(ArSetting a, ArSetting b)
-            {   
+            {
+                if (string.IsNullOrEmpty(a.Section) && string.IsNullOrEmpty(b.Section))
+                    return a.Key.CompareTo(b.Key);
+                else if (string.IsNullOrEmpty(a.Section) && !string.IsNullOrEmpty(b.Section))
+                    return -1;
+                else if (!string.IsNullOrEmpty(a.Section) && string.IsNullOrEmpty(b.Section))
+                    return 1;
+
                 int result = a.Section.CompareTo(b.Section);
                 if (result != 0)
                     return result;
@@ -50,11 +57,7 @@ namespace Aritiafel.Items
                     return;
                 }
             }
-            throw new KeyNotFoundException();
+            throw new KeyNotFoundException(key);
         }
-      
-
     }
-
-   
 }

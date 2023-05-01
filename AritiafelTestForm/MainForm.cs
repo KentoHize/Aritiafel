@@ -133,6 +133,7 @@ namespace AritiafelTestForm
         {
             ArSettingGroup arSettingGroup = new ArSettingGroup();            
             arSettingGroup.Add("aa", "bb", "Test");
+            //Color.Red.ToArString();
         }
     }
 }
