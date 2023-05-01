@@ -5,6 +5,10 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using Aritiafel.Organizations;
+using Microsoft.VisualBasic;
+using System.Windows.Forms;
+using System.Security.Cryptography;
+using System.Globalization;
 
 namespace Aritiafel.Locations
 {
@@ -13,27 +17,52 @@ namespace Aritiafel.Locations
     //
     public static class SettingShop
     {
-        public static void SaveIniFile(object varObject, string file)
+        public static string DefaultSettingFilePath = Path.Combine(Application.UserAppDataPath, "setting.ini");
+        public static ArSettingGroup GetArSettinGroup(object typeOrInstance)
         {
+            if (typeOrInstance == null)
+                throw new ArgumentNullException(nameof(typeOrInstance));
             ArSettingGroup arg = new ArSettingGroup();
             PropertyInfo[] pis;
-            if (varObject is Type)
-                pis = ((Type)varObject).GetProperties();
+            if (typeOrInstance is Type)
+                pis = ((Type)typeOrInstance).GetProperties();
             else
-                pis = varObject.GetType().GetProperties();
-            
-            foreach(PropertyInfo pi in pis)
-            {    
-                arg.Add(pi.Name, pi.GetValue(varObject));
-            }
-            SaveIniFile(arg, file);
+                pis = typeOrInstance.GetType().GetProperties();
+            foreach (PropertyInfo pi in pis)
+            {
+                if (pi.GetCustomAttribute(typeof(ArIgnoreAttribute)) != null)
+                    continue;
+                string section = null, desc = null;
+                Attribute a = pi.GetCustomAttribute(typeof(ArSectionAttribute));
+                if (a != null)
+                    section = ((ArSectionAttribute)a).Name;
+                a = pi.GetCustomAttribute(typeof(ArDescriptionAttribute));
+                if (a != null)
+                    desc = ((ArDescriptionAttribute)a).Text;
+                arg.Add(pi.Name, pi.GetValue(typeOrInstance), section, desc);
+            }   
+            return arg;
         }
 
-        public static void SaveIniFile(ArSettingGroup arSettingGroup, string file)
+        public static void SaveIniFile(object typeOrInstance, string file = null)
+        {   
+            SaveIniFile(GetArSettinGroup(typeOrInstance), file);
+        }
+
+        public static void SaveIniFile(ArSettingGroup arSettingGroup, string file = null)
         {           
             string currentSection = null;
+            if (arSettingGroup == null)
+                throw new ArgumentNullException(nameof(arSettingGroup));
+            if (file == null)
+                file = DefaultSettingFilePath;
             using (StreamWriter sw = new StreamWriter(file))
             {
+                if(!string.IsNullOrEmpty(arSettingGroup.StartComment))
+                {
+                    sw.Write($"#{arSettingGroup.StartComment.Replace("\n", "\r\n#")}");
+                    sw.WriteLine();
+                }   
                 foreach (ArSetting ars in arSettingGroup)
                 {
                     if (currentSection != ars.Section)
@@ -49,11 +78,20 @@ namespace Aritiafel.Locations
                     if(ars.Value != null)
                         sw.WriteLine($"{ars.Key}={ars.Value.ToArString()}");
                 }
+                if (!string.IsNullOrEmpty(arSettingGroup.EndComment))
+                {
+                    sw.Write($"#{arSettingGroup.EndComment.Replace("\n", "\r\n#")}");
+                    sw.WriteLine();
+                }
             }
         }
 
-        public static void LoadIniFile(object varObject, string file)
+        public static void LoadIniFile(object typeOrInstance, string file = null)
         {
+            if (typeOrInstance == null)
+                throw new ArgumentNullException(nameof(typeOrInstance));
+            if (file == null)
+                file = DefaultSettingFilePath;
             using (StreamReader sr = new StreamReader(file))
             {   
                 while(!sr.EndOfStream)
@@ -63,13 +101,13 @@ namespace Aritiafel.Locations
                         continue;                    
                     string[] s2 = s.Split('=');
                     PropertyInfo pi;
-                    if (varObject is Type)
-                        pi = ((Type)varObject).GetProperty(s2[0]);
+                    if (typeOrInstance is Type)
+                        pi = ((Type)typeOrInstance).GetProperty(s2[0]);
                     else
-                        pi = varObject.GetType().GetProperty(s2[0]);
+                        pi = typeOrInstance.GetType().GetProperty(s2[0]);
 
                     if (pi != null)
-                        pi.SetValue(varObject, s2[1].ParseArString(pi.PropertyType));
+                        pi.SetValue(typeOrInstance, s2[1].ParseArString(pi.PropertyType));
                     else
                         throw new KeyNotFoundException(s2[0]);
                 }   

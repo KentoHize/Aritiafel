@@ -26,6 +26,9 @@ namespace Aritiafel.Items
             }
         }
 
+        public string StartComment { get; set; }
+        public string EndComment { get; set; }
+
         public ArSettingGroup()
             : base(new CompareArSetting())
         { }

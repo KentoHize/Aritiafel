@@ -13,9 +13,7 @@ namespace Aritiafel.Organizations
     {
         public static object ParseArString(this string s, Type t)
         {
-            if (t == typeof(Color))
-                return Color.FromArgb(int.Parse(s.Replace("#", ""), NumberStyles.HexNumber));
-            else if (t == typeof(bool))
+            if (t == typeof(bool))
                 return bool.Parse(s);
             else if (t == typeof(byte))
                 return byte.Parse(s);
@@ -41,6 +39,12 @@ namespace Aritiafel.Organizations
                 return decimal.Parse(s);
             else if (t == typeof(char))
                 return char.Parse(s);
+            else if (t == typeof(Color))
+                return Color.FromArgb(int.Parse(s.Replace("#", ""), NumberStyles.HexNumber));
+            else if (t == typeof(DateTime))
+                return DateTime.Parse(s);
+            else if (t == typeof(TimeSpan))
+                return TimeSpan.Parse(s);
             else
                 return s;
         }        

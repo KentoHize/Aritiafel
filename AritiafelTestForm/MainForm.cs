@@ -13,6 +13,7 @@ using Aritiafel.Organizations;
 using Aritiafel.Items;
 using System.IO;
 using System.Diagnostics;
+using Aritiafel.Locations;
 
 namespace AritiafelTestForm
 {
@@ -129,11 +130,27 @@ namespace AritiafelTestForm
             //" / word/"
         }
 
+        private static class Settings
+        {
+            public static string aa { get; set; }
+            public static DateTime DateTime { get; set; }
+            public static Color Color { get; set; }
+        }
+
         private void btnTestSettingShop_Click(object sender, EventArgs e)
         {
-            ArSettingGroup arSettingGroup = new ArSettingGroup();            
-            arSettingGroup.Add("aa", "bb", "Test");
+            //ArSettingGroup arSettingGroup = new ArSettingGroup();            
+            //arSettingGroup.Add("aa", "bb", "Test");
+
             //Color.Red.ToArString();
+
+            //AppLocation
+            //Settings.aa = "dsadsa";
+            //Settings.Color = Color.Red;
+            //Settings.DateTime = DateTime.Now;
+            //SettingShop.SaveIniFile(typeof(Settings));
+            SettingShop.LoadIniFile(typeof(Settings));
+            MessageBox.Show(Settings.DateTime.ToString());
         }
     }
 }

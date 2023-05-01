@@ -21,7 +21,8 @@ namespace AritiafelTest
             arSettingGroup.Add("gg", 0.44);
             arSettingGroup.Add("hh", "ar");
             arSettingGroup.Add("ll", @"C:\BBB\DDD\rrr.txt");
-
+            arSettingGroup.StartComment = "Start Comment\n will OK";
+            arSettingGroup.EndComment = "End Comment\n WWWwwwWWWwww \n ok";
             //arSettingGroup.Remove()
             SettingShop.SaveIniFile(arSettingGroup, @"C:\Programs\TestArea\asg.ini");
             //TestVar tv = new TestVar();
@@ -34,6 +35,8 @@ namespace AritiafelTest
             TestContext.WriteLine($"ll:{TestVar.ll}");
             TestContext.WriteLine($"Color:{TestVar.Color}");
             //Field
+
+            
         }
 
         [TestMethod]
@@ -66,7 +69,10 @@ namespace AritiafelTest
         public static int ff { get; set; }
         public static double gg { get; set; }
         public static string hh { get; set; }
+
+        [ArIgnore]
         public static string ll { get; set; }
+        [ArSection("Color"), ArDescription("This is a Color")]
         public static System.Drawing.Color Color { get; set; }
     }
 

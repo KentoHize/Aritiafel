@@ -13,12 +13,6 @@ namespace Aritiafel.Items
         public object Value { get; set; }
         public string Description { get; set; }
 
-        //////轉型
-        ////public override string ToString()
-        ////{
-        ////    return base.ToString();
-        ////}       
-
         public ArSetting(string key, object value = null, string section = null, string description = null)
         {
             Key = key;
