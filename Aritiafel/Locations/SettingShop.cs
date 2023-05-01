@@ -90,8 +90,15 @@ namespace Aritiafel.Locations
         {
             if (typeOrInstance == null)
                 throw new ArgumentNullException(nameof(typeOrInstance));
+            if (file != null && !File.Exists(file))
+                throw new FileNotFoundException(file);
             if (file == null)
+            {
                 file = DefaultSettingFilePath;
+                if (!File.Exists(file))
+                    return;
+            }   
+
             using (StreamReader sr = new StreamReader(file))
             {   
                 while(!sr.EndOfStream)
