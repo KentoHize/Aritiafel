@@ -128,5 +128,11 @@ namespace AritiafelTestForm
             }
             //" / word/"
         }
+
+        private void btnTestSettingShop_Click(object sender, EventArgs e)
+        {
+            ArSettingGroup arSettingGroup = new ArSettingGroup();            
+            arSettingGroup.Add("aa", "bb", "Test");
+        }
     }
 }

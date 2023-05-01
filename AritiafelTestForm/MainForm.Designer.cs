@@ -39,13 +39,14 @@
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.btnSaveUTF8 = new System.Windows.Forms.Button();
             this.btnScript1 = new System.Windows.Forms.Button();
+            this.btnTestSettingShop = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMessageBox
             // 
-            this.btnMessageBox.Location = new System.Drawing.Point(45, 38);
+            this.btnMessageBox.Location = new System.Drawing.Point(45, 36);
             this.btnMessageBox.Name = "btnMessageBox";
-            this.btnMessageBox.Size = new System.Drawing.Size(130, 57);
+            this.btnMessageBox.Size = new System.Drawing.Size(130, 53);
             this.btnMessageBox.TabIndex = 0;
             this.btnMessageBox.Text = "Show Message";
             this.btnMessageBox.UseVisualStyleBackColor = true;
@@ -53,9 +54,9 @@
             // 
             // btnMessageBox2
             // 
-            this.btnMessageBox2.Location = new System.Drawing.Point(45, 117);
+            this.btnMessageBox2.Location = new System.Drawing.Point(45, 110);
             this.btnMessageBox2.Name = "btnMessageBox2";
-            this.btnMessageBox2.Size = new System.Drawing.Size(130, 57);
+            this.btnMessageBox2.Size = new System.Drawing.Size(130, 53);
             this.btnMessageBox2.TabIndex = 1;
             this.btnMessageBox2.Text = "Show Message";
             this.btnMessageBox2.UseVisualStyleBackColor = true;
@@ -67,9 +68,9 @@
             // 
             // btnOpenFile
             // 
-            this.btnOpenFile.Location = new System.Drawing.Point(45, 199);
+            this.btnOpenFile.Location = new System.Drawing.Point(45, 187);
             this.btnOpenFile.Name = "btnOpenFile";
-            this.btnOpenFile.Size = new System.Drawing.Size(130, 57);
+            this.btnOpenFile.Size = new System.Drawing.Size(130, 53);
             this.btnOpenFile.TabIndex = 2;
             this.btnOpenFile.Text = "Open File";
             this.btnOpenFile.UseVisualStyleBackColor = true;
@@ -77,9 +78,9 @@
             // 
             // btnInputForm
             // 
-            this.btnInputForm.Location = new System.Drawing.Point(45, 282);
+            this.btnInputForm.Location = new System.Drawing.Point(45, 264);
             this.btnInputForm.Name = "btnInputForm";
-            this.btnInputForm.Size = new System.Drawing.Size(130, 57);
+            this.btnInputForm.Size = new System.Drawing.Size(130, 53);
             this.btnInputForm.TabIndex = 3;
             this.btnInputForm.Text = "Open Input Form";
             this.btnInputForm.UseVisualStyleBackColor = true;
@@ -87,9 +88,9 @@
             // 
             // btnShowMessageByResource
             // 
-            this.btnShowMessageByResource.Location = new System.Drawing.Point(202, 38);
+            this.btnShowMessageByResource.Location = new System.Drawing.Point(202, 36);
             this.btnShowMessageByResource.Name = "btnShowMessageByResource";
-            this.btnShowMessageByResource.Size = new System.Drawing.Size(130, 57);
+            this.btnShowMessageByResource.Size = new System.Drawing.Size(130, 53);
             this.btnShowMessageByResource.TabIndex = 4;
             this.btnShowMessageByResource.Text = "Show Message By Resource";
             this.btnShowMessageByResource.UseVisualStyleBackColor = true;
@@ -97,9 +98,9 @@
             // 
             // btnTranslateZHCN
             // 
-            this.btnTranslateZHCN.Location = new System.Drawing.Point(648, 38);
+            this.btnTranslateZHCN.Location = new System.Drawing.Point(648, 36);
             this.btnTranslateZHCN.Name = "btnTranslateZHCN";
-            this.btnTranslateZHCN.Size = new System.Drawing.Size(140, 60);
+            this.btnTranslateZHCN.Size = new System.Drawing.Size(140, 56);
             this.btnTranslateZHCN.TabIndex = 5;
             this.btnTranslateZHCN.Text = "翻譯繁轉簡";
             this.btnTranslateZHCN.UseVisualStyleBackColor = true;
@@ -107,27 +108,27 @@
             // 
             // txtText
             // 
-            this.txtText.Location = new System.Drawing.Point(390, 38);
+            this.txtText.Location = new System.Drawing.Point(390, 36);
             this.txtText.Multiline = true;
             this.txtText.Name = "txtText";
-            this.txtText.Size = new System.Drawing.Size(211, 136);
+            this.txtText.Size = new System.Drawing.Size(211, 128);
             this.txtText.TabIndex = 6;
             this.txtText.Text = "國內新冠疫情拉警報，疫苗採購至今卻仍是深陷五里霧中狀況不明，對此，前民進黨立委沈富雄直批疫情中心指揮官陳時中「稱有關疫苗的供應不要怪台灣，繼續怪台灣（處境）會更困" +
     "難，其實他應講不要怪我、不要怪時中，因時中禁不起壓力，他就會給你莫名其妙的理由」、「若將來陳要參選北市長，把他說過的話找出來就能凸顯他有多蠢」！";
             // 
             // txtOutput
             // 
-            this.txtOutput.Location = new System.Drawing.Point(390, 203);
+            this.txtOutput.Location = new System.Drawing.Point(390, 190);
             this.txtOutput.Multiline = true;
             this.txtOutput.Name = "txtOutput";
-            this.txtOutput.Size = new System.Drawing.Size(211, 136);
+            this.txtOutput.Size = new System.Drawing.Size(211, 128);
             this.txtOutput.TabIndex = 7;
             // 
             // btnSaveUTF8
             // 
-            this.btnSaveUTF8.Location = new System.Drawing.Point(652, 115);
+            this.btnSaveUTF8.Location = new System.Drawing.Point(652, 108);
             this.btnSaveUTF8.Name = "btnSaveUTF8";
-            this.btnSaveUTF8.Size = new System.Drawing.Size(135, 58);
+            this.btnSaveUTF8.Size = new System.Drawing.Size(135, 54);
             this.btnSaveUTF8.TabIndex = 8;
             this.btnSaveUTF8.Text = "存成UTF-8";
             this.btnSaveUTF8.UseVisualStyleBackColor = true;
@@ -135,19 +136,30 @@
             // 
             // btnScript1
             // 
-            this.btnScript1.Location = new System.Drawing.Point(651, 206);
+            this.btnScript1.Location = new System.Drawing.Point(651, 193);
             this.btnScript1.Name = "btnScript1";
-            this.btnScript1.Size = new System.Drawing.Size(136, 63);
+            this.btnScript1.Size = new System.Drawing.Size(136, 59);
             this.btnScript1.TabIndex = 9;
             this.btnScript1.Text = "Scripts";
             this.btnScript1.UseVisualStyleBackColor = true;
             this.btnScript1.Click += new System.EventHandler(this.btnScript1_Click);
             // 
+            // btnTestSettingShop
+            // 
+            this.btnTestSettingShop.Location = new System.Drawing.Point(652, 279);
+            this.btnTestSettingShop.Name = "btnTestSettingShop";
+            this.btnTestSettingShop.Size = new System.Drawing.Size(136, 59);
+            this.btnTestSettingShop.TabIndex = 10;
+            this.btnTestSettingShop.Text = "TestSettingShop";
+            this.btnTestSettingShop.UseVisualStyleBackColor = true;
+            this.btnTestSettingShop.Click += new System.EventHandler(this.btnTestSettingShop_Click);
+            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 422);
+            this.Controls.Add(this.btnTestSettingShop);
             this.Controls.Add(this.btnScript1);
             this.Controls.Add(this.btnSaveUTF8);
             this.Controls.Add(this.txtOutput);
@@ -179,6 +191,7 @@
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.Button btnSaveUTF8;
         private System.Windows.Forms.Button btnScript1;
+        private System.Windows.Forms.Button btnTestSettingShop;
     }
 }
 

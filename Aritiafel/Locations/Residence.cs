@@ -183,7 +183,7 @@ namespace Aritiafel.Locations
             return mask.IsMatch(fileName);
         }
 
-        //inMinutes 在多少分鐘內才Copy -> 有問題
+        //inMinutes 在多少分鐘內才Copy
         protected static long DirectoryCopy(string sourceDirectory, string targetDirectory, bool includeSubDirectory = true, string[] ignoreDirectoryNames = null, string[] specificDirectoryNames = null, string[] ignoreFileFilters = null, long inMinutes = 0)
         {
             long copiedFileCount = 0;

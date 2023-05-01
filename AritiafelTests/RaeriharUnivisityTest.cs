@@ -13,7 +13,7 @@ namespace AritiafelTest
         [TestMethod]
         public void GetStandardNumberStringTest()
         {
-            string result;
+            //string result;
             ChaosBox cb = new ChaosBox();
             //for (int i = 0; i < 1000; i++)
             //{
