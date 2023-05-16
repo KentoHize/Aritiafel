@@ -32,6 +32,8 @@ namespace Aritiafel.Locations
             {
                 if (pi.GetCustomAttribute(typeof(ArIgnoreAttribute)) != null)
                     continue;
+                if (pi.PropertyType.IsClass && !pi.PropertyType.Namespace.StartsWith("System"))
+                    continue;
                 string section = null, desc = null;
                 Attribute a = pi.GetCustomAttribute(typeof(ArSectionAttribute));
                 if (a != null)
@@ -113,6 +115,8 @@ namespace Aritiafel.Locations
                     else
                         pi = typeOrInstance.GetType().GetProperty(s2[0]);
 
+                    //if (pi.PropertyType.IsClass && !pi.PropertyType.Namespace.StartsWith("System"))
+                    //    continue;
                     if (pi != null)
                         pi.SetValue(typeOrInstance, s2[1].ParseArString(pi.PropertyType));
                     else
