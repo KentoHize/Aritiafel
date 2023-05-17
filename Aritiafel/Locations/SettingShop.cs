@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Reflection;
-using Aritiafel.Organizations;
 using Microsoft.VisualBasic;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 using System.Globalization;
+using Aritiafel.Organizations.ArinaOrganization;
 
 namespace Aritiafel.Locations
 {

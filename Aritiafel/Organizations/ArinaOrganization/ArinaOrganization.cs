@@ -6,9 +6,9 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Aritiafel.Organizations
+namespace Aritiafel.Organizations.ArinaOrganization
 {
-    //Extension and others
+    //Extension and others    
     public static class ArinaOrganization
     {
         public static object ParseArString(this string s, Type t)
@@ -51,7 +51,7 @@ namespace Aritiafel.Organizations
                 return Enum.Parse(t, s);
             else
                 return s;
-        }        
+        }
         public static string ToArString(this object o)
         {
             if (o.GetType() == typeof(Color))
