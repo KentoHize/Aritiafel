@@ -152,5 +152,12 @@ namespace AritiafelTestForm
             SettingShop.LoadIniFile(typeof(Settings));
             MessageBox.Show(Settings.DateTime.ToString());
         }
+
+        private void btnShowMessageFromLanguageFile_Click(object sender, EventArgs e)
+        {
+            RabbitCouriers.RegisterLaguageFolderAndCI(@"C:\Programs\Aritiafel\AritiafelTestForm\Language", new System.Globalization.CultureInfo("zh-TW"));
+            RabbitCouriers.SentInformationByResource("RES_APPLE", "Test");
+            RabbitCouriers.SentInformationByResource("RES_BAT", "Test");
+        }
     }
 }

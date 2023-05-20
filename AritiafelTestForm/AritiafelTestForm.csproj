@@ -115,6 +115,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Res.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Language\All.json" />
+    <None Include="Language\en-US.json" />
+    <None Include="Language\JFilesInfo.json" />
+    <None Include="Language\zh-TW.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -135,5 +139,6 @@
       <Name>Aritiafel</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

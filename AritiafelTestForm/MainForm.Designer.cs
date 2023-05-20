@@ -40,6 +40,7 @@
             this.btnSaveUTF8 = new System.Windows.Forms.Button();
             this.btnScript1 = new System.Windows.Forms.Button();
             this.btnTestSettingShop = new System.Windows.Forms.Button();
+            this.btnShowMessageFromLanguageFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMessageBox
@@ -154,11 +155,22 @@
             this.btnTestSettingShop.UseVisualStyleBackColor = true;
             this.btnTestSettingShop.Click += new System.EventHandler(this.btnTestSettingShop_Click);
             // 
+            // btnShowMessageFromLanguageFile
+            // 
+            this.btnShowMessageFromLanguageFile.Location = new System.Drawing.Point(202, 111);
+            this.btnShowMessageFromLanguageFile.Name = "btnShowMessageFromLanguageFile";
+            this.btnShowMessageFromLanguageFile.Size = new System.Drawing.Size(130, 67);
+            this.btnShowMessageFromLanguageFile.TabIndex = 11;
+            this.btnShowMessageFromLanguageFile.Text = "Show Message From Language File";
+            this.btnShowMessageFromLanguageFile.UseVisualStyleBackColor = true;
+            this.btnShowMessageFromLanguageFile.Click += new System.EventHandler(this.btnShowMessageFromLanguageFile_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 422);
+            this.ClientSize = new System.Drawing.Size(800, 470);
+            this.Controls.Add(this.btnShowMessageFromLanguageFile);
             this.Controls.Add(this.btnTestSettingShop);
             this.Controls.Add(this.btnScript1);
             this.Controls.Add(this.btnSaveUTF8);
@@ -192,6 +204,7 @@
         private System.Windows.Forms.Button btnSaveUTF8;
         private System.Windows.Forms.Button btnScript1;
         private System.Windows.Forms.Button btnTestSettingShop;
+        private System.Windows.Forms.Button btnShowMessageFromLanguageFile;
     }
 }
 

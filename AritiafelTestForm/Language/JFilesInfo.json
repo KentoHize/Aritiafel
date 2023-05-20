@@ -1,0 +1,147 @@
+{
+  "Name": "Language",
+  "Description": null,
+  "TablesInfo": [
+    {
+      "Name": "en-US",
+      "Columns": [
+        {
+          "Name": "Key",
+          "IsKey": false,
+          "IsNullable": false,
+          "Type": "String",
+          "Choices": [],
+          "FKTable": null,
+          "FKColumn": null,
+          "NumberOfRows": 1,
+          "Display": true,
+          "RegularExpression": null,
+          "Description": null,
+          "MinValue": null,
+          "MaxValue": null,
+          "MaxLength": 0,
+          "AutoGenerateKey": false,
+          "IsUnique": false
+        },
+        {
+          "Name": "Value",
+          "IsKey": false,
+          "IsNullable": false,
+          "Type": "String",
+          "Choices": [],
+          "FKTable": null,
+          "FKColumn": null,
+          "NumberOfRows": 1,
+          "Display": true,
+          "RegularExpression": null,
+          "Description": null,
+          "MinValue": null,
+          "MaxValue": null,
+          "MaxLength": 0,
+          "AutoGenerateKey": false,
+          "IsUnique": false
+        }
+      ]
+    },
+    {
+      "Name": "zh-TW",
+      "Columns": [
+        {
+          "Name": "Key",
+          "IsKey": false,
+          "IsNullable": false,
+          "Type": "String",
+          "Choices": [],
+          "FKTable": null,
+          "FKColumn": null,
+          "NumberOfRows": 1,
+          "Display": true,
+          "RegularExpression": null,
+          "Description": null,
+          "MinValue": null,
+          "MaxValue": null,
+          "MaxLength": 0,
+          "AutoGenerateKey": false,
+          "IsUnique": false
+        },
+        {
+          "Name": "Value",
+          "IsKey": false,
+          "IsNullable": false,
+          "Type": "String",
+          "Choices": [],
+          "FKTable": null,
+          "FKColumn": null,
+          "NumberOfRows": 1,
+          "Display": true,
+          "RegularExpression": null,
+          "Description": null,
+          "MinValue": null,
+          "MaxValue": null,
+          "MaxLength": 0,
+          "AutoGenerateKey": false,
+          "IsUnique": false
+        }
+      ]
+    },
+    {
+      "Name": "All",
+      "Columns": [
+        {
+          "Name": "Key",
+          "IsKey": false,
+          "IsNullable": false,
+          "Type": "String",
+          "Choices": [],
+          "FKTable": null,
+          "FKColumn": null,
+          "NumberOfRows": 1,
+          "Display": true,
+          "RegularExpression": null,
+          "Description": null,
+          "MinValue": null,
+          "MaxValue": null,
+          "MaxLength": 0,
+          "AutoGenerateKey": false,
+          "IsUnique": false
+        },
+        {
+          "Name": "en-US",
+          "IsKey": false,
+          "IsNullable": false,
+          "Type": "String",
+          "Choices": [],
+          "FKTable": null,
+          "FKColumn": null,
+          "NumberOfRows": 1,
+          "Display": true,
+          "RegularExpression": null,
+          "Description": null,
+          "MinValue": null,
+          "MaxValue": null,
+          "MaxLength": 0,
+          "AutoGenerateKey": false,
+          "IsUnique": false
+        },
+        {
+          "Name": "zh-TW",
+          "IsKey": false,
+          "IsNullable": false,
+          "Type": "String",
+          "Choices": [],
+          "FKTable": null,
+          "FKColumn": null,
+          "NumberOfRows": 1,
+          "Display": true,
+          "RegularExpression": null,
+          "Description": null,
+          "MinValue": null,
+          "MaxValue": null,
+          "MaxLength": 0,
+          "AutoGenerateKey": false,
+          "IsUnique": false
+        }
+      ]
+    }
+  ]
+}
