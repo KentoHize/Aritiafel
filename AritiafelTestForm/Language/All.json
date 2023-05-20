@@ -2,11 +2,19 @@
   {
     "Key": "RES_APPLE",
     "en-US": "Apple",
-    "zh-TW": "蘋果"
+    "zh-TW": "蘋果",
+    "zh-CN": "苹果"
   },
   {
     "Key": "RES_BAT",
     "en-US": "Bat",
-    "zh-TW": "蝙蝠"
+    "zh-TW": "蝙蝠",
+    "zh-CN": "蝙蝠"
+  },
+  {
+    "Key": "RES_ATTACK",
+    "en-US": "Attack",
+    "zh-TW": "攻擊",
+    "zh-CN": "攻"
   }
 ]

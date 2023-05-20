@@ -40,7 +40,9 @@ namespace Aritiafel.Organizations.ArinaOrganization
             else if (t == typeof(char))
                 return char.Parse(s);
             else if (t == typeof(Color))
-                return Color.FromArgb(int.Parse(s.Replace("#", ""), NumberStyles.HexNumber));
+                return Color.FromArgb(int.Parse(s.Substring(1, 2), NumberStyles.HexNumber),
+                    int.Parse(s.Substring(3, 2), NumberStyles.HexNumber),
+                    int.Parse(s.Substring(5, 2), NumberStyles.HexNumber));
             else if (t == typeof(DateTime))
                 return DateTime.Parse(s);
             else if (t == typeof(TimeSpan))

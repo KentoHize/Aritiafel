@@ -2,6 +2,8 @@
 using System;
 using Aritiafel.Locations;
 using Aritiafel.Items;
+using Aritiafel.Organizations.ArinaOrganization;
+using System.Drawing;
 
 namespace AritiafelTest
 {
@@ -59,6 +61,13 @@ namespace AritiafelTest
             tv2.dd = 2.4f;
             tv2.Color2 = System.Drawing.Color.DarkKhaki;
             SettingShop.SaveIniFile(tv2, @"C:\Programs\TestArea\tv2.ini");
+        }
+
+        [TestMethod]
+        public void LoadColor()
+        {
+            string s = "#ffd3d3";
+            Console.Write(s.ParseArString(typeof(Color)));            
         }
     }
 
