@@ -2,7 +2,7 @@
 using System;
 using Aritiafel.Locations;
 using Aritiafel.Items;
-using Aritiafel.Organizations.ArinaOrganization;
+using Aritiafel;
 using System.Drawing;
 
 namespace AritiafelTest

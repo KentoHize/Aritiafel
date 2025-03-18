@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -6,11 +7,13 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Aritiafel.Organizations.ArinaOrganization
+namespace Aritiafel
 {
     //Extension and others    
     public static class ArinaOrganization
     {
+        public static ConcurrentDictionary<string, string> EnumStringDictionary { get; set; }
+
         public static object ParseArString(this string s, Type t)
         {
             if (t == typeof(bool))
@@ -56,9 +59,26 @@ namespace Aritiafel.Organizations.ArinaOrganization
         }
         public static string ToArString(this object o)
         {
-            if (o.GetType() == typeof(Color))
+            Type type = o.GetType();
+            if (type == typeof(Color))
                 return "#" + ((Color)o).R.ToString("X2") + ((Color)o).G.ToString("X2") + ((Color)o).B.ToString("X2");
+            else if (type.IsEnum)
+            {
+                if (EnumStringDictionary != null)
+                    return EnumStringDictionary.ContainsKey(o.ToString()) ? EnumStringDictionary[o.ToString()] : o.ToString();
+                else
+                    return o.ToString();
+            }                
             return o.ToString();
+        }
+
+        public static void RecordEnumStringValue(this IDictionary<string, string> mapTable)
+        {
+            if (EnumStringDictionary == null)
+                EnumStringDictionary = new ConcurrentDictionary<string, string>(mapTable);
+            else
+                foreach (KeyValuePair<string, string> kvp in mapTable)
+                    EnumStringDictionary.AddOrUpdate(kvp.Key, kvp.Value, (key, oldValue) => kvp.Value);
         }
     }
 }
