@@ -28,7 +28,9 @@ namespace AritiafelTest
 
         internal void PrintDateTimeString(DateTime dt)
         {
-            TestContext.WriteLine($"{dt.Year}/{dt.Month}/{dt.Day}:{new ArDateTime(dt).Year}");
+            TestContext.WriteLine($"DT: {dt.Year}/{dt.Month}/{dt.Day} [{dt.DayOfWeek}] {dt.Hour}:{dt.Minute}:{dt.Second}.{dt.Millisecond}");
+            ArDateTime adt = new ArDateTime(dt);
+            TestContext.WriteLine($"AR: {adt.Year}/{adt.Month}/{adt.Day} [{adt.DayOfWeek}] {adt.Hour}:{adt.Minute}:{adt.Second}.{adt.Millisecond}");
         }
 
         [TestMethod]
@@ -45,13 +47,20 @@ namespace AritiafelTest
             //d = Math.DivRem(0, 5, out r);
             //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
 
-            List<DateTime> dateTimes = new List<DateTime> {new DateTime(1, 1, 1),  new DateTime(400, 1, 1), new DateTime(401, 1, 1), new DateTime(402, 2, 5), new DateTime(2020, 1, 1) };
+            List<DateTime> dateTimes = new List<DateTime> {
+                new DateTime(1, 1, 1, 0, 0, 0),  new DateTime(400, 1, 1, 0 ,0 , 0), 
+                new DateTime(401, 1, 1, 12, 20, 10), new DateTime(402, 2, 5, 13, 2, 2), 
+                new DateTime(2020, 1, 1, 23, 59, 59), new DateTime(2120, 3, 3, 0, 0, 1),
+                new DateTime(2120, 4, 10, 3, 39, 59), new DateTime(2320, 5, 7, 20, 2, 0),
+                new DateTime(2120, 11, 10, 10, 10, 0), new DateTime(3320, 12, 15, 3, 29, 49),
+                new DateTime(4400, 2, 29), new DateTime(4400, 3, 1),
+                DateTime.Now};
             for(int i = 0; i < dateTimes.Count; i++)
             {
-                if (dateTimes[i].Year == 2020)
-                {
-                    ;
-                }
+                //if (dateTimes[i].Year == 2020)
+                //{
+                //    ;
+                //}
                 PrintDateTimeString(dateTimes[i]);
             }
         }
