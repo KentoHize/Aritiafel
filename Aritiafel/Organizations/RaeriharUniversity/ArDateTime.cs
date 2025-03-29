@@ -22,24 +22,32 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     public struct ArDateTime
     {
         long _data;
+
+        internal enum DatePart
+        {
+            Year,
+            Month,
+            Day
+        }
+        
         public long Ticks { get => _data; set => _data = value; }
+        
+        
         public ArDateTime(long ticks)
             => _data = ticks;
-        public ArDateTime(DateTime dt)
-            => _data = dt.Ticks;
-
-        public ArDateTime(DateTime dt, bool Negative = true)
+        public ArDateTime(DateTime dt, bool Negative = false)
         {
-            if(Negative)
-            {
-                _data = dt.Ticks;//dt.
-            }
-            else
+            if(!Negative)
             {
                 _data = dt.Ticks;
             }
+            else
+            {
+                long n1, n2;
+                n1 = Math.DivRem(dt.Ticks, 126227808000000000, out n2) - 1;                
+                _data = -n1 * 126227808000000000 + new DateTime(n2 + 126227808000000000).Ticks;
+            }
         }
-            
 
 
         //private const long TicksPerMillisecond = 10000L;
@@ -52,19 +60,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         //private const int DaysPer4Years = 1461;
         //private const int DaysPerYear = 365;
 
-
-        //private const long TicksPer400Years = 126227808000000000;
-        //private const long TicksPer100Years = 31556736000000000;
-        //private const long TicksPer4Years = 
-
-        public void AAA()
-        {
-            //Test Area
-            //DateTime
-        }
+        //public void AAA()
+        //{
+        //    //Test Area
+        //    //DateTime
+        //}
 
         //private static long getModTick(long ticks)
         //{
+        //    TicksPer400Years = 126227808000000000
         //    if (ticks < 0)
         //        return ticks % TicksPer400Years + TicksPer400Years;
         //    else
@@ -77,17 +81,26 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return base.ToString();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ticks"></param>
-        /// <param name="part">0: 1: 2:</param>
-        /// <returns></returns>
-        internal static void TicksToDate(long ticks, out int year, out int month, out int day, int temp = 1)
+        internal int GetDatePart(DatePart part = DatePart.Year)
+        {
+            int result;
+            if (part == DatePart.Year)
+                TicksToDate(_data, out result, out _, out _, true);
+            else if(part == DatePart.Month)
+                TicksToDate(_data, out _, out result, out _);
+            else
+                TicksToDate(_data, out _, out _, out result);
+            return result;
+        }
+
+        internal static void TicksToDate(long ticks, out int year, out int month, out int day, bool onlyGetYear = false)
         {
             int[] dayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
             long n1, n2, n3, n4, n5, n6, n7, n8, n9;
+
+            month = 1;
+            day = 1;
             if (ticks >= 0)
             {
                 n1 = ticks / 864000000000;
@@ -110,14 +123,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             n6 = Math.DivRem(n5, 1461, out n7); //n6 = 多少個4年
             n8 = Math.DivRem(n7, 365, out n9); //n8 = 多少個1年
             //n9剩餘天數
-            //if(temp == 1)
+            //if(onlyGetYear)
             //    Console.WriteLine($"n9:{n9} n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2}");
             year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8) + 1;
-            month = 1;
+            if (onlyGetYear)
+                return;
+            
             for (int i = 0; i < 12; i++)
-            {
-                //n6 == 0 && n8 ==0 -> 100
-                //n6 != 0 || n8 != 0 ->非100 
+            {   
                 if (n9 > dayInMonth[i])
                 {
                     if(i == 1)
@@ -125,11 +138,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         //Console.WriteLine($"n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2}");
                     }
                     
-                    if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year
+                    if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x)
                     {                        
-                        n9 -= 1;
-                        //if(temp == 1)
-                        //    Console.WriteLine($"n9(2):{n9}");
+                        n9 -= 1;                        
                         if (n9 == dayInMonth[i])
                         {
                             n9 -= dayInMonth[i];
@@ -154,9 +165,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public int Year
         {
             get
-            {   
-                TicksToDate(_data, out int y, out int m, out int d);
-                return y;
+            {
+                return GetDatePart();
             }
         }
 
@@ -164,8 +174,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             get
             {
-                TicksToDate(_data, out int y, out int m, out int d, 2);
-                return m;
+                return GetDatePart(DatePart.Month);
             }
         }
 
@@ -173,8 +182,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             get
             {
-                TicksToDate(_data, out int y, out int m, out int d, 3);
-                return d;
+                return GetDatePart(DatePart.Day);
             }
         }
 

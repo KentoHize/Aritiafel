@@ -26,11 +26,60 @@ namespace AritiafelTest
             //return $"{ticks} Tick(s)[{format}]:{new JDateTime(ticks).ToString(format)}";
         }
 
-        internal void PrintDateTimeString(DateTime dt)
+        internal void PrintDateTimeString(TestDateTime tdt)
         {
-            TestContext.WriteLine($"DT: {dt.Year}/{dt.Month}/{dt.Day} [{dt.DayOfWeek}] {dt.Hour}:{dt.Minute}:{dt.Second}.{dt.Millisecond}");
-            ArDateTime adt = new ArDateTime(dt);
-            TestContext.WriteLine($"AR: {adt.Year}/{adt.Month}/{adt.Day} [{adt.DayOfWeek}] {adt.Hour}:{adt.Minute}:{adt.Second}.{adt.Millisecond}");
+            ArDateTime adt;
+            DateTime dt;
+            TestContext.WriteLine($"TDT: {tdt.Year}/{tdt.Month}/{tdt.Day} {tdt.Hour}:{tdt.Minute}:{tdt.Second}.{tdt.Millisecond} {tdt.Ticks}");
+            if (tdt.Year >= 0)
+            {
+                adt = new ArDateTime(new DateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond));
+            }
+            else
+            {
+                tdt.Year *= -1;
+                adt = new ArDateTime(new DateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond), true);
+            }
+                
+            TestContext.WriteLine($"ARD: {adt.Year}/{adt.Month}/{adt.Day} {adt.Hour}:{adt.Minute}:{adt.Second}.{adt.Millisecond} {adt.Ticks}");
+        }
+
+        public class TestDateTime
+        {
+            public int Year { get; set; } // can negative
+            public int Month { get; set; }
+            public int Day { get; set; }
+            public int Hour { get; set; }
+            public int Minute { get; set; }
+            public int Second { get; set; }
+            public int Millisecond { get; set; }
+            public long Ticks { get; set; }
+                
+
+            public TestDateTime(int year = 0, int month = 0, int day = 0, int hour = 0, int minute = 0, int second = 0, int millisecond = 0)
+            {
+                Year = year;
+                Month = month;
+                Day = day;
+                Hour = hour;
+                Minute = minute;
+                Second = second;
+                Millisecond = millisecond;
+            }
+
+            public static TestDateTime Now
+                => new TestDateTime(DateTime.Now);
+
+            public TestDateTime Reverse()
+            {
+                return new TestDateTime(Year * -1, Month, Day, Hour, Minute, Second,Millisecond);
+            }
+                
+            
+            public TestDateTime(DateTime dt)
+                : this(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Minute, dt.Millisecond)
+            { }
+
         }
 
         [TestMethod]
@@ -47,20 +96,22 @@ namespace AritiafelTest
             //d = Math.DivRem(0, 5, out r);
             //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
 
-            List<DateTime> dateTimes = new List<DateTime> {
-                new DateTime(1, 1, 1, 0, 0, 0),  new DateTime(400, 1, 1, 0 ,0 , 0), 
-                new DateTime(401, 1, 1, 12, 20, 10), new DateTime(402, 2, 5, 13, 2, 2), 
-                new DateTime(2020, 1, 1, 23, 59, 59), new DateTime(2120, 3, 3, 0, 0, 1),
-                new DateTime(2120, 4, 10, 3, 39, 59), new DateTime(2320, 5, 7, 20, 2, 0),
-                new DateTime(2120, 11, 10, 10, 10, 0), new DateTime(3320, 12, 15, 3, 29, 49),
-                new DateTime(4400, 2, 29), new DateTime(4400, 3, 1),
-                DateTime.Now};
-            for(int i = 0; i < dateTimes.Count; i++)
+            List<TestDateTime> dateTimes = new List<TestDateTime> {
+                new TestDateTime(1, 1, 1, 0, 0, 0),  new TestDateTime(400, 1, 1, 0 ,0 , 0),
+                new TestDateTime(401, 1, 1, 12, 20, 10), new TestDateTime(402, 2, 5, 13, 2, 2),
+                new TestDateTime(2020, 1, 1, 23, 59, 59), new TestDateTime(2120, 3, 3, 0, 0, 1),
+                new TestDateTime(2120, 4, 10, 3, 39, 59), new TestDateTime(2320, 5, 7, 20, 2, 0),
+                new TestDateTime(2120, 11, 10, 10, 10, 0), new TestDateTime(3320, 12, 15, 3, 29, 49),
+                new TestDateTime(4400, 2, 29), new TestDateTime(4400, 3, 1),
+                TestDateTime.Now, new TestDateTime(new DateTime(2000, 1, 1).AddTicks(-1)),
+            };
+
+            int tl = dateTimes.Count;
+            for (int i = 0; i < tl; i++)
+                dateTimes.Add(dateTimes[i].Reverse());
+
+            for (int i = 0; i < dateTimes.Count; i++)
             {
-                //if (dateTimes[i].Year == 2020)
-                //{
-                //    ;
-                //}
                 PrintDateTimeString(dateTimes[i]);
             }
         }
@@ -89,7 +140,7 @@ namespace AritiafelTest
             //    if (string.IsNullOrEmpty(Mathematics.GetStandardNumberString(d.ToString())))
             //        TestContext.WriteLine(d.ToString());
             //}
-           
+
             //result = Mathematics.GetStandardNumberString(testString);
             //TestContext.WriteLine($"{testString}:{result}");
             //result = Mathematics.GetStandardNumberString(testString2);
@@ -113,6 +164,6 @@ namespace AritiafelTest
             //result = Mathematics.GetStandardNumberString(testString11);
             //TestContext.WriteLine($"{testString11}:{result}");
         }
-       
+
     }
 }
