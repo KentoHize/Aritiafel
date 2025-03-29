@@ -2,6 +2,7 @@
 using System;
 using Aritiafel.Organizations.RaeriharUniversity;
 using Aritiafel.Artifacts;
+using System.Collections.Generic;
 
 namespace AritiafelTest
 {
@@ -9,6 +10,64 @@ namespace AritiafelTest
     public class RaeriharUniversityTest
     {
         public TestContext TestContext { get; set; }
+
+        internal void GetTickString(long ticks, string format = "")
+        {
+            if (string.IsNullOrEmpty(format))
+                format = "";
+
+            //TestContext.WriteLine($"{ticks} Tick(s)[{format}]:{new JDateTime(ticks).ToString(format)}");
+            //TestContext.WriteLine($"{ticks} Tick(s)[LongDate]:{new JDateTime(ticks).ToLongDateString()}");
+            //TestContext.WriteLine($"{ticks} Tick(s)[ShortDate]:{new JDateTime(ticks).ToShortDateString()}");
+            //TestContext.WriteLine($"{ticks} Tick(s)[LongTime]:{new JDateTime(ticks).ToLongTimeString()}");
+            //TestContext.WriteLine($"{ticks} Tick(s)[ShortTime]:{new JDateTime(ticks).ToShortTimeString()}");
+            //TestContext.WriteLine($"{ticks} Tick(s)[Year]:{new ArDateTime(ticks).Year}");
+            TestContext.WriteLine($"{ticks} Tick(s)[Year]:{new ArDateTime(ticks)}");
+            //return $"{ticks} Tick(s)[{format}]:{new JDateTime(ticks).ToString(format)}";
+        }
+
+        internal void PrintDateTimeString(DateTime dt)
+        {
+            TestContext.WriteLine($"{dt.Year}/{dt.Month}/{dt.Day}:{new ArDateTime(dt).Year}");
+        }
+
+        [TestMethod]
+        public void ArDateTimeTranTest()
+        {
+            //int d = Math.DivRem(-4, 5, out int r);
+            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
+            //d = Math.DivRem(-1, 5, out r);
+            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
+            //d = Math.DivRem(-5, 5, out r);
+            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
+            //d = Math.DivRem(-6, 5, out r);
+            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
+            //d = Math.DivRem(0, 5, out r);
+            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
+
+            List<DateTime> dateTimes = new List<DateTime> {new DateTime(1, 1, 1),  new DateTime(400, 1, 1), new DateTime(401, 1, 1), new DateTime(402, 2, 5), new DateTime(2020, 1, 1) };
+            for(int i = 0; i < dateTimes.Count; i++)
+            {
+                if (dateTimes[i].Year == 2020)
+                {
+                    ;
+                }
+                PrintDateTimeString(dateTimes[i]);
+            }
+        }
+
+        [TestMethod]
+        public void ArDateTimeTest()
+        {
+            List<long> testTicks = new List<long> { -36000000000L, -600000000L, -10000000L, -1000, -1 };
+            for (int i = testTicks.Count - 1; i >= 0; i--)
+                testTicks.Add(-testTicks[i]);
+
+            for (int i = 0; i < testTicks.Count; i++)
+            {
+                GetTickString(testTicks[i]);
+            }
+        }
 
         [TestMethod]
         public void GetStandardNumberStringTest()
