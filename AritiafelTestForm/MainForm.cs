@@ -163,6 +163,11 @@ namespace AritiafelTestForm
 
         private void btnTestDateTime_Click(object sender, EventArgs e)
         {
+            //MessageBox.Show(TimeZoneInfo.Local.DisplayName);
+            //MessageBox.Show(TimeZoneInfo.Local.BaseUtcOffset.ToString());
+            //MessageBox.Show(TimeZoneInfo.Local.DaylightName);
+            //TimeZoneInfo.Local.
+
             ArDateTime ad = ArDateTime.Parse(txtDateTime.Text, null, System.Globalization.DateTimeStyles.None);
             txtOutput.Text = ad.ToString();
         }

@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
+using System.Globalization;
 
 //To Do 3, 30, Ar.8
 
@@ -52,7 +53,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     public struct ArDateTime : IComparable, IComparable<ArDateTime>, IConvertible, IEquatable<ArDateTime>, IFormattable, ISerializable
     {
         long _data;
-        static readonly int[] DayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+        static readonly int[] ConstDayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
         static readonly ArDateTime MaxValue = new ArDateTime(9999, 12, 31, 23, 59, 59, 999);
         static readonly ArDateTime MinValue = new ArDateTime(-9999, 1, 1, 1, 0, 0, 0);
@@ -66,7 +67,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public ArDateTime(long ticks)
             => _data = ticks;
         public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond)
-        {
+        {   
             //Check
             //            if(year < -9999 || year > 9999)
             //                throw new Exception()
@@ -75,29 +76,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         public ArDateTime(DateTime dt)
             => _data = dt.Ticks;
-
-        //public ArDateTime(DateTime dt, bool Negative = false)
-        //{
-        //    if(!Negative)
-        //    {
-        //        _data = dt.Ticks;
-        //    }
-        //    else
-        //    {                
-        //        //    TicksPer400Years = 126227808000000000
-        //        //To Do
-        //        long n1, n2;
-        //        n1 = Math.DivRem(dt.Ticks, 126227808000000000, out n2);
-        //        Console.WriteLine($"n1:{n1} n2:{n2} ");
-        //        _data = -(n1) * 126227808000000000 - (126227808000000000 - n2);
-        //    }
-        //}
-
         public static ArDateTime Now
             => new ArDateTime(DateTime.Now);
         public static ArDateTime UtcNow
             => new ArDateTime(DateTime.UtcNow);
-
         public static ArDateTime Today
             => Now.Date;
 
@@ -107,15 +89,23 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 throw new ArgumentException(nameof(year));
             if (year < 0)
                 year = year % 400 + 401;
-            if (year % 400 == 0)
-                return true;
-            if (year % 4 == 0 && year % 100 != 0)
+            if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))
                 return true;
             return false;
         }
 
         public override string ToString()
             => ToString(null, null);
+        
+        public static int DaysInMonth(int year, int month)
+        {   
+            //Check Month
+            if (month < 1 || month > 12)
+                throw new ArgumentOutOfRangeException(nameof(month));
+            if (IsLeapYear(year) && month == 2)
+                return 29;
+            return ConstDayInMonth[month];
+        }
 
         internal int GetDatePart(DatePart part = DatePart.Year)
         {
@@ -136,39 +126,26 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             d += day - 1;
             for (int i = 0; i < month - 1; i++)
             {
-                d += DayInMonth[i];
+                d += ConstDayInMonth[i];
                 if (i == 1 && IsLeapYear(year))
                     d += 1;
             }
             if (year < 0)
-            {
                 oy = oy % 400 + 401;//變為正數
-            }
             oy -= 1;
-
             d += Math.DivRem(oy, 400, out oy) * 146097;
             d += Math.DivRem(oy, 100, out oy) * 36524;
             d += Math.DivRem(oy, 4, out oy) * 1461;
-            d += oy * 365;
-                //Console.WriteLine($"d:{d}");
+            d += oy * 365;                
             result += 864000000000L * d;
             //Time Part
-            //if(hour == 12 && minute == 20 && second == 10)
-            //{
-            //    Console.WriteLine($"h:{hour} m:{minute} s:{second} ms:{millisecond}");                
-            //}
-            
             result += 36000000000L * hour;
             result += 600000000L * minute;
             result += 10000000L * second;
             result += 10000L * millisecond;
 
             if(year < 0)
-            {
-                result = result - 126227808000000000L;                
-                result += (year / 400) * 126227808000000000L;
-            }
-
+                result += year / 400 * 126227808000000000L - 126227808000000000L;
             return result;
         }
 
@@ -216,7 +193,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             n9 += 1;
             for (int i = 0; i < 12; i++)
             {
-                if (n9 > DayInMonth[i])
+                if (n9 > ConstDayInMonth[i])
                 {
                     if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x) // To do
                     {   
@@ -227,7 +204,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         }
                         n9 -= 1;                     
                     }
-                    n9 -= DayInMonth[i];
+                    n9 -= ConstDayInMonth[i];
                 }
                 else
                 {
