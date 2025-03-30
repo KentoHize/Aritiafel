@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text;
 
 //To Do 3, 30, Ar.8
@@ -19,7 +20,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 {
     [Serializable]
     [StructLayout(LayoutKind.Auto)]
-    public struct ArDateTime
+    public struct ArDateTime : IComparable, IComparable<ArDateTime>, IConvertible, IEquatable<ArDateTime>, IFormattable, ISerializable
     {
         long _data;
 
@@ -42,7 +43,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 _data = dt.Ticks;
             }
             else
-            {
+            {                
                 //    TicksPer400Years = 126227808000000000
                 //To Do
                 long n1, n2;
@@ -65,13 +66,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         //public void AAA()
         //{
-        //    //Test Area
-        //    //DateTime
+            //n1 = ticks / 864000000000;
+            //_data % t400 + t400
+            //_data / t400 + 399 - dt.Year
         //}
 
         //private static long getModTick(long ticks)
         //{
-        
+
         //    if (ticks < 0)
         //        return ticks % TicksPer400Years + TicksPer400Years;
         //    else
@@ -95,6 +97,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return result;
         }
 
+        //internal static long DateToTicks(int year, int month, int day, int hour, int minute, int second, int milliseconds)
+        //{
+            
+        //    return 0;
+        //}
+
         internal static void TicksToDate(long ticks, out int year, out int month, out int day, bool onlyGetYear = false)
         {
             int[] dayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
@@ -104,10 +112,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             month = 1;
             day = 1;
             n1 = Math.DivRem(ticks, 864000000000, out nr);
-                 //n1 = ticks / 864000000000;
-                //_data % t400 + t400
-                //_data / t400 + 399 - dt.Year
-                        
+            
+
             if (ticks >= 0)
             {
                 n2 = Math.DivRem(n1, 146097, out n3);
@@ -174,7 +180,78 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             day = (int)n9 + 1;            
         }
 
+        public int CompareTo(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return 0;
+            else if (obj is null)
+                return 1;
+            else if (obj is ArDateTime b)
+                return CompareTo(b);
+            else
+                throw new ArgumentException(nameof(obj));
+        }
 
+        public int CompareTo(ArDateTime other)
+            => _data.CompareTo(other._data);
+
+        public bool Equals(ArDateTime other)
+            => _data == other._data;
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj is null)
+                return false;
+            else if (obj is ArDateTime b)
+                return Equals(b);
+            else
+                return false;
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+            => info.AddValue("data", _data);
+
+        public TypeCode GetTypeCode()
+            => TypeCode.Int64;
+        public bool ToBoolean(IFormatProvider provider)
+            => ((IConvertible)_data).ToBoolean(provider);
+        public byte ToByte(IFormatProvider provider)
+            => ((IConvertible)_data).ToByte(provider);
+        public char ToChar(IFormatProvider provider)
+            => ((IConvertible)_data).ToChar(provider);
+        public DateTime ToDateTime(IFormatProvider provider)
+            => ((IConvertible)_data).ToDateTime(provider);
+        public decimal ToDecimal(IFormatProvider provider)
+            => ((IConvertible)_data).ToDecimal(provider);
+        public double ToDouble(IFormatProvider provider)
+            => ((IConvertible)_data).ToDouble(provider);
+        public short ToInt16(IFormatProvider provider)
+            => ((IConvertible)_data).ToInt16(provider);
+        public int ToInt32(IFormatProvider provider)
+            => ((IConvertible)_data).ToInt32(provider);
+        public long ToInt64(IFormatProvider provider)
+            => ((IConvertible)_data).ToInt64(provider);
+        public sbyte ToSByte(IFormatProvider provider)
+            => ((IConvertible)_data).ToSByte(provider);
+        public float ToSingle(IFormatProvider provider)
+            => ((IConvertible)_data).ToSingle(provider);
+        public string ToString(IFormatProvider provider)
+            => _data.ToString(provider); // To Do
+        public object ToType(Type conversionType, IFormatProvider provider)        
+            => ((IConvertible)_data).ToType(conversionType, provider);
+        public ushort ToUInt16(IFormatProvider provider)        
+            => ((IConvertible)_data).ToUInt16(provider);
+        public uint ToUInt32(IFormatProvider provider)
+            => ((IConvertible)_data).ToUInt32(provider);
+        public ulong ToUInt64(IFormatProvider provider)
+            => ((IConvertible)_data).ToUInt64(provider);
 
         public int Year
         {
@@ -220,9 +297,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 36000000000;
                 return (int)(l / 600000000);
             }
-        }
-
-        //=> _data >= 0 ? (int)(_data % 36000000000 / 600000000) : 0;
+        }        
         public int Second
         {
             get
@@ -232,8 +307,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 600000000;
                 return (int)(l / 10000000);
             }
-        }
-        //=> _data >= 0 ? (int)(_data % 600000000 / 10000000) : 0;
+        }        
         public int Millisecond
         {
             get
@@ -243,8 +317,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 10000000;
                 return (int)(l / 10000);
             }
-        }
-        //=> _data >= 0 ? (int)(_data % 10000000 / 10000) : 0;
+        }        
         public int DayOfWeek
         {
             get
@@ -254,8 +327,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 6048000000000;
                 return (int)(l / 864000000000 + 1);
             }
-        }
-        //=> _data >= 0 ? (int)(_data % 6048000000000 / 864000000000 + 1) : 0; // To Do
+        }        
 
     }
 }

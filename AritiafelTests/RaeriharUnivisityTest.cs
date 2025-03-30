@@ -29,7 +29,7 @@ namespace AritiafelTest
         internal void PrintDateTimeString(TestDateTime tdt)
         {
             ArDateTime adt;
-            DateTime dt;
+            //DateTime dt;
             TestContext.WriteLine($"TDT: {tdt.Year}/{tdt.Month}/{tdt.Day} {tdt.Hour}:{tdt.Minute}:{tdt.Second}.{tdt.Millisecond} {tdt.Ticks}");
             if (tdt.Year > 0)
             {
