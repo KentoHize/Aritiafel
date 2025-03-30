@@ -8,12 +8,37 @@ using System.Text;
 //To Do 3, 30, Ar.8
 
 
+//private const long TicksPerMillisecond = 10000L;
+//private const long TicksPerSecond = 10000000L;
+//private const long TicksPerMinute = 600000000L;
+//private const long TicksPerHour = 36000000000L;
+//private const long TicksPerDay = 864000000000;
+//private const int DaysPer400Years = 146097;
+//private const int DaysPer100Years = 36524;
+//private const int DaysPer4Years = 1461;
+//private const int DaysPerYear = 365;
+
+//public void AAA()
+//{
+//n1 = ticks / 864000000000;
+//_data % t400 + t400
+//_data / t400 + 399 - dt.Year
+//}
+
+//private static long getModTick(long ticks)
+//{
+
+//    if (ticks < 0)
+//        return ticks % TicksPer400Years + TicksPer400Years;
+//    else
+//        return ticks % TicksPer400Years;
+//}
+
+
 //用毫秒為單位
 //0:1年1月1日0時0分0秒
 //-1000:-1年12月31日23時59分59秒
-
 //可填負值與零的DateTime
-
 //ToString =>複雜
 
 namespace Aritiafel.Organizations.RaeriharUniversity
@@ -23,111 +48,132 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     public struct ArDateTime : IComparable, IComparable<ArDateTime>, IConvertible, IEquatable<ArDateTime>, IFormattable, ISerializable
     {
         long _data;
+        static readonly int[] DayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
+        static readonly ArDateTime MaxValue = new ArDateTime(9999, 12, 31, 23, 59, 59, 999);
+        static readonly ArDateTime MinValue = new ArDateTime(-9999, 1, 1, 1, 0, 0, 0);
         internal enum DatePart
         {
             Year,
             Month,
             Day
         }
-        
         public long Ticks { get => _data; set => _data = value; }
-        
-        
         public ArDateTime(long ticks)
             => _data = ticks;
-        public ArDateTime(DateTime dt, bool Negative = false)
+        public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond)
         {
-            if(!Negative)
-            {
-                _data = dt.Ticks;
-            }
-            else
-            {                
-                //    TicksPer400Years = 126227808000000000
-                //To Do
-                long n1, n2;
-                n1 = Math.DivRem(dt.Ticks, 126227808000000000, out n2);
-                Console.WriteLine($"n1:{n1} n2:{n2} ");
-                _data = -(n1) * 126227808000000000 - (126227808000000000 - n2);
-            }
+            //Check
+            //            if(year < -9999 || year > 9999)
+            //                throw new Exception()
+            _data = DateToTicks(year, month, day, hour, minute, second, millisecond);
         }
 
+        public ArDateTime(DateTime dt)
+            => _data = dt.Ticks;
 
-        //private const long TicksPerMillisecond = 10000L;
-        //private const long TicksPerSecond = 10000000L;
-        //private const long TicksPerMinute = 600000000L;
-        //private const long TicksPerHour = 36000000000L;
-        //private const long TicksPerDay = 864000000000;
-        //private const int DaysPer400Years = 146097;
-        //private const int DaysPer100Years = 36524;
-        //private const int DaysPer4Years = 1461;
-        //private const int DaysPerYear = 365;
-
-        //public void AAA()
+        //public ArDateTime(DateTime dt, bool Negative = false)
         //{
-            //n1 = ticks / 864000000000;
-            //_data % t400 + t400
-            //_data / t400 + 399 - dt.Year
-        //}
-
-        //private static long getModTick(long ticks)
-        //{
-
-        //    if (ticks < 0)
-        //        return ticks % TicksPer400Years + TicksPer400Years;
+        //    if(!Negative)
+        //    {
+        //        _data = dt.Ticks;
+        //    }
         //    else
-        //        return ticks % TicksPer400Years;
+        //    {                
+        //        //    TicksPer400Years = 126227808000000000
+        //        //To Do
+        //        long n1, n2;
+        //        n1 = Math.DivRem(dt.Ticks, 126227808000000000, out n2);
+        //        Console.WriteLine($"n1:{n1} n2:{n2} ");
+        //        _data = -(n1) * 126227808000000000 - (126227808000000000 - n2);
+        //    }
         //}
+
+        public static bool IsLeapYear(int year)
+        {
+            if (year == 0)
+                throw new ArgumentException(nameof(year));
+            if (year < 0)
+                year = year % 400 + 401;
+            if (year % 400 == 0)
+                return true;
+            if (year % 4 == 0 && year % 100 != 0)
+                return true;
+            return false;
+        }
 
         public override string ToString()
-        {
-            return Ticks.ToString();
-        }
+            => ToString(null, null);
 
         internal int GetDatePart(DatePart part = DatePart.Year)
         {
             int result;
             if (part == DatePart.Year)
                 TicksToDate(_data, out result, out _, out _, true);
-            else if(part == DatePart.Month)
+            else if (part == DatePart.Month)
                 TicksToDate(_data, out _, out result, out _);
             else
                 TicksToDate(_data, out _, out _, out result);
             return result;
         }
 
-        //internal static long DateToTicks(int year, int month, int day, int hour, int minute, int second, int milliseconds)
-        //{
+        internal static long DateToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond)
+        {
+            long result = 0, d = 0;
+            //Day Part
+            d += day - 1;
+            for (int i = 0; i < month - 1; i++)
+            {
+                d += DayInMonth[i];
+                if (i == 1 && IsLeapYear(year))
+                    d += 1;
+            }
+
+            year -= 1;
+            if (year < 0)
+                year = year % 400 + 401;
+            d += Math.DivRem(year, 400, out year) * 146097;
+            d += Math.DivRem(year, 100, out year) * 36524;
+            d += Math.DivRem(year, 4, out year) * 1461;
+            d += year * 365;
+                //Console.WriteLine($"d:{d}");
+            result += 864000000000L * d;
+            //Time Part
+            //if(hour == 12 && minute == 20 && second == 10)
+            //{
+            //    Console.WriteLine($"h:{hour} m:{minute} s:{second} ms:{millisecond}");                
+            //}
             
-        //    return 0;
-        //}
+            result += 36000000000L * hour;
+            result += 600000000L * minute;
+            result += 10000000L * second;
+            result += 10000L * millisecond;
+            return result;
+        }
 
         internal static void TicksToDate(long ticks, out int year, out int month, out int day, bool onlyGetYear = false)
         {
-            int[] dayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
             long n1, n2, n3, n4, n5, n6, n7, n8, n9, nr = 0;
-            
+
             month = 1;
             day = 1;
             n1 = Math.DivRem(ticks, 864000000000, out nr);
-            
+
 
             if (ticks >= 0)
             {
                 n2 = Math.DivRem(n1, 146097, out n3);
             }
             else
-            {   
+            {
                 n2 = Math.DivRem(n1, 146097, out n3) - 1;
                 n3 += 146097; //從此為正數
                 //扣掉1天因為沒整除
                 if (nr != 0)
-                    n3 -= 1;                
+                    n3 -= 1;
             }
             n4 = Math.DivRem(n3, 36524, out n5); //n4 = 多少個100年
-            if(n4 == 4) //整除為4 其實為3
+            if (n4 == 4) //整除為4 其實為3
             {
                 n4 = 3;
                 n5 += 36524;
@@ -148,36 +194,36 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8);
             if (onlyGetYear)
                 return;
-            
+
             for (int i = 0; i < 12; i++)
-            {   
-                if (n9 > dayInMonth[i])
+            {
+                if (n9 > DayInMonth[i])
                 {
-                    if(i == 1)
+                    if (i == 1)
                     {
                         //Console.WriteLine($"n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2}");
                     }
-                    
+
                     if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x) // To dO
                     {
                         //Console.WriteLine($"year:{year} n8:{n8} n6:{n6} n4:{n4}");                        
-                        n9 -= 1;                        
-                        if (n9 == dayInMonth[i])
+                        n9 -= 1;
+                        if (n9 == DayInMonth[i])
                         {
-                            n9 -= dayInMonth[i];
+                            n9 -= DayInMonth[i];
                             month = i + 2;
                             break;
                         }
-                    }   
-                    n9 -= dayInMonth[i]; 
+                    }
+                    n9 -= DayInMonth[i];
                 }
                 else
                 {
                     month = i + 1;
                     break;
-                }                
+                }
             }
-            day = (int)n9 + 1;            
+            day = (int)n9 + 1;
         }
 
         public int CompareTo(object obj)
@@ -212,7 +258,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            throw new NotImplementedException();
+            return _data.ToString(format, formatProvider);
+            // To Do
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -221,13 +268,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public TypeCode GetTypeCode()
             => TypeCode.Int64;
         public bool ToBoolean(IFormatProvider provider)
-            => ((IConvertible)_data).ToBoolean(provider);
+            => throw new InvalidCastException();
         public byte ToByte(IFormatProvider provider)
-            => ((IConvertible)_data).ToByte(provider);
+            => throw new InvalidCastException();
         public char ToChar(IFormatProvider provider)
-            => ((IConvertible)_data).ToChar(provider);
+            => throw new InvalidCastException();
         public DateTime ToDateTime(IFormatProvider provider)
-            => ((IConvertible)_data).ToDateTime(provider);
+            => _data >= 0 ? new DateTime(_data) : throw new InvalidCastException();
         public decimal ToDecimal(IFormatProvider provider)
             => ((IConvertible)_data).ToDecimal(provider);
         public double ToDouble(IFormatProvider provider)
@@ -242,16 +289,16 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ((IConvertible)_data).ToSByte(provider);
         public float ToSingle(IFormatProvider provider)
             => ((IConvertible)_data).ToSingle(provider);
-        public string ToString(IFormatProvider provider)
-            => _data.ToString(provider); // To Do
-        public object ToType(Type conversionType, IFormatProvider provider)        
+        public object ToType(Type conversionType, IFormatProvider provider)
             => ((IConvertible)_data).ToType(conversionType, provider);
-        public ushort ToUInt16(IFormatProvider provider)        
+        public ushort ToUInt16(IFormatProvider provider)
             => ((IConvertible)_data).ToUInt16(provider);
         public uint ToUInt32(IFormatProvider provider)
             => ((IConvertible)_data).ToUInt32(provider);
         public ulong ToUInt64(IFormatProvider provider)
             => ((IConvertible)_data).ToUInt64(provider);
+        public string ToString(IFormatProvider provider)
+            => ToString(null, provider);
 
         public int Year
         {
@@ -280,14 +327,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public int Hour
         {
             get
-            {   
+            {
                 long l = _data % 864000000000;
                 if (_data < 0 && l != 0)
                     l += 864000000000;
                 return (int)(l / 36000000000);
             }
         }
-             
+
         public int Minute
         {
             get
@@ -297,7 +344,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 36000000000;
                 return (int)(l / 600000000);
             }
-        }        
+        }
         public int Second
         {
             get
@@ -307,7 +354,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 600000000;
                 return (int)(l / 10000000);
             }
-        }        
+        }
         public int Millisecond
         {
             get
@@ -317,7 +364,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 10000000;
                 return (int)(l / 10000);
             }
-        }        
+        }
         public int DayOfWeek
         {
             get
@@ -327,7 +374,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 6048000000000;
                 return (int)(l / 864000000000 + 1);
             }
-        }        
+        }
 
     }
 }

@@ -33,7 +33,7 @@ namespace AritiafelTest
             TestContext.WriteLine($"TDT: {tdt.Year}/{tdt.Month}/{tdt.Day} {tdt.Hour}:{tdt.Minute}:{tdt.Second}.{tdt.Millisecond} {tdt.Ticks}");
             if (tdt.Year > 0)
             {
-                adt = new ArDateTime(new DateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond));
+                adt = new ArDateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond);
             }
             else
             {
@@ -145,6 +145,17 @@ namespace AritiafelTest
             {
                 GetTickString(testTicks[i]);
             }
+        }
+
+        [TestMethod]
+        public void IsLeapYear()
+        {
+            Assert.IsTrue(ArDateTime.IsLeapYear(-1));
+            Assert.IsTrue(ArDateTime.IsLeapYear(400));
+            Assert.IsTrue(ArDateTime.IsLeapYear(4));
+            Assert.IsFalse(ArDateTime.IsLeapYear(-4));
+            Assert.IsTrue(ArDateTime.IsLeapYear(-5));
+            Assert.IsTrue(ArDateTime.IsLeapYear(2020));
         }
 
         [TestMethod]
