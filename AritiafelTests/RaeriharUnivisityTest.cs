@@ -37,7 +37,10 @@ namespace AritiafelTest
             }
             else
             {
-                adt = new ArDateTime(tdt.Ticks);
+                if(tdt.Ticks == 0)
+                    adt = new ArDateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond);
+                else
+                            adt = new ArDateTime(tdt.Ticks);
                 //tdt.Year *= -1;
                 //adt = new ArDateTime(new DateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond), true);
             }
@@ -87,6 +90,12 @@ namespace AritiafelTest
         }
 
         [TestMethod]
+        public void ArDateTimeTranTest2()
+        {
+
+        }
+
+        [TestMethod]
         public void ArDateTimeTranTest()
         {
             //int d = Math.DivRem(-4, 5, out int r);
@@ -111,12 +120,21 @@ namespace AritiafelTest
                 TestDateTime.Now, new TestDateTime(new DateTime(2000, 1, 1).AddTicks(-1)),
             };
 
-            //int tl = dateTimes.Count;
-            //for (int i = 0; i < tl; i++)
-            //    dateTimes.Add(dateTimes[i].Reverse());
+            dateTimes.Add(new TestDateTime(-1, 12, 31, 23, 59, 59, 999));
 
-            for (int i = 0; i < 10; i++)
-                dateTimes.Add(new TestDateTime(i * -1000, false));
+            int tl = dateTimes.Count;
+            for (int i = 0; i < tl; i++)
+            {
+                if (dateTimes[i].Year == 4400 && dateTimes[i].Day == 29)
+                    dateTimes.Add(new TestDateTime(-4400, 2, 28));
+                else
+                    dateTimes.Add(dateTimes[i].Reverse());
+                
+            }
+                
+
+            //for (int i = 0; i < 10; i++)
+            //    dateTimes.Add(new TestDateTime(i * -1000, false));
 
             dateTimes.Add(new TestDateTime(-100000, false));
             dateTimes.Add(new TestDateTime(-10000000, false));

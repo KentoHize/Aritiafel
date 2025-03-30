@@ -18,6 +18,9 @@ using System.Text;
 //private const int DaysPer4Years = 1461;
 //private const int DaysPerYear = 365;
 
+//265248000000000
+//864000000000
+
 //public void AAA()
 //{
 //n1 = ticks / 864000000000;
@@ -119,8 +122,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         internal static long DateToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond)
         {
-            long result = 0, d = 0;
+            long result = 0, oy = year, d = 0;
             //Day Part
+            if (year == -4400 && month == 3 && day == 1)
+                ;
+
             d += day - 1;
             for (int i = 0; i < month - 1; i++)
             {
@@ -129,13 +135,21 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     d += 1;
             }
 
-            year -= 1;
+            
+            
+            //-1 => 400
+            //-2 => 399
+            //-3 => 398
             if (year < 0)
-                year = year % 400 + 401;
-            d += Math.DivRem(year, 400, out year) * 146097;
-            d += Math.DivRem(year, 100, out year) * 36524;
-            d += Math.DivRem(year, 4, out year) * 1461;
-            d += year * 365;
+            {
+                oy = oy % 400 + 401;//變為正數
+            }
+            oy -= 1;
+
+            d += Math.DivRem(oy, 400, out oy) * 146097;
+            d += Math.DivRem(oy, 100, out oy) * 36524;
+            d += Math.DivRem(oy, 4, out oy) * 1461;
+            d += oy * 365;
                 //Console.WriteLine($"d:{d}");
             result += 864000000000L * d;
             //Time Part
@@ -148,6 +162,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             result += 600000000L * minute;
             result += 10000000L * second;
             result += 10000L * millisecond;
+
+            if(year < 0)
+            {
+                result = result - 126227808000000000L;
+                //result = 0;
+                result += (year / 400) * 126227808000000000L;
+            }
+
             return result;
         }
 
@@ -158,7 +180,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             month = 1;
             day = 1;
             n1 = Math.DivRem(ticks, 864000000000, out nr);
-
 
             if (ticks >= 0)
             {
@@ -195,6 +216,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (onlyGetYear)
                 return;
 
+            n9 += 1;
             for (int i = 0; i < 12; i++)
             {
                 if (n9 > DayInMonth[i])
@@ -204,16 +226,22 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         //Console.WriteLine($"n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2}");
                     }
 
-                    if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x) // To dO
+                    if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x) // To do
                     {
                         //Console.WriteLine($"year:{year} n8:{n8} n6:{n6} n4:{n4}");                        
-                        n9 -= 1;
-                        if (n9 == DayInMonth[i])
+                        if(n9 == 29)
                         {
-                            n9 -= DayInMonth[i];
-                            month = i + 2;
+                            month = i + 1;
                             break;
                         }
+                        else
+                            n9 -= 1;
+                        //if (n9 == DayInMonth[i])
+                        //{
+                        //    n9 -= DayInMonth[i];
+                        //    month = i + 2;
+                        //    break;
+                        //}
                     }
                     n9 -= DayInMonth[i];
                 }
@@ -223,7 +251,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     break;
                 }
             }
-            day = (int)n9 + 1;
+            day = (int)n9;
         }
 
         public int CompareTo(object obj)
@@ -258,6 +286,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
+            return $"{Year}/{Month}/{Day} {Hour}:{Minute}:{Second}.{Millisecond}";
             return _data.ToString(format, formatProvider);
             // To Do
         }
@@ -374,6 +403,19 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 6048000000000;
                 return (int)(l / 864000000000 + 1);
             }
+        }
+
+        public static ArDateTime Parse(string s, IFormatProvider provider, System.Globalization.DateTimeStyles style)
+        {
+            //先視為Null
+            //先認定基本yyyy/mm/dd hh:MM:ss
+            string[] s1 = s.Trim().Split(' ');
+            string[] s2 = s1[0].Split('/');
+            string[] s3 = s1[1].Split(':');
+            return new ArDateTime(int.Parse(s2[0]), int.Parse(s2[1]), int.Parse(s2[2]),
+                int.Parse(s3[0]), int.Parse(s3[1]), int.Parse(s3[2]), 0);
+
+            //DateTime.Parse(string s, IFormatProvider provider, System.Globalization.DateTimeStyles style)
         }
 
     }

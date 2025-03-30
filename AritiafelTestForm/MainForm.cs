@@ -14,6 +14,7 @@ using Aritiafel.Items;
 using System.IO;
 using System.Diagnostics;
 using Aritiafel.Locations;
+using Aritiafel.Organizations.RaeriharUniversity;
 
 namespace AritiafelTestForm
 {
@@ -158,6 +159,12 @@ namespace AritiafelTestForm
             RabbitCouriers.RegisterLaguageFolderAndCI(@"C:\Programs\Aritiafel\AritiafelTestForm\Language", new System.Globalization.CultureInfo("zh-TW"));
             RabbitCouriers.SentInformationByResource("RES_APPLE", "Test");
             RabbitCouriers.SentInformationByResource("RES_BAT", "Test");
+        }
+
+        private void btnTestDateTime_Click(object sender, EventArgs e)
+        {
+            ArDateTime ad = ArDateTime.Parse(txtDateTime.Text, null, System.Globalization.DateTimeStyles.None);
+            txtOutput.Text = ad.ToString();
         }
     }
 }

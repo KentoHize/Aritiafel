@@ -41,6 +41,8 @@
             this.btnScript1 = new System.Windows.Forms.Button();
             this.btnTestSettingShop = new System.Windows.Forms.Button();
             this.btnShowMessageFromLanguageFile = new System.Windows.Forms.Button();
+            this.btnTestDateTime = new System.Windows.Forms.Button();
+            this.txtDateTime = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnMessageBox
@@ -165,11 +167,31 @@
             this.btnShowMessageFromLanguageFile.UseVisualStyleBackColor = true;
             this.btnShowMessageFromLanguageFile.Click += new System.EventHandler(this.btnShowMessageFromLanguageFile_Click);
             // 
+            // btnTestDateTime
+            // 
+            this.btnTestDateTime.Location = new System.Drawing.Point(644, 381);
+            this.btnTestDateTime.Name = "btnTestDateTime";
+            this.btnTestDateTime.Size = new System.Drawing.Size(143, 61);
+            this.btnTestDateTime.TabIndex = 12;
+            this.btnTestDateTime.Text = "產生ArDateTime";
+            this.btnTestDateTime.UseVisualStyleBackColor = true;
+            this.btnTestDateTime.Click += new System.EventHandler(this.btnTestDateTime_Click);
+            // 
+            // txtDateTime
+            // 
+            this.txtDateTime.Location = new System.Drawing.Point(497, 401);
+            this.txtDateTime.Name = "txtDateTime";
+            this.txtDateTime.Size = new System.Drawing.Size(126, 25);
+            this.txtDateTime.TabIndex = 13;
+            this.txtDateTime.Text = "4400/2/29 0:0:0";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 470);
+            this.Controls.Add(this.txtDateTime);
+            this.Controls.Add(this.btnTestDateTime);
             this.Controls.Add(this.btnShowMessageFromLanguageFile);
             this.Controls.Add(this.btnTestSettingShop);
             this.Controls.Add(this.btnScript1);
@@ -205,6 +227,8 @@
         private System.Windows.Forms.Button btnScript1;
         private System.Windows.Forms.Button btnTestSettingShop;
         private System.Windows.Forms.Button btnShowMessageFromLanguageFile;
+        private System.Windows.Forms.Button btnTestDateTime;
+        private System.Windows.Forms.TextBox txtDateTime;
     }
 }
 
