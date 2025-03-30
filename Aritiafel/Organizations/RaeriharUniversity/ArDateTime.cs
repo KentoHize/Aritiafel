@@ -103,41 +103,40 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             
             month = 1;
             day = 1;
-            if (ticks >= 0)
-            {
-                n1 = ticks / 864000000000;
-            }
-            else
-            {
-                n1 = Math.DivRem(ticks, 864000000000, out nr);
-                //整除不可 - ToDo
-                //n1 = ticks / 864000000000;
+            n1 = Math.DivRem(ticks, 864000000000, out nr);
+                 //n1 = ticks / 864000000000;
                 //_data % t400 + t400
                 //_data / t400 + 399 - dt.Year
-            }
-            //n1 = days
+                        
             if (ticks >= 0)
             {
                 n2 = Math.DivRem(n1, 146097, out n3);
             }
             else
-            {
-                //146097 - n1 n1 -= 1; //扣除1天
+            {   
                 n2 = Math.DivRem(n1, 146097, out n3) - 1;
                 n3 += 146097; //從此為正數
                 //扣掉1天因為沒整除
                 if (nr != 0)
-                    n3 -= 1;
-                //扣一天因為潤年
-                n3 -= 1;
+                    n3 -= 1;                
             }
             n4 = Math.DivRem(n3, 36524, out n5); //n4 = 多少個100年
+            if(n4 == 4) //整除為4 其實為3
+            {
+                n4 = 3;
+                n5 += 36524;
+            }
             n6 = Math.DivRem(n5, 1461, out n7); //n6 = 多少個4年
             n8 = Math.DivRem(n7, 365, out n9); //n8 = 多少個1年
+            if (n8 == 4) //整除為4 其實為3
+            {
+                n8 = 3;
+                n9 += 365;
+            }
             //n9剩餘天數
             //if(onlyGetYear)
             //    Console.WriteLine($"n9:{n9} n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2} n1:{n1}");
-            if(ticks >= 0)
+            if (ticks >= 0)
                 year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8) + 1;
             else
                 year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8);
@@ -155,7 +154,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     
                     if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x) // To dO
                     {
-                        Console.WriteLine($"year:{year} n8:{n8} n6:{n6} n4:{n4}");                        
+                        //Console.WriteLine($"year:{year} n8:{n8} n6:{n6} n4:{n4}");                        
                         n9 -= 1;                        
                         if (n9 == dayInMonth[i])
                         {
@@ -170,13 +169,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 {
                     month = i + 1;
                     break;
-                }
-                
+                }                
             }
-            if (ticks >= 0)
-                day = (int)n9 + 1;
-            else
-                day = (int)n9 + 2;
+            day = (int)n9 + 1;            
         }
 
 
@@ -206,15 +201,61 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
 
         public int Hour
-            => _data >= 0 ? (int)(_data % 864000000000 / 36000000000) : 0;
+        {
+            get
+            {   
+                long l = _data % 864000000000;
+                if (_data < 0 && l != 0)
+                    l += 864000000000;
+                return (int)(l / 36000000000);
+            }
+        }
+             
         public int Minute
-            => _data >= 0 ? (int)(_data % 36000000000 / 600000000) : 0;
+        {
+            get
+            {
+                long l = _data % 36000000000;
+                if (_data < 0 && l != 0)
+                    l += 36000000000;
+                return (int)(l / 600000000);
+            }
+        }
+
+        //=> _data >= 0 ? (int)(_data % 36000000000 / 600000000) : 0;
         public int Second
-            => _data >= 0 ? (int)(_data % 600000000 / 10000000) : 0;
+        {
+            get
+            {
+                long l = _data % 600000000;
+                if (_data < 0 && l != 0)
+                    l += 600000000;
+                return (int)(l / 10000000);
+            }
+        }
+        //=> _data >= 0 ? (int)(_data % 600000000 / 10000000) : 0;
         public int Millisecond
-            => _data >= 0 ? (int)(_data % 10000000 / 10000) : 0;
+        {
+            get
+            {
+                long l = _data % 10000000;
+                if (_data < 0 && l != 0)
+                    l += 10000000;
+                return (int)(l / 10000);
+            }
+        }
+        //=> _data >= 0 ? (int)(_data % 10000000 / 10000) : 0;
         public int DayOfWeek
-            => _data >= 0 ? (int)(_data % 6048000000000 / 864000000000 + 1) : 0;
+        {
+            get
+            {
+                long l = _data % 6048000000000;
+                if (_data < 0 && l != 0)
+                    l += 6048000000000;
+                return (int)(l / 864000000000 + 1);
+            }
+        }
+        //=> _data >= 0 ? (int)(_data % 6048000000000 / 864000000000 + 1) : 0; // To Do
 
     }
 }

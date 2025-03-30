@@ -42,7 +42,7 @@ namespace AritiafelTest
                 //adt = new ArDateTime(new DateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond), true);
             }
                 
-            TestContext.WriteLine($"ARD: {adt.Year}/{adt.Month}/{adt.Day} {adt.Hour}:{adt.Minute}:{adt.Second}.{adt.Millisecond} {adt.Ticks}");
+            TestContext.WriteLine($"ARD: {adt.Year}/{adt.Month}/{adt.Day} [{adt.DayOfWeek}] {adt.Hour}:{adt.Minute}:{adt.Second}.{adt.Millisecond} {adt.Ticks}");
         }
 
         public class TestDateTime
@@ -107,6 +107,7 @@ namespace AritiafelTest
                 new TestDateTime(2120, 4, 10, 3, 39, 59), new TestDateTime(2320, 5, 7, 20, 2, 0),
                 new TestDateTime(2120, 11, 10, 10, 10, 0), new TestDateTime(3320, 12, 15, 3, 29, 49),
                 new TestDateTime(4400, 2, 29), new TestDateTime(4400, 3, 1),
+                new TestDateTime(399, 12, 31), new TestDateTime(3, 12, 31),
                 TestDateTime.Now, new TestDateTime(new DateTime(2000, 1, 1).AddTicks(-1)),
             };
 
@@ -124,7 +125,9 @@ namespace AritiafelTest
             dateTimes.Add(new TestDateTime(-10000000000000, false));
             dateTimes.Add(new TestDateTime(-1000000000000000, false));
             dateTimes.Add(new TestDateTime(-100000000000000000, false));
-
+            dateTimes.Add(new TestDateTime(-864000000000, false));
+            dateTimes.Add(new TestDateTime(-864000000001, false));
+            dateTimes.Add(new TestDateTime(-8640000000000, false));
             for (int i = 0; i < dateTimes.Count; i++)
             {
                 PrintDateTimeString(dateTimes[i]);
