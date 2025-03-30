@@ -43,9 +43,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
             else
             {
+                //    TicksPer400Years = 126227808000000000
+                //To Do
                 long n1, n2;
-                n1 = Math.DivRem(dt.Ticks, 126227808000000000, out n2) - 1;                
-                _data = -n1 * 126227808000000000 + new DateTime(n2 + 126227808000000000).Ticks;
+                n1 = Math.DivRem(dt.Ticks, 126227808000000000, out n2);
+                Console.WriteLine($"n1:{n1} n2:{n2} ");
+                _data = -(n1) * 126227808000000000 - (126227808000000000 - n2);
             }
         }
 
@@ -68,7 +71,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         //private static long getModTick(long ticks)
         //{
-        //    TicksPer400Years = 126227808000000000
+        
         //    if (ticks < 0)
         //        return ticks % TicksPer400Years + TicksPer400Years;
         //    else
@@ -78,7 +81,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public override string ToString()
         {
             return Ticks.ToString();
-            return base.ToString();
         }
 
         internal int GetDatePart(DatePart part = DatePart.Year)
@@ -97,8 +99,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             int[] dayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-            long n1, n2, n3, n4, n5, n6, n7, n8, n9;
-
+            long n1, n2, n3, n4, n5, n6, n7, n8, n9, nr = 0;
+            
             month = 1;
             day = 1;
             if (ticks >= 0)
@@ -107,25 +109,38 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
             else
             {
-                n1 = ticks / 864000000000;
+                n1 = Math.DivRem(ticks, 864000000000, out nr);
+                //整除不可 - ToDo
+                //n1 = ticks / 864000000000;
+                //_data % t400 + t400
+                //_data / t400 + 399 - dt.Year
             }
             //n1 = days
-            if (n1 >= 0)
+            if (ticks >= 0)
             {
                 n2 = Math.DivRem(n1, 146097, out n3);
             }
             else
             {
+                //146097 - n1 n1 -= 1; //扣除1天
                 n2 = Math.DivRem(n1, 146097, out n3) - 1;
                 n3 += 146097; //從此為正數
+                //扣掉1天因為沒整除
+                if (nr != 0)
+                    n3 -= 1;
+                //扣一天因為潤年
+                n3 -= 1;
             }
             n4 = Math.DivRem(n3, 36524, out n5); //n4 = 多少個100年
             n6 = Math.DivRem(n5, 1461, out n7); //n6 = 多少個4年
             n8 = Math.DivRem(n7, 365, out n9); //n8 = 多少個1年
             //n9剩餘天數
             //if(onlyGetYear)
-            //    Console.WriteLine($"n9:{n9} n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2}");
-            year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8) + 1;
+            //    Console.WriteLine($"n9:{n9} n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2} n1:{n1}");
+            if(ticks >= 0)
+                year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8) + 1;
+            else
+                year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8);
             if (onlyGetYear)
                 return;
             
@@ -138,8 +153,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         //Console.WriteLine($"n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2}");
                     }
                     
-                    if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x)
-                    {                        
+                    if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x) // To dO
+                    {
+                        Console.WriteLine($"year:{year} n8:{n8} n6:{n6} n4:{n4}");                        
                         n9 -= 1;                        
                         if (n9 == dayInMonth[i])
                         {
@@ -157,7 +173,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 }
                 
             }
-            day = (int)n9 + 1;
+            if (ticks >= 0)
+                day = (int)n9 + 1;
+            else
+                day = (int)n9 + 2;
         }
 
 

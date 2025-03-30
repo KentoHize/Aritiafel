@@ -31,14 +31,15 @@ namespace AritiafelTest
             ArDateTime adt;
             DateTime dt;
             TestContext.WriteLine($"TDT: {tdt.Year}/{tdt.Month}/{tdt.Day} {tdt.Hour}:{tdt.Minute}:{tdt.Second}.{tdt.Millisecond} {tdt.Ticks}");
-            if (tdt.Year >= 0)
+            if (tdt.Year > 0)
             {
                 adt = new ArDateTime(new DateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond));
             }
             else
             {
-                tdt.Year *= -1;
-                adt = new ArDateTime(new DateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond), true);
+                adt = new ArDateTime(tdt.Ticks);
+                //tdt.Year *= -1;
+                //adt = new ArDateTime(new DateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond), true);
             }
                 
             TestContext.WriteLine($"ARD: {adt.Year}/{adt.Month}/{adt.Day} {adt.Hour}:{adt.Minute}:{adt.Second}.{adt.Millisecond} {adt.Ticks}");
@@ -52,9 +53,12 @@ namespace AritiafelTest
             public int Hour { get; set; }
             public int Minute { get; set; }
             public int Second { get; set; }
-            public int Millisecond { get; set; }
+            public int Millisecond { get; set; }            
             public long Ticks { get; set; }
                 
+
+            public TestDateTime(long ticks, bool reverse)
+                => Ticks = ticks;
 
             public TestDateTime(int year = 0, int month = 0, int day = 0, int hour = 0, int minute = 0, int second = 0, int millisecond = 0)
             {
@@ -106,9 +110,20 @@ namespace AritiafelTest
                 TestDateTime.Now, new TestDateTime(new DateTime(2000, 1, 1).AddTicks(-1)),
             };
 
-            int tl = dateTimes.Count;
-            for (int i = 0; i < tl; i++)
-                dateTimes.Add(dateTimes[i].Reverse());
+            //int tl = dateTimes.Count;
+            //for (int i = 0; i < tl; i++)
+            //    dateTimes.Add(dateTimes[i].Reverse());
+
+            for (int i = 0; i < 10; i++)
+                dateTimes.Add(new TestDateTime(i * -1000, false));
+
+            dateTimes.Add(new TestDateTime(-100000, false));
+            dateTimes.Add(new TestDateTime(-10000000, false));
+            dateTimes.Add(new TestDateTime(-1000000000, false));
+            dateTimes.Add(new TestDateTime(-100000000000, false));
+            dateTimes.Add(new TestDateTime(-10000000000000, false));
+            dateTimes.Add(new TestDateTime(-1000000000000000, false));
+            dateTimes.Add(new TestDateTime(-100000000000000000, false));
 
             for (int i = 0; i < dateTimes.Count; i++)
             {
