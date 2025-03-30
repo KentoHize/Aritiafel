@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 //To Do 3, 30, Ar.8
 
@@ -92,6 +93,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         //    }
         //}
 
+        public static ArDateTime Now
+            => new ArDateTime(DateTime.Now);
+        public static ArDateTime UtcNow
+            => new ArDateTime(DateTime.UtcNow);
+
+        public static ArDateTime Today
+            => Now.Date;
+
         public static bool IsLeapYear(int year)
         {
             if (year == 0)
@@ -123,10 +132,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         internal static long DateToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond)
         {
             long result = 0, oy = year, d = 0;
-            //Day Part
-            if (year == -4400 && month == 3 && day == 1)
-                ;
-
+            //Day Part            
             d += day - 1;
             for (int i = 0; i < month - 1; i++)
             {
@@ -134,12 +140,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 if (i == 1 && IsLeapYear(year))
                     d += 1;
             }
-
-            
-            
-            //-1 => 400
-            //-2 => 399
-            //-3 => 398
             if (year < 0)
             {
                 oy = oy % 400 + 401;//變為正數
@@ -165,8 +165,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
             if(year < 0)
             {
-                result = result - 126227808000000000L;
-                //result = 0;
+                result = result - 126227808000000000L;                
                 result += (year / 400) * 126227808000000000L;
             }
 
@@ -180,19 +179,17 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             month = 1;
             day = 1;
             n1 = Math.DivRem(ticks, 864000000000, out nr);
+            n2 = Math.DivRem(n1, 146097, out n3);
 
-            if (ticks >= 0)
+            if(ticks < 0)
             {
-                n2 = Math.DivRem(n1, 146097, out n3);
-            }
-            else
-            {
-                n2 = Math.DivRem(n1, 146097, out n3) - 1;
+                n2 -= 1;
                 n3 += 146097; //從此為正數
-                //扣掉1天因為沒整除
+                    //扣掉1天因為沒整除
                 if (nr != 0)
                     n3 -= 1;
             }
+            
             n4 = Math.DivRem(n3, 36524, out n5); //n4 = 多少個100年
             if (n4 == 4) //整除為4 其實為3
             {
@@ -209,10 +206,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             //n9剩餘天數
             //if(onlyGetYear)
             //    Console.WriteLine($"n9:{n9} n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2} n1:{n1}");
+            year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8);
             if (ticks >= 0)
-                year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8) + 1;
-            else
-                year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8);
+                year +=  + 1;
+
             if (onlyGetYear)
                 return;
 
@@ -221,27 +218,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             {
                 if (n9 > DayInMonth[i])
                 {
-                    if (i == 1)
-                    {
-                        //Console.WriteLine($"n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2}");
-                    }
-
                     if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x) // To do
-                    {
-                        //Console.WriteLine($"year:{year} n8:{n8} n6:{n6} n4:{n4}");                        
+                    {   
                         if(n9 == 29)
                         {
                             month = i + 1;
                             break;
                         }
-                        else
-                            n9 -= 1;
-                        //if (n9 == DayInMonth[i])
-                        //{
-                        //    n9 -= DayInMonth[i];
-                        //    month = i + 2;
-                        //    break;
-                        //}
+                        n9 -= 1;                     
                     }
                     n9 -= DayInMonth[i];
                 }
@@ -329,6 +313,17 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public string ToString(IFormatProvider provider)
             => ToString(null, provider);
 
+        public ArDateTime Date
+        {
+            get
+            {
+                long r = Math.DivRem(_data, 864000000000, out long nr);
+                if (_data < 0 && nr == 0)
+                    r += 1;
+                return new ArDateTime(r * 864000000000);
+            }
+        }
+            
         public int Year
         {
             get
@@ -404,6 +399,17 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return (int)(l / 864000000000 + 1);
             }
         }
+
+        public TimeSpan TimeOfDay
+        {
+            get
+            {
+                long l = _data % 864000000000;
+                if (_data < 0 && l != 0)
+                    l += 864000000000;
+                return new TimeSpan(l);
+            }
+        }  
 
         public static ArDateTime Parse(string s, IFormatProvider provider, System.Globalization.DateTimeStyles style)
         {

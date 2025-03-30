@@ -3,6 +3,7 @@ using System;
 using Aritiafel.Organizations.RaeriharUniversity;
 using Aritiafel.Artifacts;
 using System.Collections.Generic;
+using System.Text;
 
 namespace AritiafelTest
 {
@@ -92,7 +93,27 @@ namespace AritiafelTest
         [TestMethod]
         public void ArDateTimeTranTest2()
         {
+            StringBuilder sb = new StringBuilder();
+            //for(int d = -1000000; d < 1000000; d++)
+            //{
+            //    ArDateTime a1 = new ArDateTime(864000000000 * d);
+            //    ArDateTime a2 = new ArDateTime(864000000000 * d + 1);                
+            //    //sb.AppendLine(a1.ToString());
+            //    //sb.AppendLine(a2.ToString());
+            //}
 
+            for (int d = 0; d < 1000000; d++)
+            {
+                ArDateTime b1 = new ArDateTime(864000000000L * d + 1);
+                DateTime d1 = new DateTime(864000000000L * d + 1);
+                
+                Assert.IsTrue(
+                    b1.ToString() == d1.ToString("yyy/M/d H:m:s.f") ||
+                    b1.ToString() == d1.ToString("y/M/d H:m:s.f")
+                    );
+            }
+            sb.Append("OK");
+            Console.Write(sb.ToString());
         }
 
         [TestMethod]
@@ -163,6 +184,19 @@ namespace AritiafelTest
             {
                 GetTickString(testTicks[i]);
             }
+        }
+
+        [TestMethod]
+        public void DateTest()
+        {
+            StringBuilder sb = new StringBuilder();
+            //864000000000
+            ChaosBox cb = new ChaosBox();
+            for (int i = -100000; i < 1000000; i++)
+            {
+                sb.AppendLine(new ArDateTime(i * 864000000000 + cb.DrawOutLong(864000000000 - 1)).Date.ToString());
+            }
+            TestContext.WriteLine(sb.ToString());
         }
 
         [TestMethod]
