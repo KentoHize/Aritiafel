@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Text;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
-using System.Globalization;
 
 //To Do 3, 30, Ar.8
 
@@ -55,8 +53,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         long _data;
         static readonly int[] ConstDayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-        static readonly ArDateTime MaxValue = new ArDateTime(9999, 12, 31, 23, 59, 59, 999);
-        static readonly ArDateTime MinValue = new ArDateTime(-9999, 1, 1, 1, 0, 0, 0);
+        public static readonly ArDateTime MaxValue = new ArDateTime(9999, 12, 31, 23, 59, 59, 999);
+        public static readonly ArDateTime MinValue = new ArDateTime(-9999, 1, 1, 1, 0, 0, 0);
         internal enum DatePart
         {
             Year,
@@ -66,6 +64,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public long Ticks { get => _data; set => _data = value; }
         public ArDateTime(long ticks)
             => _data = ticks;
+
+        //public ArDateTime(long ticks, ArDateTimeKind kind)
+        //    => _data = ticks;
         public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond)
         {   
             //Check
@@ -202,7 +203,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             month = i + 1;
                             break;
                         }
-                        n9 -= 1;                     
+                        n9 -= 1;
                     }
                     n9 -= ConstDayInMonth[i];
                 }
@@ -226,7 +227,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             else
                 throw new ArgumentException(nameof(obj));
         }
-
         public int CompareTo(ArDateTime other)
             => _data.CompareTo(other._data);
 
@@ -247,8 +247,23 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
+            //if (_data < 0)
+            //{ }
+            //DateTime dt = new DateTime(_data);
+            //DateTime.
+
+            
+
+            if(formatProvider.GetFormat(typeof(CultureInfo)) is CultureInfo ci)
+            {
+                return string.Format(formatProvider, format, _data);
+            }
+            //沒有屬於AR
+            //有的情況下屬於該地區
+            //formatProvider.GetFormat()
+            
             return $"{Year}/{Month}/{Day} {Hour}:{Minute}:{Second}.{Millisecond}";
-            return _data.ToString(format, formatProvider);
+            
             // To Do
         }
 

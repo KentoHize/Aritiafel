@@ -23,7 +23,7 @@ namespace AritiafelTest
             //TestContext.WriteLine($"{ticks} Tick(s)[LongTime]:{new JDateTime(ticks).ToLongTimeString()}");
             //TestContext.WriteLine($"{ticks} Tick(s)[ShortTime]:{new JDateTime(ticks).ToShortTimeString()}");
             //TestContext.WriteLine($"{ticks} Tick(s)[Year]:{new ArDateTime(ticks).Year}");
-            TestContext.WriteLine($"{ticks} Tick(s)[Year]:{new ArDateTime(ticks)}");
+            //TestContext.WriteLine($"{ticks} Tick(s)[Year]:{new ArDateTime(ticks)}");
             //return $"{ticks} Tick(s)[{format}]:{new JDateTime(ticks).ToString(format)}";
         }
 
@@ -208,6 +208,30 @@ namespace AritiafelTest
             Assert.IsFalse(ArDateTime.IsLeapYear(-4));
             Assert.IsTrue(ArDateTime.IsLeapYear(-5));
             Assert.IsTrue(ArDateTime.IsLeapYear(2020));
+        }
+
+        [TestMethod]
+        public void DateTimeToStringTest()
+        {
+            List<TestDateTime> dateTimes = new List<TestDateTime> {
+                new TestDateTime(1, 1, 1, 0, 0, 0),  new TestDateTime(400, 1, 1, 0 ,0 , 0),
+                new TestDateTime(401, 1, 1, 12, 20, 10), new TestDateTime(402, 2, 5, 13, 2, 2),
+                new TestDateTime(2020, 1, 1, 23, 59, 59), new TestDateTime(2120, 3, 3, 0, 0, 1),
+                new TestDateTime(2120, 4, 10, 3, 39, 59), new TestDateTime(2320, 5, 7, 20, 2, 0),
+                new TestDateTime(2120, 11, 10, 10, 10, 0), new TestDateTime(3320, 12, 15, 3, 29, 49),
+                new TestDateTime(4400, 2, 29), new TestDateTime(4400, 3, 1),
+                new TestDateTime(399, 12, 31), new TestDateTime(3, 12, 31),
+                TestDateTime.Now, new TestDateTime(new DateTime(2000, 1, 1).AddTicks(-1)),
+            };
+
+            //dateTimes.Add(new TestDateTime(-1, 12, 31, 23, 59, 59, 999));
+            
+
+            for (int i = 0; i < dateTimes.Count; i++)
+            {
+                Console.WriteLine($"{new ArDateTime(dateTimes[i].Year,dateTimes[i].Month, dateTimes[i].Day, dateTimes[i].Hour, dateTimes[i].Minute, dateTimes[i].Second, dateTimes[i].Millisecond)}");
+            }
+                
         }
 
         [TestMethod]

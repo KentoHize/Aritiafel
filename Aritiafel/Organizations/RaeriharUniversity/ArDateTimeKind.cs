@@ -4,7 +4,12 @@ using System.Text;
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
-    public class ArDateTimeKind
+    public enum ArDateTimeKind
     {
+        Unspecified,
+        Arina,
+        CommonEraLocal,
+        CommonEraUtc,
+        CustomOffSet
     }
 }
