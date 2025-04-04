@@ -19,18 +19,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (adt._data >= 0)
                 return new DateTime(adt._data).ToString(format, formatProvider);
 
-            long n1, n2;            
-            n1 = Math.DivRem(adt._data, 126227808000000000L, out n2);
-            n2 += 126227808000000000L;
-            DateTime dt = new DateTime(n2);
-            dt = dt.AddYears((int)(-n1 * 400) + (401 - dt.Year * 2));
-
-            //Console.WriteLine((int)(-n1 * 400) + (401 - dt.Year));
-            //Console.WriteLine(-n1 * 400);
-            //dt = dt.AddYears((int)(-(401 - dt.Year) + (-n1 * 400)));
-            //Console.WriteLine(dt.ToString());
-            //adt.Year
-            //dt = dt.AddTicks((n1 - 1) * 126227808000000000L);
+            ArDateTime.TicksToDate(adt._data, out int year, out int month, out int day);            
+            long n1 = adt._data * -1 % 864000000000L;
+            if (n1 == 0)
+                n1 = 864000000000L;
+            DateTime dt = new DateTime(year * - 1, month, day).AddTicks(864000000000L - n1);
             return $"(-){dt.ToString(format, formatProvider)}";
         }
     }
