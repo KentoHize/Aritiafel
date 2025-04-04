@@ -4,9 +4,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-
-//To Do 3, 30, Ar.8
-
+using System.Threading;
 
 //private const long TicksPerMillisecond = 10000L;
 //private const long TicksPerSecond = 10000000L;
@@ -18,31 +16,14 @@ using System.Runtime.Serialization;
 //private const int DaysPer4Years = 1461;
 //private const int DaysPerYear = 365;
 
-//265248000000000
-//864000000000
-
-//public void AAA()
-//{
-//n1 = ticks / 864000000000;
-//_data % t400 + t400
-//_data / t400 + 399 - dt.Year
-//}
-
-//private static long getModTick(long ticks)
-//{
-
-//    if (ticks < 0)
-//        return ticks % TicksPer400Years + TicksPer400Years;
-//    else
-//        return ticks % TicksPer400Years;
-//}
-
 
 //用毫秒為單位
 //0:1年1月1日0時0分0秒
 //-1000:-1年12月31日23時59分59秒
 //可填負值與零的DateTime
 //ToString =>複雜
+
+// To Do：ParseExact format
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
@@ -54,7 +35,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         static readonly int[] ConstDayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
         public static readonly ArDateTime MaxValue = new ArDateTime(9999, 12, 31, 23, 59, 59, 999);
-        public static readonly ArDateTime MinValue = new ArDateTime(-9999, 1, 1, 1, 0, 0, 0);
+        public static readonly ArDateTime MinValue = new ArDateTime(-9999, 1, 1, 0, 0, 0, 0);
         internal enum DatePart
         {
             Year,
@@ -65,21 +46,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public ArDateTime(long ticks)
             => _data = ticks;
 
-        //public ArDateTime(long ticks, ArDateTimeKind kind)
-        //    => _data = ticks;
-
-        public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, bool isArYear = false)
-        {   
-            //Check
-            //            if(year < -9999 || year > 9999)
-            //                throw new Exception()
-            if(isArYear)
-                if(year >= 0)
-                    _data = DateTimeToTicks(year + 2017, month, day, hour, minute, second, millisecond);
-                else
-                    _data = DateTimeToTicks(year + 2018, month, day, hour, minute, second, millisecond);
-            else
-                    _data = DateTimeToTicks(year, month, day, hour, minute, second, millisecond);
+        public ArDateTime(int year, int month, int day, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, bool isArDate = false)
+        {
+            if (isArDate)
+                year = GetCEYear(year);
+            ValidateDateTime(year, month, day, hour, minute, second, millisecond);
+            _data = DateTimeToTicks(year, month, day, hour, minute, second, millisecond);
         }
 
         public ArDateTime(DateTime dt)
@@ -91,10 +63,38 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static ArDateTime Today
             => Now.Date;
 
-        public static bool IsLeapYear(int year)
+        internal static void ValidateDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond = 0)
+        {
+            if (year == 0)
+                throw new ArgumentOutOfRangeException(nameof(year));
+            if(year < -9999 || year > 9999)
+                throw new ArgumentOutOfRangeException(nameof(year));
+            if (month < 1 || month > 12)
+                throw new ArgumentOutOfRangeException(nameof(month));
+            if (hour < 0 || hour > 23)
+                throw new ArgumentOutOfRangeException(nameof(hour));
+            if (minute < 0 || minute > 59)
+                throw new ArgumentOutOfRangeException(nameof(minute));
+            if (second < 0 || second > 59)
+                throw new ArgumentOutOfRangeException(nameof(second));
+            if (millisecond < 0 || millisecond > 999)
+                throw new ArgumentOutOfRangeException(nameof(millisecond));
+            if (day < 1 || day > 31)
+                throw new ArgumentOutOfRangeException(nameof(day));
+            if (day == 31 && (month == 2 || month == 4 || month == 6 || month == 9 || month == 11))
+                throw new ArgumentOutOfRangeException(nameof(day));
+            if (day == 30 && month == 2)
+                throw new ArgumentOutOfRangeException(nameof(day));
+            if (day == 29 && !IsLeapYear(year))
+                throw new ArgumentOutOfRangeException(nameof(day));
+        }
+
+        public static bool IsLeapYear(int year, bool isArDate = false)
         {
             if (year == 0)
                 throw new ArgumentException(nameof(year));
+            if (isArDate)
+                year = GetCEYear(year);            
             if (year < 0)
                 year = year % 400 + 401;
             if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))
@@ -102,11 +102,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return false;
         }
 
-        public override string ToString()
-            => ToString(null, null);
-        
         public static int DaysInMonth(int year, int month)
-        {   
+        {
             //Check Month
             if (month < 1 || month > 12)
                 throw new ArgumentOutOfRangeException(nameof(month));
@@ -127,6 +124,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return result;
         }
 
+        internal static void TimeTicksToTime(long timeTicks, out int hour, out int minute, out int second, out int millisecond, out int remainTicks)
+        {
+            hour = (int)Math.DivRem(timeTicks, 36000000000L, out timeTicks);
+            minute = (int)Math.DivRem(timeTicks, 600000000L, out timeTicks);
+            second = (int)Math.DivRem(timeTicks, 10000000L, out timeTicks);
+            millisecond = (int)Math.DivRem(timeTicks, 10000, out timeTicks);
+            remainTicks = (int)timeTicks;
+        }
+
         internal static long DateTimeToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond)
         {
             long result = 0, oy = year, d = 0;
@@ -144,7 +150,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             d += Math.DivRem(oy, 400, out oy) * 146097;
             d += Math.DivRem(oy, 100, out oy) * 36524;
             d += Math.DivRem(oy, 4, out oy) * 1461;
-            d += oy * 365;                
+            d += oy * 365;
             result += 864000000000L * d;
             //Time Part
             result += 36000000000L * hour;
@@ -152,7 +158,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             result += 10000000L * second;
             result += 10000L * millisecond;
 
-            if(year < 0)
+            if (year < 0)
                 result += year / 400 * 126227808000000000L - 126227808000000000L;
             return result;
         }
@@ -166,15 +172,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             n1 = Math.DivRem(ticks, 864000000000, out timeTicks);
             n2 = Math.DivRem(n1, 146097, out n3);
 
-            if(ticks < 0)
+            if (ticks < 0)
             {
                 n2 -= 1;
                 n3 += 146097; //從此為正數
-                    //扣掉1天因為沒整除
+                              //扣掉1天因為沒整除
                 if (timeTicks != 0)
                     n3 -= 1;
             }
-            
+
             n4 = Math.DivRem(n3, 36524, out n5); //n4 = 多少個100年
             if (n4 == 4) //整除為4 其實為3
             {
@@ -193,7 +199,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             //    Console.WriteLine($"n9:{n9} n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2} n1:{n1}");
             year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8);
             if (ticks >= 0)
-                year +=  + 1;
+                year += +1;
 
             if (onlyGetYear)
                 return;
@@ -204,8 +210,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 if (n9 > ConstDayInMonth[i])
                 {
                     if (i == 1 && ((n8 == 3 && n6 != 24) || (n8 == 3 && n4 == 3 && n6 == 24))) //Leap Year(4x || 400x) // To do
-                    {   
-                        if(n9 == 29)
+                    {
+                        if (n9 == 29)
                         {
                             month = i + 1;
                             break;
@@ -251,6 +257,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             else
                 return false;
         }
+        public override string ToString()
+            => ToString(null, null);
+        public string ToString(IFormatProvider provider)
+            => ToString(null, provider);
+        public string ToString(string format)
+            => ToString(format, null);
 
         public string ToString(string format, IFormatProvider formatProvider)
             => ArDateTimeFormat.Format(format, this, formatProvider);
@@ -290,8 +302,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ((IConvertible)_data).ToUInt32(provider);
         public ulong ToUInt64(IFormatProvider provider)
             => ((IConvertible)_data).ToUInt64(provider);
-        public string ToString(IFormatProvider provider)
-            => ToString(null, provider);
 
         public ArDateTime Date
         {
@@ -304,17 +314,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
         }
 
+        internal static int GetCEYear(int arYear)
+            => arYear > 0 || arYear < -2017 ? arYear + 2017 : arYear + 2018;
+        internal static int GetARYear(int year)
+            => year > 2017 || year < 0 ? year - 2017 : year - 2018;
+
         public int ArYear
-        {
-            get
-            {
-                int y = Year;
-                if (y > 2017)
-                    return y - 2017;
-                else
-                    return y - 2018;
-            }
-        }
+            => GetARYear(Year);
 
         public int Year
         {
@@ -403,7 +409,83 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
         }
 
+        internal ArDateTime Add(long ticks)
+            => new ArDateTime(_data + ticks);
+        public ArDateTime Add(TimeSpan ts)
+            => new ArDateTime(_data + ts.Ticks);
+
+        public ArDateTime AddYears(int years)
+        {
+            TicksToDateTime(_data, out int year, out int month, out int day, out long timeTicks);
+            if (timeTicks < 0)
+                timeTicks += 864000000000L;
+            if (year + years == 0)
+                years -= 1;
+            return new ArDateTime(year + years, month, day).Add(timeTicks);
+        }
+        public ArDateTime AddMonths(int months)
+        {
+            TicksToDateTime(_data, out int year, out int month, out int day, out long timeTicks);
+            int nm, y;
+            y = Math.DivRem(month + months, 12, out nm);
+            if (nm <= 0)
+            {
+                y -= 1;
+                nm += 12;
+            }
+            if (timeTicks < 0)
+                timeTicks += 864000000000L;
+            if (year + y == 0)
+                y -= 1;
+            return new ArDateTime(year + y, nm, day).Add(timeTicks);
+        }
+
+        public ArDateTime AddDays(long days)
+            => new ArDateTime(_data + 864000000000L * days);
+        public ArDateTime AddHours(long hours)
+            => new ArDateTime(_data + 36000000000L * hours);
+        public ArDateTime AddMinutes(long minutes)
+            => new ArDateTime(_data + 600000000L * minutes);
+        public ArDateTime AddSeconds(long seconds)
+            => new ArDateTime(_data + 10000000L * seconds);
+        public ArDateTime AddMilliSeconds(long milliseconds)
+            => new ArDateTime(_data + 1000L * milliseconds);
+
+        public static ArDateTime ParseExact(string s, string format)
+            => ArDateTimeFormat.ParseExact(s, format, null, DateTimeStyles.None);
+        public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider)
+            => ArDateTimeFormat.ParseExact(s, format, formatProvider, DateTimeStyles.None);
+        public static ArDateTime ParseExact(string s, string format, DateTimeStyles dateTimeStyles)
+            => ArDateTimeFormat.ParseExact(s, format, null, dateTimeStyles);
         public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
             => ArDateTimeFormat.ParseExact(s, format, formatProvider, dateTimeStyles);
+        public static ArDateTime Parse(string s)
+            => ParseExact(s, null, null, DateTimeStyles.None);
+        public static ArDateTime Parse(string s, IFormatProvider formatProvider)
+            => ParseExact(s, null, formatProvider, DateTimeStyles.None);
+        public static ArDateTime Parse(string s, DateTimeStyles dateTimeStyles)
+            => ParseExact(s, null, null, dateTimeStyles);
+        public static ArDateTime Parse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
+            => ParseExact(s, null, formatProvider, dateTimeStyles);
+
+        public static bool TryParse(string s, out ArDateTime result)
+            => TryParse(s, null, DateTimeStyles.None, out result);
+        public static bool TryParse(string s, IFormatProvider formatProvider, out ArDateTime result)
+            => TryParse(s, formatProvider, DateTimeStyles.None, out result);
+        public static bool TryParse(string s, DateTimeStyles dateTimeStyles, out ArDateTime result)
+            => TryParse(s, null, dateTimeStyles, out result);
+        public static bool TryParse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, out ArDateTime result)
+        {
+            try
+            {
+                result = Parse(s, formatProvider, dateTimeStyles);
+                return true;
+            }
+            catch
+            {
+                result = new ArDateTime();
+            }
+            return false;
+        }
     }
 }

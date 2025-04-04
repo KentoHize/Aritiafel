@@ -12,23 +12,21 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 {
     internal static class ArDateTimeFormat
     {
-
+        //Format
         public static string FormatArDateTime(string format, ArDateTime adt)
         {
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
             if (timeTicks < 0)
-                timeTicks += 864000000000L;
-            int hour = (int)Math.DivRem(timeTicks, 36000000000L, out timeTicks);
-            int minute = (int)Math.DivRem(timeTicks, 600000000L, out timeTicks);
-            int second = (int)Math.DivRem(timeTicks, 10000000L, out timeTicks);
-            int millisecond = (int)Math.DivRem(timeTicks, 10000, out timeTicks);
-            return $"{month}, {day}, Ar. {(year >= 2017 ? year - 2017 : year - 2018)} {hour}:{minute}:{second}";
+                timeTicks += 864000000000L;            
+            ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out _);            
+            return $"{month}, {day}, Ar. {ArDateTime.GetARYear(year)} {hour}:{minute}:{second}";
         }
 
+        //Format
         public static ArDateTime ParseExactArDateTime(string s, string format, DateTimeStyles dateTimeStyles)
         {
             string[] s1;
-            int year, month, day, hour, minute, second, millisecond;
+            int year, month, day, hour, minute, second;
             s1 = s.Split(',');
             month = int.Parse(s1[0]);
             day = int.Parse(s1[1]);
@@ -40,19 +38,21 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             hour = int.Parse(s1[2]);            
             return new ArDateTime(year, month, day, hour, minute, second, 0, true);
         }
-
-        //Parse
-        //Format
         //+(-)
         public static string Format(string format, ArDateTime adt, IFormatProvider formatProvider)
         {
             if (formatProvider == null)
                 return FormatArDateTime(format, adt);
 
+            if (string.IsNullOrEmpty(format))
+                format = "G";
+
             if (adt._data >= 0)
                 return new DateTime(adt._data).ToString(format, formatProvider);
 
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
+            if (timeTicks != 0)
+                timeTicks += 864000000000L;
             DateTime dt = new DateTime(year * -1, month, day).AddTicks(timeTicks);
             return $"(-){dt.ToString(format, formatProvider)}";
         }
@@ -61,6 +61,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             if (formatProvider == null)
                 return ParseExactArDateTime(s, format, dateTimeStyles);
+
+            if (string.IsNullOrEmpty(format))
+                format = "G";
 
             if (s.StartsWith("(-)"))
             {
@@ -73,15 +76,4 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
     }
 }
-//public static ArDateTime Parse(string s, IFormatProvider provider, System.Globalization.DateTimeStyles style)
-//{
-//    //先視為Null
-//    //先認定基本yyyy/mm/dd hh:MM:ss
-//    string[] s1 = s.Trim().Split(' ');
-//    string[] s2 = s1[0].Split('/');
-//    string[] s3 = s1[1].Split(':');
-//    return new ArDateTime(int.Parse(s2[0]), int.Parse(s2[1]), int.Parse(s2[2]),
-//        int.Parse(s3[0]), int.Parse(s3[1]), int.Parse(s3[2]), 0);
 
-//    //DateTime.Parse(string s, IFormatProvider provider, System.Globalization.DateTimeStyles style)
-//}
