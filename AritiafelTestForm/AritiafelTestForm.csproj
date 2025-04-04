@@ -7,7 +7,7 @@
     <ProjectGuid>{0C042441-B958-44B4-B728-4C7BC3349A92}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>AritiafelTestForm</RootNamespace>
-    <AssemblyName>AritiafelTestForm</AssemblyName>
+    <AssemblyName>Sy</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

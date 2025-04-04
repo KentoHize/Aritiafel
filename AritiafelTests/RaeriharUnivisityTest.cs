@@ -4,6 +4,7 @@ using Aritiafel.Organizations.RaeriharUniversity;
 using Aritiafel.Artifacts;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace AritiafelTest
 {
@@ -238,7 +239,11 @@ namespace AritiafelTest
 
             for (int i = 0; i < dateTimes.Count; i++)
             {
-                TestContext.WriteLine($"{new ArDateTime(dateTimes[i].Year,dateTimes[i].Month, dateTimes[i].Day, dateTimes[i].Hour, dateTimes[i].Minute, dateTimes[i].Second, dateTimes[i].Millisecond)}");
+                ArDateTime adt = new ArDateTime(dateTimes[i].Year, dateTimes[i].Month, dateTimes[i].Day, dateTimes[i].Hour, dateTimes[i].Minute, dateTimes[i].Second, dateTimes[i].Millisecond);
+                TestContext.WriteLine($"{adt.ArYear}");
+                TestContext.WriteLine($"{ArDateTime.ParseExact(adt.ToString(), null, null, DateTimeStyles.None)}");
+                //TestContext.WriteLine($"{adt.ToString(CultureInfo.CurrentCulture)}");
+                CultureInfo.CreateSpecificCulture("ar");
             }
                 
         }

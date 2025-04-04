@@ -67,12 +67,19 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         //public ArDateTime(long ticks, ArDateTimeKind kind)
         //    => _data = ticks;
-        public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond)
+
+        public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, bool isArYear = false)
         {   
             //Check
             //            if(year < -9999 || year > 9999)
             //                throw new Exception()
-            _data = DateToTicks(year, month, day, hour, minute, second, millisecond);
+            if(isArYear)
+                if(year >= 0)
+                    _data = DateTimeToTicks(year + 2017, month, day, hour, minute, second, millisecond);
+                else
+                    _data = DateTimeToTicks(year + 2018, month, day, hour, minute, second, millisecond);
+            else
+                    _data = DateTimeToTicks(year, month, day, hour, minute, second, millisecond);
         }
 
         public ArDateTime(DateTime dt)
@@ -112,15 +119,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             int result;
             if (part == DatePart.Year)
-                TicksToDate(_data, out result, out _, out _, true);
+                TicksToDateTime(_data, out result, out _, out _, out _, true);
             else if (part == DatePart.Month)
-                TicksToDate(_data, out _, out result, out _);
+                TicksToDateTime(_data, out _, out result, out _, out _);
             else
-                TicksToDate(_data, out _, out _, out result);
+                TicksToDateTime(_data, out _, out _, out result, out _);
             return result;
         }
 
-        internal static long DateToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond)
+        internal static long DateTimeToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond)
         {
             long result = 0, oy = year, d = 0;
             //Day Part            
@@ -150,13 +157,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return result;
         }
 
-        internal static void TicksToDate(long ticks, out int year, out int month, out int day, bool onlyGetYear = false)
+        internal static void TicksToDateTime(long ticks, out int year, out int month, out int day, out long timeTicks, bool onlyGetYear = false)
         {
-            long n1, n2, n3, n4, n5, n6, n7, n8, n9, nr = 0;
+            long n1, n2, n3, n4, n5, n6, n7, n8, n9;
 
             month = 1;
             day = 1;
-            n1 = Math.DivRem(ticks, 864000000000, out nr);
+            n1 = Math.DivRem(ticks, 864000000000, out timeTicks);
             n2 = Math.DivRem(n1, 146097, out n3);
 
             if(ticks < 0)
@@ -164,7 +171,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 n2 -= 1;
                 n3 += 146097; //從此為正數
                     //扣掉1天因為沒整除
-                if (nr != 0)
+                if (timeTicks != 0)
                     n3 -= 1;
             }
             
@@ -246,10 +253,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
 
         public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return ArDateTimeFormat.Format(format, this, formatProvider);
-
-        }
+            => ArDateTimeFormat.Format(format, this, formatProvider);
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => info.AddValue("data", _data);
@@ -299,7 +303,19 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return new ArDateTime(r * 864000000000);
             }
         }
-            
+
+        public int ArYear
+        {
+            get
+            {
+                int y = Year;
+                if (y > 2017)
+                    return y - 2017;
+                else
+                    return y - 2018;
+            }
+        }
+
         public int Year
         {
             get
@@ -385,20 +401,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     l += 864000000000;
                 return new TimeSpan(l);
             }
-        }  
-
-        public static ArDateTime Parse(string s, IFormatProvider provider, System.Globalization.DateTimeStyles style)
-        {
-            //先視為Null
-            //先認定基本yyyy/mm/dd hh:MM:ss
-            string[] s1 = s.Trim().Split(' ');
-            string[] s2 = s1[0].Split('/');
-            string[] s3 = s1[1].Split(':');
-            return new ArDateTime(int.Parse(s2[0]), int.Parse(s2[1]), int.Parse(s2[2]),
-                int.Parse(s3[0]), int.Parse(s3[1]), int.Parse(s3[2]), 0);
-
-            //DateTime.Parse(string s, IFormatProvider provider, System.Globalization.DateTimeStyles style)
         }
 
+        public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
+            => ArDateTimeFormat.ParseExact(s, format, formatProvider, dateTimeStyles);
     }
 }
