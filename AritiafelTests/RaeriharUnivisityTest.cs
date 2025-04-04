@@ -54,12 +54,11 @@ namespace AritiafelTest
                 if(tdt.Ticks == 0)
                     adt = new ArDateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond);
                 else
-                            adt = new ArDateTime(tdt.Ticks);
-                //tdt.Year *= -1;
-                //adt = new ArDateTime(new DateTime(tdt.Year, tdt.Month, tdt.Day, tdt.Hour, tdt.Minute, tdt.Second, tdt.Millisecond), true);
+                    adt = new ArDateTime(tdt.Ticks);                
             }
                 
-            TestContext.WriteLine($"ARD: {adt.Year}/{adt.Month}/{adt.Day} [{adt.DayOfWeek}] {adt.Hour}:{adt.Minute}:{adt.Second}.{adt.Millisecond} {adt.Ticks}");
+            //TestContext.WriteLine($"ARD: {adt.Year}/{adt.Month}/{adt.Day} [{adt.DayOfWeek}] {adt.Hour}:{adt.Minute}:{adt.Second}.{adt.Millisecond} {adt.Ticks}");
+            TestContext.WriteLine($"ARD: {adt.ToLongDateString()} {adt.ToLongTimeString()}");
         }
 
         public class TestDateTime
@@ -92,10 +91,7 @@ namespace AritiafelTest
                 => new TestDateTime(DateTime.Now);
 
             public TestDateTime Reverse()
-            {
-                return new TestDateTime(Year * -1, Month, Day, Hour, Minute, Second,Millisecond);
-            }
-                
+                => new TestDateTime(Year * -1, Month, Day, Hour, Minute, Second,Millisecond);                
             
             public TestDateTime(DateTime dt)
                 : this(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Minute, dt.Millisecond)

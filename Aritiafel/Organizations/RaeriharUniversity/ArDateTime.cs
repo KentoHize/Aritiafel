@@ -103,8 +103,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
 
         public static int DaysInMonth(int year, int month)
-        {
-            //Check Month
+        {   
             if (month < 1 || month > 12)
                 throw new ArgumentOutOfRangeException(nameof(month));
             if (IsLeapYear(year) && month == 2)
@@ -242,7 +241,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
         public int CompareTo(ArDateTime other)
             => _data.CompareTo(other._data);
-
         public bool Equals(ArDateTime other)
             => _data == other._data;
 
@@ -263,9 +261,16 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ToString(null, provider);
         public string ToString(string format)
             => ToString(format, null);
-
         public string ToString(string format, IFormatProvider formatProvider)
             => ArDateTimeFormat.Format(format, this, formatProvider);
+        public string ToLongDateString(IFormatProvider formatProvider = null)
+            => ArDateTimeFormat.Format("D", this, formatProvider);
+        public string ToShortDateString(IFormatProvider formatProvider = null)
+            => ArDateTimeFormat.Format("d", this, formatProvider);
+        public string ToLongTimeString(IFormatProvider formatProvider = null)
+            => ArDateTimeFormat.Format("T", this, formatProvider);
+        public string ToShortTimeString(IFormatProvider formatProvider = null)
+            => ArDateTimeFormat.Format("t", this, formatProvider);
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => info.AddValue("data", _data);
@@ -485,7 +490,20 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             {
                 result = new ArDateTime();
             }
-            return false;
+            return false;        
         }
+        public static bool operator !=(ArDateTime t1, ArDateTime t2)
+            => t1._data != t2._data;
+        public static bool operator ==(ArDateTime t1, ArDateTime t2)
+            => t1._data == t2._data;
+        public static bool operator <(ArDateTime t1, ArDateTime t2)
+            => t1._data < t2._data;
+        public static bool operator <=(ArDateTime t1, ArDateTime t2)
+            => t1._data <= t2._data;
+        public static bool operator >(ArDateTime t1, ArDateTime t2)
+            => t1._data > t2._data;
+        public static bool operator >=(ArDateTime t1, ArDateTime t2)
+            => t1._data >= t2._data;
+
     }
 }

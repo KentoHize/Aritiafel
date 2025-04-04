@@ -13,18 +13,44 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     internal static class ArDateTimeFormat
     {
         //Format
-        public static string FormatArDateTime(string format, ArDateTime adt)
+        internal static string FormatArDateTime(string format, ArDateTime adt)
         {
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
             if (timeTicks < 0)
-                timeTicks += 864000000000L;            
-            ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out _);            
-            return $"{month}, {day}, Ar. {ArDateTime.GetARYear(year)} {hour}:{minute}:{second}";
+                timeTicks += 864000000000L;
+            ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out _);
+            switch(format)
+            {   
+                case "D":
+                    return $"{month}, {day}, Ar. {ArDateTime.GetARYear(year)} [{adt.DayOfWeek}]";
+                case "d":
+                    return $"{month}, {day}, Ar. {ArDateTime.GetARYear(year)}";
+                case "T":
+                    return $"{hour}:{minute}:{second}.{millisecond}";
+                case "t":
+                    return $"{hour}:{minute}:{second}";
+                case "F":
+                    return $"{month}, {day}, Ar. {ArDateTime.GetARYear(year)} [{adt.DayOfWeek}] {hour}:{minute}:{second}";
+                case "M":
+                case "m":
+                    return $"{month}, {day}";
+                case "Y":
+                case "y":
+                    return $"{month}, Ar. {ArDateTime.GetARYear(year)}";
+                case "G":
+                case "f":
+                    return $"{month}, {day}, Ar. {ArDateTime.GetARYear(year)} {hour}:{minute}:{second}";
+                default:
+                    throw new FormatException();
+            }
         }
 
         //Format
-        public static ArDateTime ParseExactArDateTime(string s, string format, DateTimeStyles dateTimeStyles)
+        internal static ArDateTime ParseExactArDateTime(string s, string format, DateTimeStyles dateTimeStyles)
         {
+            if (format != "G")
+                throw new NotImplementedException();
+
             string[] s1;
             int year, month, day, hour, minute, second;
             s1 = s.Split(',');
@@ -63,7 +89,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return ParseExactArDateTime(s, format, dateTimeStyles);
 
             if (string.IsNullOrEmpty(format))
-                format = "G";
+                format = "G";            
 
             if (s.StartsWith("(-)"))
             {
