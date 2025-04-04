@@ -50,7 +50,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     [StructLayout(LayoutKind.Auto)]
     public struct ArDateTime : IComparable, IComparable<ArDateTime>, IConvertible, IEquatable<ArDateTime>, IFormattable, ISerializable
     {
-        long _data;
+        internal long _data;
         static readonly int[] ConstDayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
         public static readonly ArDateTime MaxValue = new ArDateTime(9999, 12, 31, 23, 59, 59, 999);
@@ -247,24 +247,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            //if (_data < 0)
-            //{ }
-            //DateTime dt = new DateTime(_data);
-            //DateTime.
+            return ArDateTimeFormat.Format(format, this, formatProvider);
 
-            
-
-            if(formatProvider.GetFormat(typeof(CultureInfo)) is CultureInfo ci)
-            {
-                return string.Format(formatProvider, format, _data);
-            }
-            //沒有屬於AR
-            //有的情況下屬於該地區
-            //formatProvider.GetFormat()
-            
-            return $"{Year}/{Month}/{Day} {Hour}:{Minute}:{Second}.{Millisecond}";
-            
-            // To Do
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

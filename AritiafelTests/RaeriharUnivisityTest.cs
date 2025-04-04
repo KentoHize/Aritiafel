@@ -224,15 +224,30 @@ namespace AritiafelTest
                 TestDateTime.Now, new TestDateTime(new DateTime(2000, 1, 1).AddTicks(-1)),
             };
 
-            //dateTimes.Add(new TestDateTime(-1, 12, 31, 23, 59, 59, 999));
-            
+            int tl = dateTimes.Count;
+            for (int i = 0; i < tl; i++)
+            {
+                if (dateTimes[i].Year == 4400 && dateTimes[i].Day == 29)
+                    dateTimes.Add(new TestDateTime(-4400, 2, 28));
+                else
+                    dateTimes.Add(dateTimes[i].Reverse());
+            }
+
+            dateTimes.Add(new TestDateTime(-1, 12, 31, 23, 59, 59, 999));
+
 
             for (int i = 0; i < dateTimes.Count; i++)
             {
-                Console.WriteLine($"{new ArDateTime(dateTimes[i].Year,dateTimes[i].Month, dateTimes[i].Day, dateTimes[i].Hour, dateTimes[i].Minute, dateTimes[i].Second, dateTimes[i].Millisecond)}");
+                TestContext.WriteLine($"{new ArDateTime(dateTimes[i].Year,dateTimes[i].Month, dateTimes[i].Day, dateTimes[i].Hour, dateTimes[i].Minute, dateTimes[i].Second, dateTimes[i].Millisecond)}");
             }
                 
         }
+
+        //[TestMethod]
+        //public void DateTimeFormatTest()
+        //{
+
+        //}
 
         [TestMethod]
         public void GetStandardNumberStringTest()

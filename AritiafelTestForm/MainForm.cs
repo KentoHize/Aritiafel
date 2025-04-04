@@ -15,6 +15,7 @@ using System.IO;
 using System.Diagnostics;
 using Aritiafel.Locations;
 using Aritiafel.Organizations.RaeriharUniversity;
+using System.Globalization;
 
 namespace AritiafelTestForm
 {
@@ -163,15 +164,17 @@ namespace AritiafelTestForm
 
         private void btnTestDateTime_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(ArDateTime.MaxValue.Ticks.ToString());
-            MessageBox.Show(long.MaxValue.ToString());
+            //MessageBox.Show(ArDateTime.MaxValue.Ticks.ToString());
+            //MessageBox.Show(long.MaxValue.ToString());
             //MessageBox.Show(TimeZoneInfo.Local.DisplayName);
             //MessageBox.Show(TimeZoneInfo.Local.BaseUtcOffset.ToString());
             //MessageBox.Show(TimeZoneInfo.Local.DaylightName);
             //TimeZoneInfo.Local.
             //ArDateTime ad = new 
-            DateTime dt = new DateTime(100, DateTimeKind.Utc);
-            DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
+            //DateTime dt = new DateTime(100, DateTimeKind.Utc);
+            //DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
+            //MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "{0:yyyy/MM/dd}", new DateTime(-2)));
+            
             ArDateTime ad = ArDateTime.Parse(txtDateTime.Text, null, System.Globalization.DateTimeStyles.None);
             txtOutput.Text = ad.ToString();
         }
