@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Windows.Forms.DataFormats;
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
@@ -55,6 +56,93 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 default:
                     return Format(format, adt, CultureInfo.CurrentCulture);
             }
+        }
+
+        internal static ArDateTime ParseArDateTime(string s, DateTimeStyles dateTimeStyles)
+        {   
+            ArDateTime result;
+            bool arYear = s.IndexOf("Ar") != -1;
+            bool arDayOfWeek = s.IndexOf('[') != -1;
+            int common = s.Count(v => v == ',');
+            int colon = s.Count(v => v == ':');
+            int dot = s.Count(v => v == '.');            
+
+            //全滿：M, d, Ar. y [ddd] H:m:s.fff            
+            if (arDayOfWeek && colon == 2)
+            {
+                if (TryParseExactArDateTime(s, "F" , dateTimeStyles, out result))
+                    return result;
+                else
+                    throw new FormatException();
+            }
+
+            if (arDayOfWeek)
+            {
+                if (TryParseExactArDateTime(s, "D", dateTimeStyles, out result))
+                    return result;
+                else
+                    throw new FormatException();
+            }
+            
+            if (colon == 0)
+            {
+                if(common == 2)
+                {
+                    if (TryParseExactArDateTime(s, "d", dateTimeStyles, out result))
+                        return result;
+                    else
+                        throw new FormatException();
+                }
+                else if(arYear)
+                {
+                    if (TryParseExactArDateTime(s, "Y", dateTimeStyles, out result))
+                        return result;
+                    else
+                        throw new FormatException();
+                }
+                else
+                {
+                    if (TryParseExactArDateTime(s, "M", dateTimeStyles, out result))
+                        return result;
+                    else
+                        throw new FormatException();
+                }
+            }
+
+            if (common == 2 && colon == 2) //等同G
+            {
+                if (TryParseExactArDateTime(s, "f", dateTimeStyles, out result))
+                    return result;
+                else
+                    throw new FormatException();
+            }
+            else if(common == 2 && colon == 1)
+            {
+                if (TryParseExactArDateTime(s, "g", dateTimeStyles, out result))
+                    return result;
+                else
+                    throw new FormatException();
+            }
+
+            if (common == 0)
+            {
+                if (dot == 1)
+                {
+                    if (TryParseExactArDateTime(s, "T", dateTimeStyles, out result))
+                        return result;
+                    else
+                        throw new FormatException();
+                }
+                else
+                {
+                    if (TryParseExactArDateTime(s, "t", dateTimeStyles, out result))
+                        return result;
+                    else
+                        throw new FormatException();
+                }
+            }
+
+            throw new FormatException();            
         }
 
         //Format
@@ -201,12 +289,35 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 timeTicks += 864000000000L;
             DateTime dt = new DateTime(year * -1, month, day).AddTicks(timeTicks);            
 
-            if(formatProvider is CultureInfo ci)
-            {   
-                //ci.DateTimeFormat.FirstDayOfWeek = DayOfWeek.Monday;
-                return $"(-){dt.ToString(format, ci)}";
+            //if(formatProvider is CultureInfo ci)
+            //{
+            //    CultureInfo ci2 = new CultureInfo($"{ci.Name.Split('-')[0]}-AR");
+            //    DateTimeFormatInfo dfi = (DateTimeFormatInfo)ci.DateTimeFormat.Clone();
+            //    dfi.Calendar = new ArNegativeCalendar();
+            //    //dfi.Calendar
+            //    //dfi.FirstDayOfWeek = DayOfWeek.Sunday;
+            //    ci2.DateTimeFormat = dfi;
+            //    //ci.DateTimeFormat.FirstDayOfWeek = DayOfWeek.Monday;
+            //    return $"(-){dt.ToString(format, ci2)}";
+            //}
+            return $"(-){dt.ToString(format, formatProvider)}";
+        }
+
+        public static ArDateTime Parse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
+        {
+            if (string.IsNullOrEmpty(s))
+                throw new ArgumentNullException(nameof(s));
+
+            if (formatProvider == null)
+                return ParseArDateTime(s, dateTimeStyles);
+
+            if (s.StartsWith("(-)"))
+            {
+                s = s.Substring(3);
+                DateTime dt = DateTime.Parse(s, formatProvider, dateTimeStyles);
+                return new ArDateTime(dt.Year * -1, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
             }
-            return $"(-){dt.ToString(format,formatProvider)}";
+            return new ArDateTime(DateTime.Parse(s, formatProvider, dateTimeStyles).Ticks);
         }
 
         public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
@@ -232,6 +343,20 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             try
             {
                 result = ParseExact(s, format, formatProvider, dateTimeStyles);
+                return true;
+            }
+            catch
+            {
+                result = default;
+            }
+            return false;
+        }
+
+        internal static bool TryParseExactArDateTime(string s, string format, DateTimeStyles dateTimeStyles, out ArDateTime result)
+        {
+            try
+            {
+                result = ParseExactArDateTime(s, format, dateTimeStyles);
                 return true;
             }
             catch

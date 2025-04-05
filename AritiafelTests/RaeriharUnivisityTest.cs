@@ -309,9 +309,14 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
+            //ArDateTime
+            string s = "12:20:22";
+            ArDateTime.Parse(s);
             //ArCultureInfo aci = new ArCultureInfo();
-            CultureInfo aci = new CultureInfo("zh-AR");
-            
+            //CultureInfo aci = new CultureInfo("zh-AR");
+            //DateTimeFormatInfo dfi = new DateTimeFormatInfo();
+            //dfi.FirstDayOfWeek = DayOfWeek.Monday;
+            //aci.DateTimeFormat = dfi;
             //aci.OptionalCalendars = new Calendar[] { };
             //for(int i = 0; i < aci.OptionalCalendars.Length;i++) 
             //    TestContext.WriteLine(aci.OptionalCalendars[i].ToString());

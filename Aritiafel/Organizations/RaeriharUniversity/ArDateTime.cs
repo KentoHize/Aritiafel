@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
+using System.Windows.Forms;
 
 //private const long TicksPerMillisecond = 10000L;
 //private const long TicksPerSecond = 10000000L;
@@ -455,7 +457,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => new ArDateTime(_data + 10000000L * seconds);
         public ArDateTime AddMilliSeconds(long milliseconds)
             => new ArDateTime(_data + 1000L * milliseconds);
-
+        public ArDateTime AddTicks(long ticks)
+            => new ArDateTime(_data + ticks);
         public static ArDateTime ParseExact(string s, string format)
             => ArDateTimeFormat.ParseExact(s, format, null, DateTimeStyles.None);
         public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider)
@@ -473,13 +476,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static bool TryParseExact(string s, string format, out ArDateTime result)
             => ArDateTimeFormat.TryParseExact(s, format, null, DateTimeStyles.None, out result);
         public static ArDateTime Parse(string s)
-            => ParseExact(s, null, null, DateTimeStyles.None);
+            => Parse(s, null, DateTimeStyles.AllowWhiteSpaces);
         public static ArDateTime Parse(string s, IFormatProvider formatProvider)
-            => ParseExact(s, null, formatProvider, DateTimeStyles.None);
+            => Parse(s, formatProvider, DateTimeStyles.AllowWhiteSpaces);
         public static ArDateTime Parse(string s, DateTimeStyles dateTimeStyles)
-            => ParseExact(s, null, null, dateTimeStyles);
+            => Parse(s, null, dateTimeStyles);
         public static ArDateTime Parse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
-            => ParseExact(s, null, formatProvider, dateTimeStyles);
+            => ArDateTimeFormat.Parse(s, formatProvider, dateTimeStyles);
         public static bool TryParse(string s, out ArDateTime result)
             => TryParse(s, null, DateTimeStyles.None, out result);
         public static bool TryParse(string s, IFormatProvider formatProvider, out ArDateTime result)

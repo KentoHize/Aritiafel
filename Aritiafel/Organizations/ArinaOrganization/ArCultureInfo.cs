@@ -9,6 +9,12 @@ namespace Aritiafel.Organizations.ArinaOrganization
 {
     public class ArCultureInfo : CultureInfo
     {
+     
+        //public ArCultureInfo(CultureInfo baseCultureInfo)
+        //{
+            
+        //}
+
         public ArCultureInfo()
             : this("")
         { }
@@ -18,6 +24,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
             //this.DateTimeFormat
             DateTimeFormatInfo dfi = new DateTimeFormatInfo();
             dfi.FirstDayOfWeek = DayOfWeek.Monday;
+            this.DateTimeFormat = dfi;
             //dfi.
             //Console.WriteLine(OptionalCalendars.Length);
             //for(int i = 0; i < OptionalCalendars.Length; i++)
