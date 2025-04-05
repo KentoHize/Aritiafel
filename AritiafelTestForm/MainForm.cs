@@ -172,6 +172,7 @@ namespace AritiafelTestForm
             //TimeZoneInfo.Local.
             //ArDateTime ad = new 
             DateTime dt = new DateTime(100, DateTimeKind.Utc);
+            DateTimeFormatInfo dfi;
             //DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
             //MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "{0:yyyy/MM/dd}", new DateTime(-2)));
             

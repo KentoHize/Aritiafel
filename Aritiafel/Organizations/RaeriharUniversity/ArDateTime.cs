@@ -24,6 +24,7 @@ using System.Threading;
 //ToString =>複雜
 
 // To Do：ParseExact format
+// To Do:負數年星期的問題
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
@@ -271,7 +272,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ArDateTimeFormat.Format("T", this, formatProvider);
         public string ToShortTimeString(IFormatProvider formatProvider = null)
             => ArDateTimeFormat.Format("t", this, formatProvider);
-
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => info.AddValue("data", _data);
 

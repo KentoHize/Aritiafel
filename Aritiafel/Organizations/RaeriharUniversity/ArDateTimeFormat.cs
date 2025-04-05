@@ -1,4 +1,5 @@
-﻿using Aritiafel.Organizations.RaeriharUniversity;
+﻿using Aritiafel.Organizations.ArinaOrganization;
+using Aritiafel.Organizations.RaeriharUniversity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,13 +13,7 @@ using System.Xml.Linq;
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
     internal static class ArDateTimeFormat
-    {
-        //public static bool ValidateDateTime(string s, string format)
-        //{
-        //    //先接受普通format
-
-        //}
-        
+    {   
         //Format
         internal static string FormatArDateTime(string format, ArDateTime adt)
         {
@@ -72,7 +67,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             //沒有支援，普通Parse
             if (format.Length != 1 || !SupportedFormatChar.Any(m => m == format[0]))
                 return ParseExact(s, format, CultureInfo.CurrentCulture, dateTimeStyles);
-            
+
+            if (dateTimeStyles == DateTimeStyles.AllowLeadingWhite)
+                s = s.TrimStart();
+            if (dateTimeStyles == DateTimeStyles.AllowTrailingWhite)
+                s = s.TrimEnd();
+
             //支援格式
             //全滿：M, d, Ar. y [ddd] H:m:s.fff
             if (format == "D" || format == "d" ||
@@ -199,8 +199,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
             if (timeTicks != 0)
                 timeTicks += 864000000000L;
-            DateTime dt = new DateTime(year * -1, month, day).AddTicks(timeTicks);
-            return $"(-){dt.ToString(format, formatProvider)}";
+            DateTime dt = new DateTime(year * -1, month, day).AddTicks(timeTicks);            
+
+            if(formatProvider is CultureInfo ci)
+            {   
+                //ci.DateTimeFormat.FirstDayOfWeek = DayOfWeek.Monday;
+                return $"(-){dt.ToString(format, ci)}";
+            }
+            return $"(-){dt.ToString(format,formatProvider)}";
         }
 
         public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)

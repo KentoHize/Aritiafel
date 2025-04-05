@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
 using System.Data.SqlTypes;
+using Aritiafel.Organizations.ArinaOrganization;
 
 namespace AritiafelTest
 {
@@ -250,8 +251,9 @@ namespace AritiafelTest
 
                 for(int j = 0; j < cultureInfoA.Length; j++)
                 {
-                    TestContext.WriteLine($"{cultureInfoA[j]}:{ArDateTime.ParseExact(adt.ToString(CultureInfo.CreateSpecificCulture(cultureInfoA[j])), null,
-                        CultureInfo.CreateSpecificCulture(cultureInfoA[j])).ToString("F", CultureInfo.CreateSpecificCulture(cultureInfoA[j]))}");
+                    //TestContext.WriteLine(adt.ToString(CultureInfo.GetCultureInfo(cultureInfoA[j])));
+                    TestContext.WriteLine($"{cultureInfoA[j]}:{ArDateTime.ParseExact(adt.ToString(CultureInfo.GetCultureInfo(cultureInfoA[j])), null,
+                        CultureInfo.GetCultureInfo(cultureInfoA[j])).ToString("F", CultureInfo.GetCultureInfo(cultureInfoA[j]))}");
                 }
 
                 
@@ -307,14 +309,29 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
-            DateTime t = new DateTime(0);
-            string format = "M, d, Ar. yyy H:m:s";
-            string s = t.ToString(format);
-            TestContext.WriteLine(s);
-            s = s.Replace("001", "1");
-            TestContext.WriteLine(s);
-            DateTime t2 = DateTime.ParseExact(s, format, null);
-            TestContext.WriteLine(t2.ToString());
+            //ArCultureInfo aci = new ArCultureInfo();
+            CultureInfo aci = new CultureInfo("zh-AR");
+            
+            //aci.OptionalCalendars = new Calendar[] { };
+            //for(int i = 0; i < aci.OptionalCalendars.Length;i++) 
+            //    TestContext.WriteLine(aci.OptionalCalendars[i].ToString());
+            //TestContext.WriteLine(aci.Calendar.ToString());
+            //DateTimeFormatInfo dfi = new DateTimeFormatInfo();
+            //dfi.FirstDayOfWeek = 0;
+            //aci.
+            //Calendar c = new ArNegativeCalendar();
+            //c
+            //dfi.Op
+            //aci.DateTimeFormat = dfi;
+
+            //DateTime t = new DateTime(0);
+            //string format = "M, d, Ar. yyy H:m:s";
+            //string s = t.ToString(format);
+            //TestContext.WriteLine(s);
+            //s = s.Replace("001", "1");
+            //TestContext.WriteLine(s);
+            //DateTime t2 = DateTime.ParseExact(s, format, null);
+            //TestContext.WriteLine(t2.ToString());
         
         }
 
