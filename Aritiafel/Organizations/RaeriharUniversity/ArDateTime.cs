@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Threading;
-using System.Windows.Forms;
 
 //private const long TicksPerMillisecond = 10000L;
 //private const long TicksPerSecond = 10000000L;
@@ -17,7 +12,6 @@ using System.Windows.Forms;
 //private const int DaysPer100Years = 36524;
 //private const int DaysPer4Years = 1461;
 //private const int DaysPerYear = 365;
-
 
 //用毫秒為單位
 //0:1年1月1日0時0分0秒
@@ -145,8 +139,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         internal static long DateTimeToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond, int tick)
         {
-            long result = 0, oy = year, d = 0;
-            //Day Part            
+            long result = 0, oy = year, d = 0;                   
             d += day - 1;
             for (int i = 0; i < month - 1; i++)
             {
@@ -161,8 +154,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             d += Math.DivRem(oy, 100, out oy) * 36524;
             d += Math.DivRem(oy, 4, out oy) * 1461;
             d += oy * 365;
-            result += 864000000000L * d;
-            //Time Part
+            result += 864000000000L * d;            
             result += 36000000000L * hour;
             result += 600000000L * minute;
             result += 10000000L * second;
@@ -205,8 +197,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 n9 += 365;
             }
             //n9剩餘天數
-            //if(onlyGetYear)
-            //    Console.WriteLine($"n9:{n9} n8:{n8} n7:{n7} n6:{n6} n5:{n5} n4:{n4} n3:{n3} n2:{n2} n1:{n1}");
+            
             year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8);
             if (ticks >= 0)
                 year += +1;
@@ -286,7 +277,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ArDateTimeFormat.FormatStandardDateTime(this, decimalDigit);
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => info.AddValue("data", _data);
-
         public TypeCode GetTypeCode()
             => TypeCode.Int64;
         public bool ToBoolean(IFormatProvider provider)

@@ -26,10 +26,10 @@ namespace Aritiafel.Organizations.ArinaOrganization
         }
         public override string Name => "zh-AR";
 
-        public override Calendar Calendar
-        {
-            get { return new ArNegativeCalendar(); }
-        }
+        //public override Calendar Calendar
+        //{
+        //    get { return new ArNegativeCalendar(); }
+        //}
             
 
         //format -x/x/x x:x:x.xxx(xxxx)

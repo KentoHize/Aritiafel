@@ -125,60 +125,12 @@ namespace AritiafelTest
                 DateTime d1 = new DateTime(864000000000L * d + 1);
 
                 Assert.IsTrue(
-                    b1.ToString() == d1.ToString("yyy/M/d H:m:s.f") ||
-                    b1.ToString() == d1.ToString("y/M/d H:m:s.f")
+                    b1.ToString() == d1.ToString("yyy/M/d H:m:s") ||
+                    b1.ToString() == d1.ToString("y/M/d H:m:s")
                     );
             }
             sb.Append("OK");
             Console.Write(sb.ToString());
-        }
-
-        [TestMethod]
-        public void ArDateTimeTranTest()
-        {
-            //int d = Math.DivRem(-4, 5, out int r);
-            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
-            //d = Math.DivRem(-1, 5, out r);
-            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
-            //d = Math.DivRem(-5, 5, out r);
-            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
-            //d = Math.DivRem(-6, 5, out r);
-            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
-            //d = Math.DivRem(0, 5, out r);
-            //TestContext.WriteLine((d - 1).ToString() + " " + (r + 5).ToString());
-
-
-
-            dateTimes.Add(new TestDateTime(-1, 12, 31, 23, 59, 59, 999));
-
-            int tl = dateTimes.Count;
-            for (int i = 0; i < tl; i++)
-            {
-                if (dateTimes[i].Year == 4400 && dateTimes[i].Day == 29)
-                    dateTimes.Add(new TestDateTime(-4400, 2, 28));
-                else
-                    dateTimes.Add(dateTimes[i].Reverse());
-
-            }
-
-
-            //for (int i = 0; i < 10; i++)
-            //    dateTimes.Add(new TestDateTime(i * -1000, false));
-
-            dateTimes.Add(new TestDateTime(-100000, false));
-            dateTimes.Add(new TestDateTime(-10000000, false));
-            dateTimes.Add(new TestDateTime(-1000000000, false));
-            dateTimes.Add(new TestDateTime(-100000000000, false));
-            dateTimes.Add(new TestDateTime(-10000000000000, false));
-            dateTimes.Add(new TestDateTime(-1000000000000000, false));
-            dateTimes.Add(new TestDateTime(-100000000000000000, false));
-            dateTimes.Add(new TestDateTime(-864000000000, false));
-            dateTimes.Add(new TestDateTime(-864000000001, false));
-            dateTimes.Add(new TestDateTime(-8640000000000, false));
-            for (int i = 0; i < dateTimes.Count; i++)
-            {
-                PrintDateTimeString(dateTimes[i]);
-            }
         }
 
         [TestMethod]
@@ -242,16 +194,19 @@ namespace AritiafelTest
 
             for (int i = 0; i < dateTimes.Count; i++)
             {
-                ArDateTime adt = new ArDateTime(dateTimes[i].Year, dateTimes[i].Month, dateTimes[i].Day, dateTimes[i].Hour, dateTimes[i].Minute, dateTimes[i].Second, dateTimes[i].Millisecond);
+                ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
                 //TestContext.WriteLine($"Ticks: {adt.Ticks}:{adt}");
                 //TestContext.WriteLine($"LongDateString D: {ArDateTime.ParseExact(adt.ToLongDateString(), "D").ToLongDateString()}");
                 //TestContext.WriteLine($"ShortDateString d: {ArDateTime.ParseExact(adt.ToShortDateString(), "d").ToShortDateString()}");
                 //TestContext.WriteLine($"LongTimeString T: {ArDateTime.ParseExact(adt.ToLongTimeString(), "T").ToLongTimeString()}");
                 //TestContext.WriteLine($"ShortTimeString t: {ArDateTime.ParseExact(adt.ToShortTimeString(), "t").ToShortTimeString()}");
+                TestContext.WriteLine($"StandardString: {ArDateTime.Parse(adt.ToString()).ToString()}");
+                TestContext.WriteLine($"ArinaString: {ArDateTime.Parse(adt.ToArString()).ToArString("F")}");
                 TestContext.WriteLine($"LongDateString D: {ArDateTime.Parse(adt.ToLongDateString()).ToLongDateString()}");
                 TestContext.WriteLine($"ShortDateString d: {ArDateTime.Parse(adt.ToShortDateString()).ToShortDateString()}");
                 TestContext.WriteLine($"LongTimeString T: {ArDateTime.Parse(adt.ToLongTimeString()).ToLongTimeString()}");
                 TestContext.WriteLine($"ShortTimeString t: {ArDateTime.Parse(adt.ToShortTimeString()).ToShortTimeString()}");
+                
                 for (int j = 0; j < formatArray.Length; j++)
                 {
                     if (adt.Day == 29 && adt.Month == 2 &&
@@ -301,7 +256,7 @@ namespace AritiafelTest
                 int y = cb.DrawOutInteger(-100, 100);
                 int d = cb.DrawOutInteger(-20, 20);
                 int m = cb.DrawOutInteger(-10, 10);
-                ArDateTime adt = new ArDateTime(dateTimes[i].Year, dateTimes[i].Month, dateTimes[i].Day, dateTimes[i].Hour, dateTimes[i].Minute, dateTimes[i].Second, dateTimes[i].Millisecond);
+                ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
                 //Console.WriteLine($"{adt} + {y}年{m}月{d}天:{adt.AddYears(y).AddMonths(m).AddDays(d)}");
                 Console.WriteLine($"{adt} + {d}天:{adt.AddDays(d)}");
 
@@ -315,7 +270,7 @@ namespace AritiafelTest
                 Console.WriteLine($"{adt} + {s}秒:{adt.AddSeconds(s)}");
 
                 int f = cb.DrawOutInteger(-100, 100);
-                Console.WriteLine($"{adt} + {f}豪秒:{adt.AddMilliSeconds(f)}");
+                Console.WriteLine($"{adt} + {f}豪秒:{adt.AddMilliSeconds(f).ToStandardString(7)}");
             }
         }
 

@@ -61,8 +61,8 @@ namespace Aritiafel
             else
                 return s;
         }
-        public static string ToArString(this object o)
-        {
+        public static string ToArString(this object o, string format = null)
+        {   
             Type type = o.GetType();
             if (type == typeof(Color))
                 return "#" + ((Color)o).R.ToString("X2") + ((Color)o).G.ToString("X2") + ((Color)o).B.ToString("X2");
@@ -72,7 +72,11 @@ namespace Aritiafel
                     return EnumStringDictionary.ContainsKey(o.ToString()) ? EnumStringDictionary[o.ToString()] : o.ToString();
                 else
                     return o.ToString();
-            }                
+            }
+            else if (o is IFormattable r1)
+            {
+                return r1.ToString(format, ArinaCultureInfo);
+            }   
             return o.ToString();
         }
 

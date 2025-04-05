@@ -14,8 +14,7 @@ using static System.Windows.Forms.DataFormats;
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
     internal static class ArDateTimeFormat
-    {   
-
+    { 
         internal static string FormatStandardDateTime(ArDateTime adt, int decimalDigit = 0)
         {
             if(decimalDigit < 0 || decimalDigit > 7)
@@ -308,34 +307,22 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);       
            
         }
-        //+(-)
+        
         public static string Format(string format, ArDateTime adt, IFormatProvider formatProvider)
         {
             if (string.IsNullOrEmpty(format))
                 format = "G";
-
-            if (formatProvider == null)
+            if (formatProvider == null && format == "G")
+                return FormatStandardDateTime(adt);
+            if (formatProvider is ArCultureInfo)
                 return FormatArDateTime(format, adt);
-
             if (adt._data >= 0)
                 return new DateTime(adt._data).ToString(format, formatProvider);
 
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
             if (timeTicks != 0)
                 timeTicks += 864000000000L;
-            DateTime dt = new DateTime(year * -1, month, day).AddTicks(timeTicks);            
-
-            //if(formatProvider is CultureInfo ci)
-            //{
-            //    CultureInfo ci2 = new CultureInfo($"{ci.Name.Split('-')[0]}-AR");
-            //    DateTimeFormatInfo dfi = (DateTimeFormatInfo)ci.DateTimeFormat.Clone();
-            //    dfi.Calendar = new ArNegativeCalendar();
-            //    //dfi.Calendar
-            //    //dfi.FirstDayOfWeek = DayOfWeek.Sunday;
-            //    ci2.DateTimeFormat = dfi;
-            //    //ci.DateTimeFormat.FirstDayOfWeek = DayOfWeek.Monday;
-            //    return $"(-){dt.ToString(format, ci2)}";
-            //}
+            DateTime dt = new DateTime(year * -1, month, day).AddTicks(timeTicks);          
             return $"(-){dt.ToString(format, formatProvider)}";
         }
 
@@ -344,7 +331,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (string.IsNullOrEmpty(s))
                 throw new ArgumentNullException(nameof(s));
 
-            if (formatProvider == null)
+            if (formatProvider == null || formatProvider is ArCultureInfo)
             {
                 if(s.IndexOf("Ar") == -1)
                 {
@@ -377,7 +364,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (string.IsNullOrEmpty(format))
                 format = "G";
 
-            if (formatProvider == null)
+            if (formatProvider == null && format == "G")
+                return ParseExactStandardDateTime(s);
+            
+            if (formatProvider is ArCultureInfo)
                 return ParseExactArDateTime(s, format, dateTimeStyles);
 
             if (s.StartsWith("(-)"))
