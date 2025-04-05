@@ -15,6 +15,43 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 {
     internal static class ArDateTimeFormat
     {   
+
+        internal static string FormatStandardDateTime(ArDateTime adt, int decimalDigit = 0)
+        {
+            if(decimalDigit < 0 || decimalDigit > 7)
+                throw new ArgumentOutOfRangeException(nameof(decimalDigit));
+            ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
+            if (timeTicks < 0)
+                timeTicks += 864000000000L;            
+            ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out int tick);
+
+            string decimalPart = (millisecond * 10000 + tick).ToString().PadLeft(7, '0').Substring(0, decimalDigit).TrimEnd('0');
+            if (decimalPart == "")
+                return $"{year}/{month}/{day} {hour}:{minute}:{second}";
+            else
+                return $"{year}/{month}/{day} {hour}:{minute}:{second}.{decimalPart}";
+        }
+
+        internal static ArDateTime ParseExactStandardDateTime(string s)
+        {
+            int year, month, day, hour, minute, second, decimalSecond;
+            s = s.Trim();
+            string[] s1 = s.Split(' ');
+            string[] datePart = s1[0].Split('/');
+            string[] timePart = s1[1].Split(':');
+            string[] secondPart = timePart[2].Split('.');
+            year = int.Parse(datePart[0]);
+            month = int.Parse(datePart[1]);
+            day = int.Parse(datePart[2]);
+            hour = int.Parse(timePart[0]);
+            minute = int.Parse(timePart[1]);
+            second = int.Parse(secondPart[0]);
+            if (secondPart.Length == 1)
+                return new ArDateTime(year, month, day, hour, minute, second);
+            decimalSecond = int.Parse(secondPart[1].PadRight(7, '0'));
+            return new ArDateTime(year, month, day, hour, minute, second).AddTicks(decimalSecond);
+        }
+
         //Format
         internal static string FormatArDateTime(string format, ArDateTime adt)
         {
@@ -141,7 +178,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         throw new FormatException();
                 }
             }
-
             throw new FormatException();            
         }
 
@@ -309,7 +345,23 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 throw new ArgumentNullException(nameof(s));
 
             if (formatProvider == null)
-                return ParseArDateTime(s, dateTimeStyles);
+            {
+                if(s.IndexOf("Ar") == -1)
+                {
+                    try
+                    {
+                        return ParseExactStandardDateTime(s);
+                    }
+                    catch { }
+                }
+
+                try
+                {   
+                    return ParseArDateTime(s, dateTimeStyles);
+                }
+                catch { }
+                formatProvider = CultureInfo.CurrentCulture;
+            }   
 
             if (s.StartsWith("(-)"))
             {

@@ -49,12 +49,20 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public ArDateTime(long ticks)
             => _data = ticks;
 
-        public ArDateTime(int year, int month, int day, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, bool isArDate = false)
+        public ArDateTime(int year, int month, int day, bool isArDate = false)
+            : this(year, month, day, 0, 0, 0, 0, 0, isArDate)
+        { }
+
+        public ArDateTime(int year, int month, int day, int hour, int minute, int second = 0, int millisecond = 0, bool isArDate = false)
+            : this(year, month, day, hour, minute, second, millisecond, 0, isArDate)
+        { }
+
+        public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int tick, bool isArDate = false)
         {
             if (isArDate)
                 year = GetCEYear(year);
             ValidateDateTime(year, month, day, hour, minute, second, millisecond);
-            _data = DateTimeToTicks(year, month, day, hour, minute, second, millisecond);
+            _data = DateTimeToTicks(year, month, day, hour, minute, second, millisecond, tick);
         }
 
         public ArDateTime(DateTime dt)
@@ -105,13 +113,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return false;
         }
 
-        public static int DaysInMonth(int year, int month)
+        public static int DaysInMonth(int year, int month, bool isArDate = false)
         {   
             if (month < 1 || month > 12)
                 throw new ArgumentOutOfRangeException(nameof(month));
-            if (IsLeapYear(year) && month == 2)
+            if (IsLeapYear(year, isArDate) && month == 2)
                 return 29;
-            return ConstDayInMonth[month];
+            return ConstDayInMonth[month - 1];
         }
 
         internal int GetDatePart(DatePart part = DatePart.Year)
@@ -135,7 +143,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             remainTicks = (int)timeTicks;
         }
 
-        internal static long DateTimeToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond)
+        internal static long DateTimeToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond, int tick)
         {
             long result = 0, oy = year, d = 0;
             //Day Part            
@@ -159,7 +167,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             result += 600000000L * minute;
             result += 10000000L * second;
             result += 10000L * millisecond;
-
+            result += tick;
             if (year < 0)
                 result += year / 400 * 126227808000000000L - 126227808000000000L;
             return result;
@@ -274,6 +282,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ArDateTimeFormat.Format("T", this, formatProvider);
         public string ToShortTimeString(IFormatProvider formatProvider = null)
             => ArDateTimeFormat.Format("t", this, formatProvider);
+        public string ToStandardString(int decimalDigit = 0)
+            => ArDateTimeFormat.FormatStandardDateTime(this, decimalDigit);
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => info.AddValue("data", _data);
 

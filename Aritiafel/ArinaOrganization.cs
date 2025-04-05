@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aritiafel.Organizations.ArinaOrganization;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -12,6 +13,9 @@ namespace Aritiafel
     //Extension and others    
     public static class ArinaOrganization
     {
+        private static ArCultureInfo _ArinaCultureInfo;
+        public static ArCultureInfo ArinaCultureInfo
+            => _ArinaCultureInfo ?? new ArCultureInfo();
         public static ConcurrentDictionary<string, string> EnumStringDictionary { get; set; }
 
         public static object ParseArString(this string s, Type t)

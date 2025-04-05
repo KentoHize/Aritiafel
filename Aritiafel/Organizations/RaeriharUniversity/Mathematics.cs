@@ -6,6 +6,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 {
     public static class Mathematics
     {
+        //四捨五入整數至某位 - Need Test
+        public static decimal RoundToDigit(long number, int digit)
+        {
+            if (digit == 0)
+                return number;
+            return Math.Round(number / (decimal)Math.Pow(10, digit));
+        }
 
         public static int GetIntegerDigitsCount(string numberToString, bool checkString = true)
         {

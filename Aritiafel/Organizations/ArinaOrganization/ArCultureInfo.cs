@@ -4,33 +4,34 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-//目前為可消除Class
 namespace Aritiafel.Organizations.ArinaOrganization
 {
     public class ArCultureInfo : CultureInfo
     {
-     
+        
         //public ArCultureInfo(CultureInfo baseCultureInfo)
         //{
             
         //}
 
         public ArCultureInfo()
-            : this("")
-        { }
-        public ArCultureInfo(string name)
-            : base(name)
+            : this("ja-JP", true)
+        { }        
+
+        internal ArCultureInfo(string name, bool useUserOverride) 
+            : base(name, useUserOverride)
         {
-            //this.DateTimeFormat
-            DateTimeFormatInfo dfi = new DateTimeFormatInfo();
-            dfi.FirstDayOfWeek = DayOfWeek.Monday;
-            this.DateTimeFormat = dfi;
-            //dfi.
-            //Console.WriteLine(OptionalCalendars.Length);
-            //for(int i = 0; i < OptionalCalendars.Length; i++)
-                //Console.WriteLine(this.OptionalCalendars[i].ToString());
-            //dfi.Calendar = new ArNegativeCalendar();
-            DateTimeFormat = dfi;
+            //DateTimeFormatInfo dfi = new DateTimeFormatInfo();
+            //dfi.Calendar = new ArNegativeCalendar();            
         }
+        public override string Name => "zh-AR";
+
+        public override Calendar Calendar
+        {
+            get { return new ArNegativeCalendar(); }
+        }
+            
+
+        //format -x/x/x x:x:x.xxx(xxxx)
     }
 }

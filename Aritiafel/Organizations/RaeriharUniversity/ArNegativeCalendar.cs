@@ -9,6 +9,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     public class ArNegativeCalendar : Calendar
     {
         internal Calendar Calendar { get; set; }
+        
         public ArNegativeCalendar()
             => Calendar = CultureInfo.CurrentCulture.Calendar;
         public override int[] Eras => Calendar.Eras;
