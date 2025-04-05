@@ -68,7 +68,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static ArDateTime Today
             => Now.Date;
 
-        internal static void ValidateDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond = 0)
+        internal static void ValidateDateTime(int year, int month, int day = 0, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, bool isArDate = false)
         {
             if (year == 0)
                 throw new ArgumentOutOfRangeException(nameof(year));
@@ -90,7 +90,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 throw new ArgumentOutOfRangeException(nameof(day));
             if (day == 30 && month == 2)
                 throw new ArgumentOutOfRangeException(nameof(day));
-            if (day == 29 && !IsLeapYear(year))
+            if (day == 29 && !IsLeapYear(year, isArDate))
                 throw new ArgumentOutOfRangeException(nameof(day));
         }
 
@@ -108,13 +108,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
 
         public static int DaysInMonth(int year, int month, bool isArDate = false)
-        {   
-            if (month < 1 || month > 12)
-                throw new ArgumentOutOfRangeException(nameof(month));
+        {
+            ValidateDateTime(year, month);
             if (IsLeapYear(year, isArDate) && month == 2)
                 return 29;
             return ConstDayInMonth[month - 1];
         }
+
+        public static int GetDayOfWeek(int year, int month, int day, bool isArDate = false)
+            => new ArDateTime(year, month, day, isArDate).DayOfWeek;
 
         internal int GetDatePart(DatePart part = DatePart.Year)
         {
@@ -273,8 +275,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ArDateTimeFormat.Format("T", this, formatProvider);
         public string ToShortTimeString(IFormatProvider formatProvider = null)
             => ArDateTimeFormat.Format("t", this, formatProvider);
-        public string ToStandardString(int decimalDigit = 0)
-            => ArDateTimeFormat.FormatStandardDateTime(this, decimalDigit);
+        public string ToStandardString(ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7)
+            => ArDateTimeFormat.FormatStandardDateTime(this, type, decimalDigit);
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => info.AddValue("data", _data);
         public TypeCode GetTypeCode()

@@ -270,7 +270,7 @@ namespace AritiafelTest
                 Console.WriteLine($"{adt} + {s}秒:{adt.AddSeconds(s)}");
 
                 int f = cb.DrawOutInteger(-100, 100);
-                Console.WriteLine($"{adt} + {f}豪秒:{adt.AddMilliSeconds(f).ToStandardString(7)}");
+                Console.WriteLine($"{adt} + {f}豪秒:{adt.AddMilliSeconds(f).ToStandardString(ArDateTimeType.DateTime, 7)}");
             }
         }
 
@@ -373,9 +373,20 @@ namespace AritiafelTest
             for (int i = 0; i < dateTimes.Count; i++)
             {
                 ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
-                string s = adt.ToStandardString(7);                
-                TestContext.WriteLine(s);
-                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(6));
+                string s = adt.ToStandardString(ArDateTimeType.DateTime, 7);                
+                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.DateTime, 6));
+
+                s = adt.ToStandardString(ArDateTimeType.Date);                
+                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.Date));
+
+                s = adt.ToStandardString(ArDateTimeType.Time);                
+                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.Time));
+
+                s = adt.ToStandardString(ArDateTimeType.ShortTime);                
+                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.ShortTime));
+
+                s = adt.ToStandardString(ArDateTimeType.LongDate);                
+                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.LongDate));
             }
         }
 

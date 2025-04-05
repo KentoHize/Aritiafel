@@ -3,6 +3,7 @@ using Aritiafel.Organizations.RaeriharUniversity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -15,39 +16,70 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 {
     internal static class ArDateTimeFormat
     { 
-        internal static string FormatStandardDateTime(ArDateTime adt, int decimalDigit = 0)
+        internal static string FormatStandardDateTime(ArDateTime adt, ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7)
         {
             if(decimalDigit < 0 || decimalDigit > 7)
                 throw new ArgumentOutOfRangeException(nameof(decimalDigit));
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
+            if (type == ArDateTimeType.Date)
+                return $"{year}/{month}/{day}";
+            else if(type == ArDateTimeType.LongDate)
+                return $"{year}/{month}/{day} [{new ArDateTime(adt._data).DayOfWeek}]";
             if (timeTicks < 0)
-                timeTicks += 864000000000L;            
+                timeTicks += 864000000000L;
             ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out int tick);
+            string decimalPart = decimalDigit == 0 || type == ArDateTimeType.ShortTime ? "" : (millisecond * 10000 + tick).ToString().PadLeft(7, '0').Substring(0, decimalDigit).TrimEnd('0');
 
-            string decimalPart = (millisecond * 10000 + tick).ToString().PadLeft(7, '0').Substring(0, decimalDigit).TrimEnd('0');
-            if (decimalPart == "")
-                return $"{year}/{month}/{day} {hour}:{minute}:{second}";
+            if (type == ArDateTimeType.DateTime)
+                if (decimalPart == "")
+                    return $"{year}/{month}/{day} {hour}:{minute}:{second}";
+                else
+                    return $"{year}/{month}/{day} {hour}:{minute}:{second}.{decimalPart}";
+            else if (type == ArDateTimeType.Time || type == ArDateTimeType.ShortTime)
+                if (decimalPart == "")
+                    return $"{hour}:{minute}:{second}";
+                else
+                    return $"{hour}:{minute}:{second}.{decimalPart}";
             else
-                return $"{year}/{month}/{day} {hour}:{minute}:{second}.{decimalPart}";
+                throw new NotImplementedException();
         }
 
-        internal static ArDateTime ParseExactStandardDateTime(string s)
+        internal static ArDateTime ParseExactStandardDateTime(string s, ArDateTimeType type = ArDateTimeType.DateTime)
         {
-            int year, month, day, hour, minute, second, decimalSecond;
+            int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalSecond = 0;
             s = s.Trim();
-            string[] s1 = s.Split(' ');
-            string[] datePart = s1[0].Split('/');
-            string[] timePart = s1[1].Split(':');
-            string[] secondPart = timePart[2].Split('.');
-            year = int.Parse(datePart[0]);
-            month = int.Parse(datePart[1]);
-            day = int.Parse(datePart[2]);
-            hour = int.Parse(timePart[0]);
-            minute = int.Parse(timePart[1]);
-            second = int.Parse(secondPart[0]);
-            if (secondPart.Length == 1)
-                return new ArDateTime(year, month, day, hour, minute, second);
-            decimalSecond = int.Parse(secondPart[1].PadRight(7, '0'));
+            string[] datePart = null, timePart = null;
+            if (type == ArDateTimeType.Date || type == ArDateTimeType.LongDate)
+                datePart = s.Split('/');
+            else if (type == ArDateTimeType.Time || type == ArDateTimeType.ShortTime)
+                timePart = s.Split(':');
+            else if(type == ArDateTimeType.DateTime)
+            {
+                string[] s1 = s.Split(' ');
+                datePart = s1[0].Split('/');
+                timePart = s1[1].Split(':');
+            }
+
+            if (datePart != null)
+            {   
+                year = int.Parse(datePart[0]);
+                month = int.Parse(datePart[1]);
+                if (type == ArDateTimeType.LongDate)
+                    day = int.Parse(datePart[2].Split(' ')[0]);
+                else
+                    day = int.Parse(datePart[2]);
+            }
+
+            if(timePart != null)
+            {   
+                string[] secondPart = timePart[2].Split('.');
+                hour = int.Parse(timePart[0]);
+                minute = int.Parse(timePart[1]);
+                second = int.Parse(secondPart[0]);
+                if(secondPart.Length != 1)
+                    decimalSecond = int.Parse(secondPart[1].PadRight(7, '0'));
+            }
+
             return new ArDateTime(year, month, day, hour, minute, second).AddTicks(decimalSecond);
         }
 
@@ -312,8 +344,20 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             if (string.IsNullOrEmpty(format))
                 format = "G";
-            if (formatProvider == null && format == "G")
-                return FormatStandardDateTime(adt);
+            if (formatProvider == null)
+            {
+                if(format == "G")
+                    return FormatStandardDateTime(adt);
+                else if(format == "d")
+                    return FormatStandardDateTime(adt, ArDateTimeType.Date);                
+                else if(format == "T")
+                    return FormatStandardDateTime(adt, ArDateTimeType.Time);
+                else if (format == "D")
+                    return FormatStandardDateTime(adt, ArDateTimeType.LongDate);
+                else if (format == "t")
+                    return FormatStandardDateTime(adt, ArDateTimeType.ShortTime);
+            }
+            
             if (formatProvider is ArCultureInfo)
                 return FormatArDateTime(format, adt);
             if (adt._data >= 0)
@@ -331,21 +375,33 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (string.IsNullOrEmpty(s))
                 throw new ArgumentNullException(nameof(s));
 
-            if (formatProvider == null || formatProvider is ArCultureInfo)
+            if (formatProvider == null)
             {
-                if(s.IndexOf("Ar") == -1)
+                if (s.IndexOf('[') != -1)
                 {
-                    try
-                    {
-                        return ParseExactStandardDateTime(s);
-                    }
+                    try { return ParseExactStandardDateTime(s, ArDateTimeType.LongDate); }
                     catch { }
                 }
-
-                try
-                {   
-                    return ParseArDateTime(s, dateTimeStyles);
+                else if (s.Trim().IndexOf(' ') != -1)
+                {
+                    try { return ParseExactStandardDateTime(s); }
+                    catch { }
                 }
+                else if (s.IndexOf('/') != -1)
+                {
+                    try { return ParseExactStandardDateTime(s, ArDateTimeType.Date); }
+                    catch { }
+                }
+                else if (s.IndexOf(':') != -1)
+                {
+                    try { return ParseExactStandardDateTime(s, ArDateTimeType.Time); }
+                    catch { }
+                }
+            }
+
+            if (formatProvider == null || formatProvider is ArCultureInfo)
+            {
+                try { return ParseArDateTime(s, dateTimeStyles); }
                 catch { }
                 formatProvider = CultureInfo.CurrentCulture;
             }   
