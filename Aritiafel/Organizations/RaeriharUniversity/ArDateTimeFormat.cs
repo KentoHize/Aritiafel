@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
@@ -32,7 +33,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 case "d":
                     return $"{month}, {day}, Ar. {ArDateTime.GetARYear(year)}";
                 case "T":
-                    return $"{hour}:{minute}:{second}.{millisecond}";
+                    return $"{hour}:{minute}:{second}.{millisecond:000}";
                 case "t":
                     return $"{hour}:{minute}:{second}";
                 case "F":                
@@ -62,27 +63,17 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
 
         //Format
-
-        //string[] s1;
-        
-        //s1 = s.Split(',');
-        //month = int.Parse(s1[0]);
-        //day = int.Parse(s1[1]);
-        //s1 = s1[2].Split(':');
-        //second = int.Parse(s1[2]);
-        //minute = int.Parse(s1[1]);
-        //s1 = s1[0].Trim().Split(' ');
-        //year = int.Parse(s1[1]);
-        //hour = int.Parse(s1[2]);            
-        //return new ArDateTime(year, month, day, hour, minute, second, 0, true);
         internal static ArDateTime ParseExactArDateTime(string s, string format, DateTimeStyles dateTimeStyles)
         {
-            string format1, format2 = null, format3 = null, format4 = null;
-            ArDateTime result;
-            string part;
-            int i;
-            int year, month, day, dayOfWeek, hour, minute, second, millisecond;
-            //自帶邏輯
+            int i = 0, j;
+            int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, millisecond = 0, dayOfWeek;
+            char[] SupportedFormatChar = { 'D', 'd', 'F', 'f', 'M', 'm', 'Y', 'y', 'G', 'g', 'T', 't' };
+
+            //沒有支援，普通Parse
+            if (format.Length != 1 || !SupportedFormatChar.Any(m => m == format[0]))
+                return ParseExact(s, format, CultureInfo.CurrentCulture, dateTimeStyles);
+            
+            //支援格式
             //全滿：M, d, Ar. y [ddd] H:m:s.fff
             if (format == "D" || format == "d" ||
                 format == "F" || format == "f" ||
@@ -90,9 +81,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 format == "Y" || format == "y" ||
                 format == "G" || format == "g") // M
             {
-                i = s.IndexOf(',');
-                month = int.Parse(s.Substring(0, i));                
-                s = s.Substring(i + 1);
+                j = s.IndexOf(',');
+                month = int.Parse(s.Substring(i, j - i));
+                i = j + 1;                
             }
 
             if (format == "D" || format == "d" ||
@@ -100,9 +91,16 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 format == "M" || format == "m" ||                
                 format == "G" || format == "g") // d
             {
-                i = s.IndexOf(','); 
-                day = int.Parse(s.Substring(0, i));
-                s = s.Substring(i + 1);                
+                j = s.IndexOf(',', i);
+                if(j == - 1)
+                {
+                    day = int.Parse(s.Substring(i));
+                    return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
+                }
+                day = int.Parse(s.Substring(i, j - i));
+                i = j + 1;
+                if (i == s.Length)
+                    return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
             }
 
             if (format == "D" || format == "d" ||
@@ -110,138 +108,81 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 format == "Y" || format == "y" ||
                 format == "G" || format == "g") // y
             {
-                s = s.Substring(s.IndexOf('.') + 1).TrimStart();                
-                i = s.IndexOf(' ');
-                year = int.Parse(s.Substring(0, i));
-                s = s.Substring(i + 1);
+                i = s.IndexOf('.', i) + 1;
+                i = s.IndexOf(' ', i) + 1;
+                j = s.IndexOf(' ', i);
+                if(j == - 1)
+                {
+                    year = int.Parse(s.Substring(i));
+                    return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
+                }
+                year = int.Parse(s.Substring(i, j - i));
+                i = j + 1;
+                if (i == s.Length)
+                    return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
             }
 
             if (format == "D" || format == "F") // dw
             {
-                s = s.Substring(s.IndexOf('[') + 1);
-                i = s.IndexOf(']');
-                dayOfWeek = int.Parse(s.Substring(0, i));
-                s = s.Substring(i + 1);
+                i = s.IndexOf('[' , i) + 1;
+                j = s.IndexOf(']', i);
+                dayOfWeek = int.Parse(s.Substring(i, j - i));                
+                i = j + 1;
+                if (i == s.Length)
+                    return new ArDateTime(year, month, day, hour, minute, second, millisecond, true); //先不驗證
+                //{
+                //    ArDateTime adt = new ArDateTime(year, month, day, hour, minute, second, millisecond, true);                    
+                //    if (adt.DayOfWeek != dayOfWeek)
+                //        throw new ArgumentException(nameof(dayOfWeek));
+                //    return adt;
+                //}
             }
 
             if (format == "T" || format == "t" ||
                 format == "F" || format == "f" ||                
                 format == "G" || format == "g") // h
-            {   
-                i = s.IndexOf(':');
-                hour = int.Parse(s.Substring(0, i));
-                s = s.Substring(i + 1);
+            {
+                j = s.IndexOf(':', i);
+                hour = int.Parse(s.Substring(i, j - i));
+                i = j + 1;
             }
 
             if (format == "T" || format == "t" ||
                 format == "F" || format == "f" ||                
                 format == "G" || format == "g") // m
             {
-                i = s.IndexOf(':');                
-                if(i == -1)
+                j = s.IndexOf(':', i);
+                if(j == -1)
                 {
-                    minute = int.Parse(s);
-                    //break;
-
+                    minute = int.Parse(s.Substring(i));
+                    return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
                 }
-                else
-                    minute = int.Parse(s.Substring(0, i));
-                s = s.Substring(i + 1);
+                minute = int.Parse(s.Substring(i, j - i));
+                i = j + 1;
+                if (i == s.Length)
+                    return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
             }
 
             if (format == "T" || format == "t" ||
                 format == "F" || format == "f" ||
                 format == "G") // s
             {
-                i = s.IndexOf('.');
-                if (i == -1)
+                j = s.IndexOf('.', i);
+                if (j == -1)
                 {
-                    second = int.Parse(s);                    
-                    //break;
+                    second = int.Parse(s.Substring(i));
+                    return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
                 }
-                else
-                    second = int.Parse(s.Substring(0, i));
-                s = s.Substring(i + 1);
+                second = int.Parse(s.Substring(i, j - i));
+                i = j + 1;
+                if (i == s.Length)
+                    return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
             }
-
             if(format == "T") //f
-            {
-                millisecond = int.Parse(s.PadLeft(3, '0'));
-            }
+                millisecond = int.Parse(s.Substring(i).PadLeft(3, '0'));
 
-            //switch (format)
-            //{
-            //    case "D":
-            //        format1 = $"M, d, Ar. y [ddd]";
-            //        format2 = $"M, d, Ar. -y [ddd]";
-            //        format3 = $"M, d, Ar. yyy [ddd]";                    
-            //        format4 = $"M, d, Ar. -yyy [ddd]";
-            //        break;
-            //    case "d":
-            //        format1 = $"M, d, Ar. y";
-            //        format2 = $"M, d, Ar. -y";
-            //        format3 = $"M, d, Ar. yyy";                    
-            //        format4 = $"M, d, Ar. -yyy";
-            //        break;
-            //    case "T":
-            //        format1 = $"H:m:s.fff";
-            //        format2 = $"H:m:s.ff";
-            //        format3 = $"H:m:s.f";
-            //        break;                    
-            //    case "t":
-            //        format1 = $"H:m:s";
-            //        break;
-            //    case "F":
-            //        format1 = $"M, d, Ar. y [ddd] H:m:s";
-            //        format2 = $"M, d, Ar. -y [ddd] H:m:s";
-            //        format3 = $"M, d, Ar. yyy [ddd] H:m:s";
-            //        format4 = $"M, d, Ar. -yyy [ddd] H:m:s";
-            //        break;
-            //    case "M":
-            //    case "m":
-            //        format1 = $"M, d";
-            //        break;
-            //    case "Y":
-            //    case "y":
-            //        format1 = $"M, Ar. y";
-            //        format2 = $"M, Ar. -y";
-            //        format3 = $"M, Ar. yyy";
-            //        format4 = $"M, Ar. -yyy";
-            //        break;
-            //    case "g":
-            //        format1 = $"M, d, Ar. y H:m";
-            //        format2 = $"M, d, Ar. -y H:m";
-            //        format3 = $"M, d, Ar. yyy H:m";
-            //        format4 = $"M, d, Ar. -yyy H:m";
-            //        break;
-            //    case "G":
-            //    case "f":
-            //        format1 = $"M, d, Ar. y H:m:s";
-            //        format2 = $"M, d, Ar. \\-y H:m:s";
-            //        format3 = $"M, d, Ar. yyy H:m:s";
-            //        format4 = $"M, d, Ar. \\-yyy H:m:s";
-            //        break;
-            //    case "O":
-            //    case "o":
-            //    case "R":
-            //    case "r":
-            //    case "s":
-            //    case "U":
-            //    case "u":
-            //    //不支援
-            //    default:
-            //        return ParseExact(s, format, CultureInfo.CurrentCulture, dateTimeStyles);
-            //}
-
-            //if (TryParseExact(s, format1, CultureInfo.CurrentCulture, dateTimeStyles, out result))
-            //    return result;
-            //if (format2 != null && TryParseExact(s, format2, CultureInfo.CurrentCulture, dateTimeStyles, out result))
-            //    return result;
-            //if (format3 != null && TryParseExact(s, format3, CultureInfo.CurrentCulture, dateTimeStyles, out result))
-            //    return result;
-            //if (format4 != null && TryParseExact(s, format4, CultureInfo.CurrentCulture, dateTimeStyles, out result))
-            //    return result;
-            throw new FormatException();
+            return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);       
+           
         }
         //+(-)
         public static string Format(string format, ArDateTime adt, IFormatProvider formatProvider)

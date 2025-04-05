@@ -217,7 +217,9 @@ namespace AritiafelTest
         [TestMethod]
         public void DateTimeToStringTest()
         {
-           
+            string format;
+            string[] formatArray = { "M", "Y", "F", "f", "g" };
+            string[] cultureInfoA = { "zh-TW", "ja-JP", "en-US", "zh-CN" };
             int tl = dateTimes.Count;
             for (int i = 0; i < tl; i++)
             {
@@ -233,12 +235,32 @@ namespace AritiafelTest
             for (int i = 0; i < dateTimes.Count; i++)
             {
                 ArDateTime adt = new ArDateTime(dateTimes[i].Year, dateTimes[i].Month, dateTimes[i].Day, dateTimes[i].Hour, dateTimes[i].Minute, dateTimes[i].Second, dateTimes[i].Millisecond);
-                //TestContext.WriteLine($"{adt.ArYear}");
-                TestContext.WriteLine($"{adt.ToString()} {adt.Ticks}");
-                TestContext.WriteLine($"{ArDateTime.ParseExact(adt.ToString(), null, null, DateTimeStyles.None)} {adt.Ticks}");
+                TestContext.WriteLine($"Ticks: {adt.Ticks}:{adt}");
+                TestContext.WriteLine($"LongDateString D: {ArDateTime.ParseExact(adt.ToLongDateString(), "D").ToLongDateString()}");
+                TestContext.WriteLine($"ShortDateString d: {ArDateTime.ParseExact(adt.ToShortDateString(), "d").ToShortDateString()}");
+                TestContext.WriteLine($"LongTimeString T: {ArDateTime.ParseExact(adt.ToLongTimeString(), "T").ToLongTimeString()}");
+                TestContext.WriteLine($"ShortTimeString t: {ArDateTime.ParseExact(adt.ToShortTimeString(), "t").ToShortTimeString()}");
+                for(int j = 0; j < formatArray.Length;  j++)
+                {
+                    if(adt.Day == 29 && adt.Month == 2 &&
+                       (formatArray[j] == "M" || formatArray[j] == "m"))
+                        continue;
+                    TestContext.WriteLine($"{formatArray[j]}:{ArDateTime.ParseExact(adt.ToString(formatArray[j]), formatArray[j]).ToString(formatArray[j])}");
+                }
+
+                for(int j = 0; j < cultureInfoA.Length; j++)
+                {
+                    TestContext.WriteLine($"{cultureInfoA[j]}:{ArDateTime.ParseExact(adt.ToString(CultureInfo.CreateSpecificCulture(cultureInfoA[j])), null,
+                        CultureInfo.CreateSpecificCulture(cultureInfoA[j])).ToString("F", CultureInfo.CreateSpecificCulture(cultureInfoA[j]))}");
+                }
+
+                
+                TestContext.WriteLine("");
+                //TestContext.WriteLine($"{adt.ToString()} {adt.Ticks}");
+                //TestContext.WriteLine($"{ArDateTime.ParseExact(adt.ToString(), null, null, DateTimeStyles.None)} {adt.Ticks}");
                 //TestContext.WriteLine($"{adt.ToString("G", CultureInfo.CurrentCulture) }");
                 //TestContext.WriteLine($"{ArDateTime.ParseExact(adt.ToString("G", CultureInfo.CurrentCulture), "G", CultureInfo.CurrentCulture, DateTimeStyles.None).ToString("G", CultureInfo.CreateSpecificCulture("en-US"))}");
-                TestContext.WriteLine($"{ArDateTime.Parse(adt.ToString("G", CultureInfo.CurrentCulture), CultureInfo.CurrentCulture, DateTimeStyles.None).ToString("f", CultureInfo.CreateSpecificCulture("zh-CN"))}");
+                //TestContext.WriteLine($"{ArDateTime.Parse(adt.ToString("G", CultureInfo.CurrentCulture), CultureInfo.CurrentCulture, DateTimeStyles.None).ToString("f", CultureInfo.CreateSpecificCulture("zh-CN"))}");
                 //TestContext.WriteLine($"{adt.ToString(CultureInfo.CurrentCulture)}");                
             }
         }
