@@ -282,7 +282,21 @@ namespace AritiafelTest
             }
         }
 
-            [TestMethod]
+        [TestMethod]
+        public void TestArea()
+        {
+            DateTime t = new DateTime(0);
+            string format = "M, d, Ar. yyy H:m:s";
+            string s = t.ToString(format);
+            TestContext.WriteLine(s);
+            s = s.Replace("001", "1");
+            TestContext.WriteLine(s);
+            DateTime t2 = DateTime.ParseExact(s, format, null);
+            TestContext.WriteLine(t2.ToString());
+        
+        }
+
+        [TestMethod]
         public void GetStandardNumberStringTest()
         {
             //string result;

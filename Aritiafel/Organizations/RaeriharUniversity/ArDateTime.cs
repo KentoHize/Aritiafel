@@ -464,6 +464,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ArDateTimeFormat.ParseExact(s, format, null, dateTimeStyles);
         public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
             => ArDateTimeFormat.ParseExact(s, format, formatProvider, dateTimeStyles);
+        public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, out ArDateTime result)
+            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, dateTimeStyles, out result);
+        public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, out ArDateTime result)
+            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, DateTimeStyles.None, out result);
+        public static bool TryParseExact(string s, string format, DateTimeStyles dateTimeStyles, out ArDateTime result)
+            => ArDateTimeFormat.TryParseExact(s, format, null, dateTimeStyles, out result);
+        public static bool TryParseExact(string s, string format, out ArDateTime result)
+            => ArDateTimeFormat.TryParseExact(s, format, null, DateTimeStyles.None, out result);
         public static ArDateTime Parse(string s)
             => ParseExact(s, null, null, DateTimeStyles.None);
         public static ArDateTime Parse(string s, IFormatProvider formatProvider)
@@ -472,7 +480,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ParseExact(s, null, null, dateTimeStyles);
         public static ArDateTime Parse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
             => ParseExact(s, null, formatProvider, dateTimeStyles);
-
         public static bool TryParse(string s, out ArDateTime result)
             => TryParse(s, null, DateTimeStyles.None, out result);
         public static bool TryParse(string s, IFormatProvider formatProvider, out ArDateTime result)
@@ -488,10 +495,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
             catch
             {
-                result = new ArDateTime();
+                result = default;                
             }
             return false;        
         }
+
+        public static ArDateTime operator +(ArDateTime t1, ArDateTime t2)
+            => new ArDateTime(t1._data + t2._data);
+        public static ArDateTime operator -(ArDateTime t1, ArDateTime t2)
+            => new ArDateTime(t1._data - t2._data);
         public static bool operator !=(ArDateTime t1, ArDateTime t2)
             => t1._data != t2._data;
         public static bool operator ==(ArDateTime t1, ArDateTime t2)
