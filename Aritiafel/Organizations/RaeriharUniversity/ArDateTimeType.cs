@@ -11,5 +11,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         Time,      //T
         ShortTime, //t
         LongDate, //D
+        System, //A (Without Era)
     }
 }

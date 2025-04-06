@@ -16,16 +16,30 @@ using static System.Windows.Forms.DataFormats;
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
     internal static class ArDateTimeFormat
-    { 
-        internal static string FormatStandardDateTime(ArDateTime adt, ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7)
+    {
+        static readonly string SystemDateTimePattern = "yyyy/M/d h:m:s.fffffff";
+        static readonly string ArinaBaseCultureName = "ja-JP";
+
+        internal static string FormatStandardDateTime(ArDateTime adt, ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7, IFormatProvider formatProvider = null)
         {
-            if(decimalDigit < 0 || decimalDigit > 7)
+            string era = "CE";
+            if (decimalDigit < 0 || decimalDigit > 7)
                 throw new ArgumentOutOfRangeException(nameof(decimalDigit));
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
+            if (formatProvider == null || formatProvider is ArCultureInfo)
+            {
+                year = ArDateTime.GetARYear(year);
+                era = "AR";
+            }
+            else if (formatProvider is CultureInfo ci)
+            {
+                era = ci.DateTimeFormat.GetEraName(0);
+            }
+
             if (type == ArDateTimeType.Date)
-                return $"{year}/{month}/{day}";
-            else if(type == ArDateTimeType.LongDate)
-                return $"{year}/{month}/{day} [{new ArDateTime(adt._data).DayOfWeek}]";
+                return $"{era} {year:0000}/{month:00}/{day:00}";
+            else if (type == ArDateTimeType.LongDate)
+                return $"{era} {year:0000}/{month:00}/{day:00} [{new ArDateTime(adt._data).DayOfWeek}]";
             if (timeTicks < 0)
                 timeTicks += 864000000000L;
             ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out int tick);
@@ -33,14 +47,19 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
             if (type == ArDateTimeType.DateTime)
                 if (decimalPart == "")
-                    return $"{year}/{month}/{day} {hour}:{minute}:{second}";
+                    return $"{era} {year:0000}/{month:00}/{day:00} {hour:00}:{minute:00}:{second:00}";
                 else
-                    return $"{year}/{month}/{day} {hour}:{minute}:{second}.{decimalPart}";
+                    return $"{era} {year:0000}/{month:00}/{day:00} {hour:00}:{minute:00}:{second:00}.{decimalPart}";
+            else if (type == ArDateTimeType.System)
+                if (decimalPart == "")
+                    return $"{year:0000}/{month:00}/{day:00} {hour:00}:{minute:00}:{second:00}";
+                else
+                    return $"{year:0000}/{month:00}/{day:00} {hour:00}:{minute:00}:{second:00}.{decimalPart}";
             else if (type == ArDateTimeType.Time || type == ArDateTimeType.ShortTime)
                 if (decimalPart == "")
-                    return $"{hour}:{minute}:{second}";
+                    return $"{hour:00}:{minute:00}:{second:00}";
                 else
-                    return $"{hour}:{minute}:{second}.{decimalPart}";
+                    return $"{hour:00}:{minute:00}:{second:00}.{decimalPart}";
             else
                 throw new NotImplementedException();
         }
@@ -49,20 +68,35 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalSecond = 0;
             s = s.Trim();
+            string era = "";
             string[] datePart = null, timePart = null;
-            if (type == ArDateTimeType.Date || type == ArDateTimeType.LongDate)
-                datePart = s.Split('/');
-            else if (type == ArDateTimeType.Time || type == ArDateTimeType.ShortTime)
-                timePart = s.Split(':');
-            else if(type == ArDateTimeType.DateTime)
+            string[] sArray = s.Split(' ');
+
+            if (type == ArDateTimeType.DateTime)
             {
-                string[] s1 = s.Split(' ');
-                datePart = s1[0].Split('/');
-                timePart = s1[1].Split(':');
+                era = sArray[0];
+                datePart = sArray[1].Split('/');
+                timePart = sArray[2].Split(':');
             }
+            else if (type == ArDateTimeType.System)
+            {
+                datePart = sArray[0].Split('/');
+                timePart = sArray[1].Split(':');
+            }
+            else if (type == ArDateTimeType.Date || type == ArDateTimeType.LongDate)
+            {
+                era = sArray[0];
+                datePart = sArray[1].Split('/');
+            }
+            else if (type == ArDateTimeType.Time || type == ArDateTimeType.ShortTime)
+            {
+                timePart = s.Split(':');
+            }
+            else
+            { throw new FormatException(); }
 
             if (datePart != null)
-            {   
+            {
                 year = int.Parse(datePart[0]);
                 month = int.Parse(datePart[1]);
                 if (type == ArDateTimeType.LongDate)
@@ -71,15 +105,18 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     day = int.Parse(datePart[2]);
             }
 
-            if(timePart != null)
-            {   
+            if (timePart != null)
+            {
                 string[] secondPart = timePart[2].Split('.');
                 hour = int.Parse(timePart[0]);
                 minute = int.Parse(timePart[1]);
                 second = int.Parse(secondPart[0]);
-                if(secondPart.Length != 1)
+                if (secondPart.Length != 1)
                     decimalSecond = int.Parse(secondPart[1].PadRight(7, '0'));
             }
+
+            if (era == "" || era == "AR")
+                return new ArDateTime(year, month, day, hour, minute, second, 0, true).AddTicks(decimalSecond);
             return new ArDateTime(year, month, day, hour, minute, second).AddTicks(decimalSecond);
         }
 
@@ -90,8 +127,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (timeTicks < 0)
                 timeTicks += 864000000000L;
             ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out _);
-            switch(format)
-            {   
+            switch (format)
+            {
                 case "D":
                     return $"{month}, {day}, Ar. {ArDateTime.GetARYear(year)} [{adt.DayOfWeek}]";
                 case "d":
@@ -100,7 +137,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     return $"{hour}:{minute}:{second}.{millisecond:000}";
                 case "t":
                     return $"{hour}:{minute}:{second}";
-                case "F":                
+                case "F":
                     return $"{month}, {day}, Ar. {ArDateTime.GetARYear(year)} [{adt.DayOfWeek}] {hour}:{minute}:{second}";
                 case "M":
                 case "m":
@@ -120,25 +157,25 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 case "s":
                 case "U":
                 case "u":
-                    //不支援
+                //不支援
                 default:
                     return Format(format, adt, CultureInfo.CurrentCulture);
             }
         }
 
         internal static ArDateTime ParseArDateTime(string s, DateTimeStyles dateTimeStyles)
-        {   
+        {
             ArDateTime result;
             bool arYear = s.IndexOf("Ar") != -1;
             bool arDayOfWeek = s.IndexOf('[') != -1;
             int common = s.Count(v => v == ',');
             int colon = s.Count(v => v == ':');
-            int dot = s.Count(v => v == '.');            
+            int dot = s.Count(v => v == '.');
 
             //全滿：M, d, Ar. y [ddd] H:m:s.fff            
             if (arDayOfWeek && colon == 2)
             {
-                if (TryParseExactArDateTime(s, "F" , dateTimeStyles, out result))
+                if (TryParseExactArDateTime(s, "F", dateTimeStyles, out result))
                     return result;
                 else
                     throw new FormatException();
@@ -151,17 +188,17 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 else
                     throw new FormatException();
             }
-            
+
             if (colon == 0)
             {
-                if(common == 2)
+                if (common == 2)
                 {
                     if (TryParseExactArDateTime(s, "d", dateTimeStyles, out result))
                         return result;
                     else
                         throw new FormatException();
                 }
-                else if(arYear)
+                else if (arYear)
                 {
                     if (TryParseExactArDateTime(s, "Y", dateTimeStyles, out result))
                         return result;
@@ -184,7 +221,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 else
                     throw new FormatException();
             }
-            else if(common == 2 && colon == 1)
+            else if (common == 2 && colon == 1)
             {
                 if (TryParseExactArDateTime(s, "g", dateTimeStyles, out result))
                     return result;
@@ -209,7 +246,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         throw new FormatException();
                 }
             }
-            throw new FormatException();            
+            throw new FormatException();
         }
 
         //Format
@@ -219,13 +256,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, millisecond = 0, dayOfWeek;
             char[] SupportedFormatChar = { 'D', 'd', 'F', 'f', 'M', 'm', 'Y', 'y', 'G', 'g', 'T', 't' };
 
-            //沒有支援，普通Parse
+            //A表示普通系統時間
+            if (format == "A")
+                return ParseExact(s, format, null, dateTimeStyles);
+            //沒有支援，改用普通ParseExact
             if (format.Length != 1 || !SupportedFormatChar.Any(m => m == format[0]))
-                return ParseExact(s, format, CultureInfo.CurrentCulture, dateTimeStyles);
-
-            if (dateTimeStyles == DateTimeStyles.AllowLeadingWhite)
+                return ParseExact(s, format, CultureInfo.GetCultureInfo(ArinaBaseCultureName) , dateTimeStyles);
+            if ((dateTimeStyles & DateTimeStyles.AllowLeadingWhite) != 0)
                 s = s.TrimStart();
-            if (dateTimeStyles == DateTimeStyles.AllowTrailingWhite)
+            if ((dateTimeStyles & DateTimeStyles.AllowTrailingWhite) != 0)
                 s = s.TrimEnd();
 
             //支援格式
@@ -238,16 +277,16 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             {
                 j = s.IndexOf(',');
                 month = int.Parse(s.Substring(i, j - i));
-                i = j + 1;                
+                i = j + 1;
             }
 
             if (format == "D" || format == "d" ||
                 format == "F" || format == "f" ||
-                format == "M" || format == "m" ||                
+                format == "M" || format == "m" ||
                 format == "G" || format == "g") // d
             {
                 j = s.IndexOf(',', i);
-                if(j == - 1)
+                if (j == -1)
                 {
                     day = int.Parse(s.Substring(i));
                     return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
@@ -259,14 +298,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
 
             if (format == "D" || format == "d" ||
-                format == "F" || format == "f" ||                
+                format == "F" || format == "f" ||
                 format == "Y" || format == "y" ||
                 format == "G" || format == "g") // y
             {
                 i = s.IndexOf('.', i) + 1;
                 i = s.IndexOf(' ', i) + 1;
                 j = s.IndexOf(' ', i);
-                if(j == - 1)
+                if (j == -1)
                 {
                     year = int.Parse(s.Substring(i));
                     return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
@@ -279,9 +318,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
             if (format == "D" || format == "F") // dw
             {
-                i = s.IndexOf('[' , i) + 1;
+                i = s.IndexOf('[', i) + 1;
                 j = s.IndexOf(']', i);
-                dayOfWeek = int.Parse(s.Substring(i, j - i));                
+                dayOfWeek = int.Parse(s.Substring(i, j - i));
                 i = j + 1;
                 if (i == s.Length)
                     return new ArDateTime(year, month, day, hour, minute, second, millisecond, true); //先不驗證
@@ -294,7 +333,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
 
             if (format == "T" || format == "t" ||
-                format == "F" || format == "f" ||                
+                format == "F" || format == "f" ||
                 format == "G" || format == "g") // h
             {
                 j = s.IndexOf(':', i);
@@ -303,11 +342,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
 
             if (format == "T" || format == "t" ||
-                format == "F" || format == "f" ||                
+                format == "F" || format == "f" ||
                 format == "G" || format == "g") // m
             {
                 j = s.IndexOf(':', i);
-                if(j == -1)
+                if (j == -1)
                 {
                     minute = int.Parse(s.Substring(i));
                     return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
@@ -333,31 +372,31 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 if (i == s.Length)
                     return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
             }
-            if(format == "T") //f
+            if (format == "T") //f
                 millisecond = int.Parse(s.Substring(i).PadLeft(3, '0'));
 
-            return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);       
-           
+            return new ArDateTime(year, month, day, hour, minute, second, millisecond, true);
+
         }
-        
+
         public static string Format(string format, ArDateTime adt, IFormatProvider formatProvider)
         {
             if (string.IsNullOrEmpty(format))
                 format = "G";
             if (formatProvider == null)
             {
-                if(format == "G")
+                if (format == "G")
                     return FormatStandardDateTime(adt);
-                else if(format == "d")
-                    return FormatStandardDateTime(adt, ArDateTimeType.Date);                
-                else if(format == "T")
+                else if (format == "d")
+                    return FormatStandardDateTime(adt, ArDateTimeType.Date);
+                else if (format == "T")
                     return FormatStandardDateTime(adt, ArDateTimeType.Time);
                 else if (format == "D")
                     return FormatStandardDateTime(adt, ArDateTimeType.LongDate);
                 else if (format == "t")
                     return FormatStandardDateTime(adt, ArDateTimeType.ShortTime);
             }
-            
+
             if (formatProvider is ArCultureInfo)
                 return FormatArDateTime(format, adt);
             if (adt._data >= 0)
@@ -378,30 +417,37 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             //    new ArProductInfo(typeof(CultureSupportNegativeYear), CultureInfo.CurrentCulture.Name));
             //    return $"(-){dt.ToString(format, ct)}";
             //}
-                
+
         }
 
         public static ArDateTime Parse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
         {
             if (string.IsNullOrEmpty(s))
                 throw new ArgumentNullException(nameof(s));
+            else if (s.Length < 4)
+                throw new ArgumentException(nameof(s));
 
             if (formatProvider == null)
             {
                 if (s.IndexOf('[') != -1)
                 {
-                    if(TryParseExact(s, "D", formatProvider, dateTimeStyles, out ArDateTime r))
+                    if (TryParseExact(s, "D", formatProvider, dateTimeStyles, out ArDateTime r))
                         return r;
                 }
-                else if (s.Trim().IndexOf(' ') != -1)
+                else if (char.IsLetter(s.TrimStart()[0]) && (dateTimeStyles & DateTimeStyles.AllowLeadingWhite) != 0)
                 {
                     if (TryParseExact(s, "G", formatProvider, dateTimeStyles, out ArDateTime r))
                         return r;
+                    if (s.IndexOf('/') != -1)
+                    {
+                        if (TryParseExact(s, "d", formatProvider, dateTimeStyles, out ArDateTime r2))
+                            return r2;
+                    }
                 }
-                else if (s.IndexOf('/') != -1)
+                else if (s.TrimStart().Substring(3).IndexOf(' ') != -1 && (dateTimeStyles & DateTimeStyles.AllowLeadingWhite) != 0)
                 {
-                    if (TryParseExact(s, "d", formatProvider, dateTimeStyles, out ArDateTime r))
-                        return r;                    
+                    if (TryParseExact(s, "A", formatProvider, dateTimeStyles, out ArDateTime r))
+                        return r;
                 }
                 else if (s.IndexOf(':') != -1)
                 {
@@ -411,11 +457,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
 
             if (formatProvider == null || formatProvider is ArCultureInfo)
-            {   
+            {
                 try { return ParseArDateTime(s, dateTimeStyles); }
                 catch { }
                 formatProvider = CultureInfo.CurrentCulture;
-            }   
+            }
 
             if (s.StartsWith("(-)"))
             {
@@ -443,10 +489,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     return ParseExactStandardDateTime(s, ArDateTimeType.LongDate);
                 else if (format == "t")
                     return ParseExactStandardDateTime(s, ArDateTimeType.ShortTime);
+                else if (format == "A")
+                    return ParseExactStandardDateTime(s, ArDateTimeType.System);
                 else
                     throw new FormatException();
             }
-            
+
             if (formatProvider is ArCultureInfo)
                 return ParseExactArDateTime(s, format, dateTimeStyles);
 
@@ -459,7 +507,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return new ArDateTime(DateTime.ParseExact(s, format, formatProvider, dateTimeStyles).Ticks);
         }
 
-        public static bool TryParseExact (string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, out ArDateTime result)
+        public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, out ArDateTime result)
         {
             try
             {

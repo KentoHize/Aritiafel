@@ -29,7 +29,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     public struct ArDateTime : IComparable, IComparable<ArDateTime>, IConvertible, IEquatable<ArDateTime>, IFormattable, ISerializable
     {
         internal long _data;
-        static readonly int[] ConstDayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+        static readonly int[] ConstDayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };        
 
         public static readonly ArDateTime MaxValue = new ArDateTime(9999, 12, 31, 23, 59, 59, 999);
         public static readonly ArDateTime MinValue = new ArDateTime(-9999, 1, 1, 0, 0, 0, 0);
@@ -275,8 +275,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ArDateTimeFormat.Format("T", this, formatProvider);
         public string ToShortTimeString(IFormatProvider formatProvider = null)
             => ArDateTimeFormat.Format("t", this, formatProvider);
-        public string ToStandardString(ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7)
-            => ArDateTimeFormat.FormatStandardDateTime(this, type, decimalDigit);
+        public string ToStandardString(ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7, IFormatProvider formatProvider = null)
+            => ArDateTimeFormat.FormatStandardDateTime(this, type, decimalDigit, formatProvider);
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => info.AddValue("data", _data);
         public TypeCode GetTypeCode()

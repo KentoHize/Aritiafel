@@ -9,8 +9,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     {
         Unspecified,
         Arina,
-        CommonEraLocal,
-        CommonEraUtc,
+        ChristEraLocal,
+        ChristEraUtc,
         CustomOffSet
     }
 }

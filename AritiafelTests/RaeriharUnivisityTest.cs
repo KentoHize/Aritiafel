@@ -282,9 +282,9 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
-            StringBuilder sb = null;
-            TestContext.WriteLine(ArDateTime.DaysInMonth(1, 1).ToString());
-
+            //StringBuilder sb = null;
+            //TestContext.WriteLine(ArDateTime.DaysInMonth(1, 1).ToString());
+            TestContext.WriteLine("AR +3".CompareTo("AR -4").ToString());
         }
 
         [TestMethod]
@@ -353,6 +353,7 @@ namespace AritiafelTest
             {
                 ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
                 string s = adt.ToStandardString(ArDateTimeType.DateTime, 7);
+                //TestContext.WriteLine(s);
                 int d = cb.DrawOutByte(7);
                 TestContext.WriteLine($"{d}:{ArDateTime.Parse(s).ToStandardString(ArDateTimeType.DateTime, d)}");
 
@@ -367,6 +368,9 @@ namespace AritiafelTest
 
                 s = adt.ToStandardString(ArDateTimeType.LongDate);                
                 TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.LongDate));
+
+                s = adt.ToStandardString(ArDateTimeType.System);
+                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.System));
             }
         }
 
