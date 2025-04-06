@@ -15,7 +15,7 @@ namespace Aritiafel
     {
         private static ArCultureInfo _ArinaCultureInfo;
         public static ArCultureInfo ArinaCultureInfo
-            => _ArinaCultureInfo ?? new ArCultureInfo();
+            => _ArinaCultureInfo ??= new ArCultureInfo();
         public static ConcurrentDictionary<string, string> EnumStringDictionary { get; set; }
 
         public static object ParseArString(this string s, Type t)

@@ -68,7 +68,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static ArDateTime Today
             => Now.Date;
 
-        internal static void ValidateDateTime(int year, int month, int day = 0, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, bool isArDate = false)
+        internal static void ValidateDateTime(int year, int month, int day = 1, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, bool isArDate = false)
         {
             if (year == 0)
                 throw new ArgumentOutOfRangeException(nameof(year));

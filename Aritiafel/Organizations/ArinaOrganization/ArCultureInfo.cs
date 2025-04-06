@@ -14,11 +14,11 @@ namespace Aritiafel.Organizations.ArinaOrganization
             
         //}
 
-        public ArCultureInfo()
+        internal ArCultureInfo()
             : this("ja-JP", true)
-        { }        
+        { }
 
-        public ArCultureInfo(string name, bool useUserOverride) 
+        internal ArCultureInfo(string name, bool useUserOverride) 
             : base(name, useUserOverride)
         { }
         public override string Name => "zh-AA";
