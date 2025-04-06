@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace Aritiafel.Items
             : this(type, args.ToList(), null)
         { }
 
-        public ArProductInfo(Type type, List<object> args = null, Dictionary<string, object> settings = null)
+        internal ArProductInfo(Type type, List<object> args = null, Dictionary<string, object> settings = null)
         {
             Type = type;
             Args = args ?? new List<object>();
@@ -26,7 +27,14 @@ namespace Aritiafel.Items
         }
 
         public override int GetHashCode()
-            => Type.GetHashCode() ^ Args.GetHashCode() ^ Setting.GetHashCode();
+        {
+            int result = Type.ToString().GetHashCode();
+            for(int i = 0; i < Args.Count; i++)
+                result ^= Args[i].ToString().GetHashCode();
+            foreach(KeyValuePair<string, object> kvp in Setting)
+                result ^= kvp.Key.GetHashCode() ^ kvp.Value.ToString().GetHashCode();
+            return result;
+        }            
 
         public override bool Equals(object obj)
         {
@@ -53,8 +61,8 @@ namespace Aritiafel.Items
         }
 
         public static bool operator ==(ArProductInfo p1, ArProductInfo p2)
-            => Equals(p1, p2);
+            => p1.Equals(p2);
         public static bool operator !=(ArProductInfo p1, ArProductInfo p2)
-            => !Equals(p1, p2);
+            => !p1.Equals(p2);
     }
 }

@@ -11,7 +11,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         internal Calendar Calendar { get; set; }
         
         public ArNegativeCalendar()
-            => Calendar = CultureInfo.CurrentCulture.Calendar;
+            => Calendar = CultureInfo.InvariantCulture.Calendar;
         public override int[] Eras => Calendar.Eras;
         public override DateTime AddMonths(DateTime time, int months)
             => Calendar.AddMonths(time, months);
@@ -21,8 +21,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => Calendar.GetDayOfMonth(time);
         public override DayOfWeek GetDayOfWeek(DateTime time)
         {
-            Console.WriteLine(7 + time.Ticks % 6048000000000L);
-            return (DayOfWeek)(7 + time.Ticks % 6048000000000L);
+            return Calendar.GetDayOfWeek(time);
+            //Console.WriteLine(7 + time.Ticks % 6048000000000L);
+            return (DayOfWeek)1;
+            //return (DayOfWeek)(time.Ticks % 6048000000000L / 864000000000L);
         }
             
         public override int GetDayOfYear(DateTime time)

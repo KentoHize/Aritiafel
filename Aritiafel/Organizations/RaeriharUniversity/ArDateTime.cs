@@ -327,10 +327,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => arYear > 0 || arYear < -2017 ? arYear + 2017 : arYear + 2018;
         internal static int GetARYear(int year)
             => year > 2017 || year < 0 ? year - 2017 : year - 2018;
-
         public int ArYear
             => GetARYear(Year);
-
         public int Year
         {
             get
@@ -338,7 +336,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return GetDatePart();
             }
         }
-
         public int Month
         {
             get
@@ -346,7 +343,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return GetDatePart(DatePart.Month);
             }
         }
-
         public int Day
         {
             get
@@ -354,7 +350,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return GetDatePart(DatePart.Day);
             }
         }
-
         public int Hour
         {
             get
@@ -365,7 +360,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return (int)(l / 36000000000);
             }
         }
-
         public int Minute
         {
             get
@@ -406,7 +400,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return (int)(l / 864000000000 + 1);
             }
         }
-
         public TimeSpan TimeOfDay
         {
             get
@@ -417,7 +410,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return new TimeSpan(l);
             }
         }
-
         internal ArDateTime Add(long ticks)
             => new ArDateTime(_data + ticks);
         public ArDateTime Add(TimeSpan ts)
@@ -504,7 +496,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
             return false;        
         }
-
+        public override int GetHashCode()
+            => (int)(_data ^ nameof(ArDateTime).GetHashCode());
         public static ArDateTime operator +(ArDateTime t1, ArDateTime t2)
             => new ArDateTime(t1._data + t2._data);
         public static ArDateTime operator -(ArDateTime t1, ArDateTime t2)

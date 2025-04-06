@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
+//可刪除
 namespace Aritiafel.Organizations.RaeriharUniversity
-{
-    internal static class CultureSupportNegativeYearFactory
-    {
-        static CultureSupportNegativeYear _CultureSupportNegativeYear;
-        public static CultureSupportNegativeYear CultureSupportNegativeYear => _CultureSupportNegativeYear ?? new CultureSupportNegativeYear();
-    }
-
-    internal class CultureSupportNegativeYear : CultureInfo
+{   
+    public class CultureSupportNegativeYear : CultureInfo
     {
         Calendar _Calendar;
         public CultureSupportNegativeYear()
-            : base("en-US", true)
+            : this("en-US")
         { }
 
-        public override Calendar Calendar => _Calendar ?? new ArNegativeCalendar();
+        public CultureSupportNegativeYear(string name)
+            : base(name, true)
+        { }
+
+        public override Calendar Calendar => _Calendar ??= new ArNegativeCalendar();
+
+        public override Calendar[] OptionalCalendars => new Calendar[] { new ArNegativeCalendar() };
     }
 }

@@ -1,4 +1,5 @@
-﻿using Aritiafel.Organizations.ArinaOrganization;
+﻿using Aritiafel.Items;
+using Aritiafel.Organizations.ArinaOrganization;
 using Aritiafel.Organizations.RaeriharUniversity;
 using System;
 using System.Collections.Generic;
@@ -365,8 +366,19 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
             if (timeTicks != 0)
                 timeTicks += 864000000000L;
-            DateTime dt = new DateTime(year * -1, month, day).AddTicks(timeTicks);          
-            return $"(-){dt.ToString(format, new CultureSupportNegativeYear())}";
+            DateTime dt = new DateTime(year * -1, month, day).AddTicks(timeTicks);
+            return $"(-){dt.ToString(format, formatProvider)}";
+
+            //if(formatProvider is CultureInfo ci)
+            //    return $"(-){dt.ToString(format, RyabrarFactory.CreateOrGet<CultureSupportNegativeYear>(
+            //    new ArProductInfo(typeof(CultureSupportNegativeYear), ci.Name)))}";
+            //else
+            //{
+            //    CultureInfo ct = RyabrarFactory.CreateOrGet<CultureSupportNegativeYear>(
+            //    new ArProductInfo(typeof(CultureSupportNegativeYear), CultureInfo.CurrentCulture.Name));
+            //    return $"(-){dt.ToString(format, ct)}";
+            //}
+                
         }
 
         public static ArDateTime Parse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)

@@ -18,13 +18,10 @@ namespace Aritiafel.Organizations.ArinaOrganization
             : this("ja-JP", true)
         { }        
 
-        internal ArCultureInfo(string name, bool useUserOverride) 
+        public ArCultureInfo(string name, bool useUserOverride) 
             : base(name, useUserOverride)
-        {
-            //DateTimeFormatInfo dfi = new DateTimeFormatInfo();
-            //dfi.Calendar = new ArNegativeCalendar();            
-        }
-        public override string Name => "zh-AR";
+        { }
+        public override string Name => "zh-AA";
 
         //public override Calendar Calendar
         //{
