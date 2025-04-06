@@ -7,9 +7,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     public enum ArDateTimeType
     {
         DateTime = 0,
-        Date,
-        Time,        
-        ShortTime,
-        LongDate, 
+        Date,       //d
+        Time,      //T
+        ShortTime, //t
+        LongDate, //D
     }
 }

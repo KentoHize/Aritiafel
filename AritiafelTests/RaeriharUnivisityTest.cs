@@ -206,7 +206,8 @@ namespace AritiafelTest
                 TestContext.WriteLine($"ShortDateString d: {ArDateTime.Parse(adt.ToShortDateString()).ToShortDateString()}");
                 TestContext.WriteLine($"LongTimeString T: {ArDateTime.Parse(adt.ToLongTimeString()).ToLongTimeString()}");
                 TestContext.WriteLine($"ShortTimeString t: {ArDateTime.Parse(adt.ToShortTimeString()).ToShortTimeString()}");
-                
+                TestContext.WriteLine($"ToString(\"d, M, yyyy/hh:mm:ss.f\")自訂: {ArDateTime.Parse(adt.ToString()).ToString("d, M, yyyy/hh:mm:ss.f")}");
+
                 for (int j = 0; j < formatArray.Length; j++)
                 {
                     if (adt.Day == 29 && adt.Month == 2 &&
@@ -277,7 +278,11 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
-            TestContext.WriteLine(ArinaOrganization.ArinaCultureInfo.Name);
+            StringBuilder sb = null;
+            
+            StringBuilder sb2 = sb ?? new StringBuilder();
+            TestContext.WriteLine((sb == null).ToString());
+            //TestContext.WriteLine(ArinaOrganization.ArinaCultureInfo.Name);
             //ArCultureInfo ci = new ArCultureInfo();
             //ArDateTime
             //string s = "12:20:22";
@@ -370,11 +375,14 @@ namespace AritiafelTest
                     dateTimes.Add(dateTimes[i].Reverse());
             }
 
+            ChaosBox cb = new ChaosBox();
+
             for (int i = 0; i < dateTimes.Count; i++)
             {
                 ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
-                string s = adt.ToStandardString(ArDateTimeType.DateTime, 7);                
-                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.DateTime, 6));
+                string s = adt.ToStandardString(ArDateTimeType.DateTime, 7);
+                int d = cb.DrawOutByte(7);
+                TestContext.WriteLine($"{d}:{ArDateTime.Parse(s).ToStandardString(ArDateTimeType.DateTime, d)}");
 
                 s = adt.ToStandardString(ArDateTimeType.Date);                
                 TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.Date));

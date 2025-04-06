@@ -79,7 +79,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 if(secondPart.Length != 1)
                     decimalSecond = int.Parse(secondPart[1].PadRight(7, '0'));
             }
-
             return new ArDateTime(year, month, day, hour, minute, second).AddTicks(decimalSecond);
         }
 
@@ -367,7 +366,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (timeTicks != 0)
                 timeTicks += 864000000000L;
             DateTime dt = new DateTime(year * -1, month, day).AddTicks(timeTicks);          
-            return $"(-){dt.ToString(format, formatProvider)}";
+            return $"(-){dt.ToString(format, new CultureSupportNegativeYear())}";
         }
 
         public static ArDateTime Parse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
@@ -379,28 +378,28 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             {
                 if (s.IndexOf('[') != -1)
                 {
-                    try { return ParseExactStandardDateTime(s, ArDateTimeType.LongDate); }
-                    catch { }
+                    if(TryParseExact(s, "D", formatProvider, dateTimeStyles, out ArDateTime r))
+                        return r;
                 }
                 else if (s.Trim().IndexOf(' ') != -1)
                 {
-                    try { return ParseExactStandardDateTime(s); }
-                    catch { }
+                    if (TryParseExact(s, "G", formatProvider, dateTimeStyles, out ArDateTime r))
+                        return r;
                 }
                 else if (s.IndexOf('/') != -1)
                 {
-                    try { return ParseExactStandardDateTime(s, ArDateTimeType.Date); }
-                    catch { }
+                    if (TryParseExact(s, "d", formatProvider, dateTimeStyles, out ArDateTime r))
+                        return r;                    
                 }
                 else if (s.IndexOf(':') != -1)
                 {
-                    try { return ParseExactStandardDateTime(s, ArDateTimeType.Time); }
-                    catch { }
+                    if (TryParseExact(s, "T", formatProvider, dateTimeStyles, out ArDateTime r))
+                        return r;
                 }
             }
 
             if (formatProvider == null || formatProvider is ArCultureInfo)
-            {
+            {   
                 try { return ParseArDateTime(s, dateTimeStyles); }
                 catch { }
                 formatProvider = CultureInfo.CurrentCulture;
@@ -420,8 +419,21 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (string.IsNullOrEmpty(format))
                 format = "G";
 
-            if (formatProvider == null && format == "G")
-                return ParseExactStandardDateTime(s);
+            if (formatProvider == null)
+            {
+                if (format == "G")
+                    return ParseExactStandardDateTime(s);
+                else if (format == "d")
+                    return ParseExactStandardDateTime(s, ArDateTimeType.Date);
+                else if (format == "T")
+                    return ParseExactStandardDateTime(s, ArDateTimeType.Time);
+                else if (format == "D")
+                    return ParseExactStandardDateTime(s, ArDateTimeType.LongDate);
+                else if (format == "t")
+                    return ParseExactStandardDateTime(s, ArDateTimeType.ShortTime);
+                else
+                    throw new FormatException();
+            }
             
             if (formatProvider is ArCultureInfo)
                 return ParseExactArDateTime(s, format, dateTimeStyles);
@@ -432,7 +444,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 DateTime dt = DateTime.ParseExact(s, format, formatProvider, dateTimeStyles);
                 return new ArDateTime(dt.Year * -1, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
             }
-
             return new ArDateTime(DateTime.ParseExact(s, format, formatProvider, dateTimeStyles).Ticks);
         }
 
