@@ -28,14 +28,18 @@ namespace Aritiafel.Locations
     public static class DisassembleShop
     {
         public static ArOutStringPartInfo[] Disassemble(string s, string[] reserved)
-        {
-            List<ArStringPartInfo> r2 = new List<ArStringPartInfo>();
-            foreach (string item in reserved)
-                r2.Add(new ArStringPartInfo(item));
-            return DisassembleStringFull(s, r2.ToArray());
-        }
+            => DisassembleStringFull(s, reserved.ToStringPartInfoArray());
         public static ArOutStringPartInfo[] Disassemble(string s, ArStringPartInfo[] reserved)
             => DisassembleStringFull(s, reserved);        
+     
+        public static ArStringPartInfo[] ToStringPartInfoArray(this string[] reserved)
+        {   
+            List<ArStringPartInfo> result = new List<ArStringPartInfo>();
+            foreach (string item in reserved)
+                result.Add(new ArStringPartInfo(item));
+            return result.ToArray();
+        }
+        
         internal static ArOutStringPartInfo[] DisassembleStringFull(string s, ArStringPartInfo[] reserved)
         {   
             if(string.IsNullOrEmpty(s))

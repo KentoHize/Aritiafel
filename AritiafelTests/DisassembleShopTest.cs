@@ -19,6 +19,15 @@ namespace AritiafelTest
             'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y'
         };
 
+        internal static readonly string[] AllCustomFormatString =
+        {
+            "dddd", "ddd", "dd", "d", "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
+            "FFFFFFF", "FFFFFF", "FFFFF", "FFFF", "FFF", "FF", "F",
+            "gg", "g", "HH", "H", "hh", "h", "K", "mm", "m", "MMMM", "MMM", "MM", "M",
+            "ss", "s", "tt", "t", "yyyyy", "yyyy", "yyy", "yy", "y",
+            "zzz", "zz", "z", ":", "/"
+        }; //% //\
+
         List<TestDateTime> dateTimes = new List<TestDateTime> {
                 new TestDateTime(1, 1, 1, 0, 0, 0),  new TestDateTime(400, 1, 1, 0 ,0, 0, 1),
                 new TestDateTime(401, 1, 1, 12, 20, 10, 20), new TestDateTime(402, 2, 5, 13, 2, 2),
@@ -48,24 +57,24 @@ namespace AritiafelTest
         [TestMethod]
         public void DissaembleCultureInfo()
         {
-            //string[] reserved = { "AA", "DD", "CC", "A" };
-            //CultureInfo ci = CultureInfo.GetCultureInfo("ja-JP");
-            //for (int i = 0; i < AllStandardFormatChar.Length; i++)
-            //{
-            //    TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
-            //    string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
-            //    foreach (var item in sa)
-            //    {
-            //        //TestContext.WriteLine(item.ToString());
-            //        foreach (var item in result)
-            //        {
-            //            ArOutStringPartInfo[] result = DisassembleShop.Disassemble("AADDCCCAA", reserved);
-            //            TestContext.Write($"{item.Value} ");
-            //        }
-            //        TestContext.WriteLine("");
-            //    }
-            //}
-            
+            ArStringPartInfo[] re;
+            re = AllCustomFormatString.ToStringPartInfoArray();
+            CultureInfo ci = CultureInfo.GetCultureInfo("ja-JP");
+            for (int i = 0; i < AllStandardFormatChar.Length; i++)
+            {
+                TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
+                string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
+                foreach (var item in sa)
+                {
+                    ArOutStringPartInfo[] result = DisassembleShop.Disassemble(item.ToString(), re);
+                    foreach (var item2 in result)
+                    {   
+                        TestContext.Write($"{item2.Value}-");
+                    }
+                    TestContext.WriteLine("");
+                }
+            }
+
         }
 
 
