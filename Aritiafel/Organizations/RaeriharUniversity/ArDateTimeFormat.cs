@@ -1,4 +1,6 @@
-﻿using Aritiafel.Items;
+﻿using Aritiafel.Definitions;
+using Aritiafel.Items;
+using Aritiafel.Locations;
 using Aritiafel.Organizations.ArinaOrganization;
 using Aritiafel.Organizations.RaeriharUniversity;
 using System;
@@ -30,13 +32,24 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         internal static readonly char[] SupportFormatChar =
         { 'D', 'd', 'F', 'f', 'M', 'm', 'Y', 'y', 'G', 'g', 'T', 't' };
 
-        internal static readonly string[] AllCustomFormatString =
+        //internal static readonly string[] AllCustomFormatString =
+        //{
+        //    "dddd", "ddd", "dd", "d", "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
+        //    "FFFFFFF", "FFFFFF", "FFFFF", "FFFF", "FFF", "FF", "F",
+        //    "gg", "g", "HH", "H", "hh", "h", "K", "mm", "m", "MMMM", "MMM", "MM", "M",
+        //    "ss", "s", "tt", "t", "yyyyy", "yyyy", "yyy", "yy", "y",
+        //    "zzz", "zz", "z", ":", "/"
+        //}; //% //\ 45
+
+        //"%h", "%H", "%m", "%s", "%d", "%y", "%f", "%t", "%g", "%z", "%F",
+
+        internal static readonly string[] SortedAllCustomFormatString =
         {
-            "dddd", "ddd", "dd", "d", "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
-            "FFFFFFF", "FFFFFF", "FFFFF", "FFFF", "FFF", "FF", "F",
-            "gg", "g", "HH", "H", "hh", "h", "K", "mm", "m", "MMMM", "MMM", "MM", "M",
-            "ss", "s", "tt", "t", "yyyyy", "yyyy", "yyy", "yy", "y",
-            "zzz", "zz", "z", ":", "/"
+            ":", "/", "hh", "HH", "mm", "ss", "h", "HH", "m", "s", 
+            "dddd", "ddd", "dd", "yyyyy", "yyyy", "yyy", "yy", "y", "d",
+            "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
+            "tt", "t", "gg", "g", "zzz", "zz", "z", "FFFFFFF", "FFFFFF",
+            "FFFFF", "FFFF", "FFF", "FF", "F"
         }; //% //\
 
         //internal static readonly string[] Standard
@@ -48,17 +61,24 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         //s, ss, t, tt, y, yy, yyy, yyyy, yyyyy
         //z, zz, zzz, :, /, %, \
 
-
-        public static string GetFormatFromSingleCharFormat(char format, int decimalDigit, IFormatProvider provider) // Length = 1;
+        static internal ArStringPartInfo[] CreateReversedStringPartInfo()
         {
-            //CultureInfo ci;
-            if(provider is CultureInfo ci)
-            {
-                return ci.DateTimeFormat.GetAllDateTimePatterns(format)[0];
-            }
-            else
-            {
+            List<ArStringPartInfo> result;
+            result = SortedAllCustomFormatString.ToStringPartInfoList();
+            result.Insert(0, new ArStringPartInfo("EscapeChar", "%", ArStringPartType.Escape1));
+            result.Insert(0, new ArStringPartInfo("EscapeChar", "\\", ArStringPartType.Escape1));
+            return result.ToArray();
+        }
 
+        public static string GetDateTimeFormatFromSingleCharFormat(char format, int decimalDigit, IFormatProvider provider) // Length = 1;
+        {               
+            if(provider is CultureInfo ci)
+            {   
+                return ci.DateTimeFormat.GetAllDateTimePatterns(format)[0];
+            }            
+            else if(provider is DateTimeFormatInfo di)
+            {
+                return di.GetAllDateTimePatterns(format)[0];
             }
             return null;
         }
@@ -66,13 +86,27 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static string FormatDateTimeFull(ArDateTime adt, string format, int decimalDigit = 7, IFormatProvider provider = null)
         {
             if (format.Length == 1)
-                format = GetFormatFromSingleCharFormat(format[0], decimalDigit, provider);
+                format = GetDateTimeFormatFromSingleCharFormat(format[0], decimalDigit, provider);
+            //拆解
+            SortedAllCustomFormatString.ToStringPartInfoList();
+            ArStringPartInfo[] reservedString = CreateReversedStringPartInfo();            
+            ArOutStringPartInfo[] ospi = DisassembleShop.Disassemble(format, reservedString);
+            
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
             if (timeTicks < 0)
                 timeTicks += 864000000000L;
             ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out int tick);
 
-            return null;
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < ospi.Length; i++)
+            {
+                if (ospi[i].Type == ArStringPartType.Escape1)
+                {
+                    //sb.
+                }
+            }
+
+            return sb.ToString();
         }
 
         internal static string FormatStandardDateTime(ArDateTime adt, ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7, IFormatProvider formatProvider = null)

@@ -7,6 +7,7 @@ using Aritiafel.Characters.Heroes;
 using Aritiafel.Items;
 using System.Globalization;
 using static AritiafelTest.RaeriharUniversityTest;
+using Aritiafel.Definitions;
 
 namespace AritiafelTest
 {
@@ -26,7 +27,7 @@ namespace AritiafelTest
             "gg", "g", "HH", "H", "hh", "h", "K", "mm", "m", "MMMM", "MMM", "MM", "M",
             "ss", "s", "tt", "t", "yyyyy", "yyyy", "yyy", "yy", "y",
             "zzz", "zz", "z", ":", "/"
-        }; //% //\
+        };
 
         List<TestDateTime> dateTimes = new List<TestDateTime> {
                 new TestDateTime(1, 1, 1, 0, 0, 0),  new TestDateTime(400, 1, 1, 0 ,0, 0, 1),
@@ -41,32 +42,48 @@ namespace AritiafelTest
 
         public TestContext TestContext { get; set; }        
 
+        internal ArStringPartInfo[] CreateReversedString()
+        {
+            List<ArStringPartInfo> result;
+            result = AllCustomFormatString.ToStringPartInfoList();
+            result.Insert(0, new ArStringPartInfo("EscapeChar", "%", ArStringPartType.Escape1));
+            result.Insert(0, new ArStringPartInfo("EscapeChar", "\\", ArStringPartType.Escape1));
+            return result.ToArray();
+        }
+
         [TestMethod]
         public void DissaembleTest()
         {
-            string[] reserved = { "AA", "DD", "CC", "A" };
+            string[] testString = { 
+                "\\n\\d\\e\\r",
+                "%d%r%f%g"
+            };
 
-            ArOutStringPartInfo[] result = DisassembleShop.Disassemble("AADDCCCAA", reserved);
-            foreach (var item in result)
+            ArStringPartInfo[] re2 = CreateReversedString();
+            for (int i = 0; i < testString.Length; i++)
             {
-                TestContext.Write($"{item.Value} ");
+                ArOutStringPartInfo[] result = DisassembleShop.Disassemble(testString[i], re2);
+                foreach (var item in result)
+                {
+                    TestContext.Write($"{item.Value}-");
+                }
+                TestContext.WriteLine("");
             }
-            TestContext.WriteLine("");
         }
 
         [TestMethod]
         public void DissaembleCultureInfo()
-        {
-            ArStringPartInfo[] re;
-            re = AllCustomFormatString.ToStringPartInfoArray();
-            CultureInfo ci = CultureInfo.GetCultureInfo("ja-JP");
+        {   
+            ArStringPartInfo[] re2 = CreateReversedString();
+
+            CultureInfo ci = CultureInfo.GetCultureInfo("zh-TW");
             for (int i = 0; i < AllStandardFormatChar.Length; i++)
             {
                 TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
                 string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
                 foreach (var item in sa)
                 {
-                    ArOutStringPartInfo[] result = DisassembleShop.Disassemble(item.ToString(), re);
+                    ArOutStringPartInfo[] result = DisassembleShop.Disassemble(item.ToString(), re2);
                     foreach (var item2 in result)
                     {   
                         TestContext.Write($"{item2.Value}-");
@@ -74,17 +91,13 @@ namespace AritiafelTest
                     TestContext.WriteLine("");
                 }
             }
-
         }
 
 
         [TestMethod]
         public void TestArea()
         {
-            //TestContext.WriteLine("aaa");
-
-            //TestContext.WriteLine("3".Substring(0));
-
+            
             TestContext.WriteLine(DateTime.Now.ToString("\\\\dddd"));
             TestContext.WriteLine(DateTime.Now.ToString("ddd"));
             TestContext.WriteLine(DateTime.Now.ToString("dd"));

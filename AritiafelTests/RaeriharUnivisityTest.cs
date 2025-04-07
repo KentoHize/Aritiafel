@@ -183,7 +183,7 @@ namespace AritiafelTest
 
             Assert.IsFalse(ArDateTime.IsLeapYear(1, true));
             Assert.IsTrue(ArDateTime.IsLeapYear(-6, true));
-            
+
         }
 
         [TestMethod]
@@ -191,7 +191,7 @@ namespace AritiafelTest
         {
             string format;
             string[] formatArray = { "M", "Y", "F", "f", "g" };
-            
+
             int tl = dateTimes.Count;
             for (int i = 0; i < tl; i++)
             {
@@ -294,14 +294,14 @@ namespace AritiafelTest
             //TestContext.WriteLine(ArDateTime.DaysInMonth(1, 1).ToString());
             //TestContext.WriteLine("AR +3".CompareTo("AR -4").ToString());
             CultureInfo ci = CultureInfo.GetCultureInfo("ja-JP");
-            for(int i = 0; i < AllStandardFormatChar.Length; i++)
+            for (int i = 0; i < AllStandardFormatChar.Length; i++)
             {
                 TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
                 string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
                 foreach (var item in sa)
                 {
                     TestContext.WriteLine(item.ToString());
-                    
+
                 }
             }
 
@@ -360,6 +360,38 @@ namespace AritiafelTest
         }
 
         [TestMethod]
+        public void FormatDateTimeTest()
+        {
+            int tl = dateTimes.Count;
+            for (int i = 0; i < tl; i++)
+            {
+                if (dateTimes[i].Year == 4400 && dateTimes[i].Day == 29)
+                    dateTimes.Add(new TestDateTime(-4400, 2, 28));
+                else
+                    dateTimes.Add(dateTimes[i].Reverse());
+            }
+
+            ArDateTime adt = ArDateTime.Now;
+            CultureInfo ci = CultureInfo.GetCultureInfo("zh-TW");
+            ci = ArinaOrganization.ArinaCultureInfo;
+            for (int i = 0; i < AllStandardFormatChar.Length; i++)
+            {
+                string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[i].ToString(), 0, ci);
+                TestContext.WriteLine(s);
+            }
+            
+
+            ChaosBox cb = new ChaosBox();
+            for (int i = 0; i < dateTimes.Count; i++)
+            {
+             //   ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
+                
+                //FormatDateTimeFull()
+            }
+        }
+
+
+        [TestMethod]
         public void StandFormat()
         {
             int tl = dateTimes.Count;
@@ -377,18 +409,14 @@ namespace AritiafelTest
             {
                 ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
 
-                string s = ArDateTimeFormat.GetFormatFromSingleCharFormat('D', 6, null);
+                string s = ArDateTimeFormat.GetDateTimeFormatFromSingleCharFormat('D', 6, null);
                 TestContext.WriteLine(s);
                 for (int j = 0; j < cultureInfoA[j].Length; j++)
                 {
-                    s = ArDateTimeFormat.GetFormatFromSingleCharFormat('D', 6, CultureInfo.GetCultureInfo(cultureInfoA[j]));
+                    s = ArDateTimeFormat.GetDateTimeFormatFromSingleCharFormat('D', 6, CultureInfo.GetCultureInfo(cultureInfoA[j]));
                     TestContext.WriteLine(s);
                 }
                 //ArDateTimeFormat.FormatDateTimeFull(adt, "");
-                
-                
-                
-
                 //string s = adt.ToStandardString(ArDateTimeType.DateTime, 7);
                 //TestContext.WriteLine(s);
                 //int d = cb.DrawOutByte(7);

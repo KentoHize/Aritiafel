@@ -1,4 +1,5 @@
-﻿using Aritiafel.Items;
+﻿using Aritiafel.Definitions;
+using Aritiafel.Items;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -32,13 +33,16 @@ namespace Aritiafel.Locations
         public static ArOutStringPartInfo[] Disassemble(string s, ArStringPartInfo[] reserved)
             => DisassembleStringFull(s, reserved);        
      
-        public static ArStringPartInfo[] ToStringPartInfoArray(this string[] reserved)
-        {   
+        public static List<ArStringPartInfo> ToStringPartInfoList(this string[] reserved)
+        {
             List<ArStringPartInfo> result = new List<ArStringPartInfo>();
-            foreach (string item in reserved)
-                result.Add(new ArStringPartInfo(item));
-            return result.ToArray();
+            foreach (string s in reserved)
+                result.Add(new ArStringPartInfo(s));
+            return result;
         }
+
+        public static ArStringPartInfo[] ToStringPartInfoArray(this string[] reserved)
+            => ToStringPartInfoList(reserved).ToArray();
         
         internal static ArOutStringPartInfo[] DisassembleStringFull(string s, ArStringPartInfo[] reserved)
         {   
@@ -50,11 +54,22 @@ namespace Aritiafel.Locations
             {
                 bool found = false;
                 for (int i = 0; i < reserved.Length; i++)
-                {
+                {   
                     if (s.StartsWith(reserved[i].Value))
                     {
-                        result.Add(new ArOutStringPartInfo(i, reserved[i].Name, reserved[i].Value));
-                        s = s.Substring(reserved[i].Value.Length);
+                        if (reserved[i].Type == ArStringPartType.Escape1)
+                        {
+                            if (s.Length < 2)
+                                throw new FormatException(); //逃逸字元後面無字
+                            result.Add(new ArOutStringPartInfo(i, reserved[i].Name, s.Substring(0, 2), ArStringPartType.Escape1));
+                            s = s.Substring(reserved[i].Value.Length + 1);
+                        }
+                        else
+                        {
+                            result.Add(new ArOutStringPartInfo(i, reserved[i].Name, reserved[i].Value));
+                            s = s.Substring(reserved[i].Value.Length);
+                        }   
+                        
                         found = true;
                         break;
                     }
