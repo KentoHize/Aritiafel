@@ -179,6 +179,7 @@ namespace AritiafelTestForm
             //MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "{0:yyyy/MM/dd}", new DateTime(-2)));            
             ArDateTime ad = ArDateTime.Parse(txtDateTime.Text, null, System.Globalization.DateTimeStyles.None);
             txtOutput.Text = ad.ToString();
+            
         }
     }
 }

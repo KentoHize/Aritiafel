@@ -15,10 +15,65 @@ using static System.Windows.Forms.DataFormats;
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
-    internal static class ArDateTimeFormat
+    //internal
+    public static class ArDateTimeFormat
     {
         static readonly string SystemDateTimePattern = "yyyy/M/d h:m:s.fffffff";
         static readonly string ArinaBaseCultureName = "ja-JP";
+
+        internal static readonly char[] AllStandardFormatChar = 
+        {
+            'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'o', 'O',
+            'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y'
+        };
+        
+        internal static readonly char[] SupportFormatChar =
+        { 'D', 'd', 'F', 'f', 'M', 'm', 'Y', 'y', 'G', 'g', 'T', 't' };
+
+        internal static readonly string[] AllCustomFormatString =
+        {
+            "dddd", "ddd", "dd", "d", "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
+            "FFFFFFF", "FFFFFF", "FFFFF", "FFFF", "FFF", "FF", "F",
+            "gg", "g", "HH", "H", "hh", "h", "K", "mm", "m", "MMMM", "MMM", "MM", "M",
+            "ss", "s", "tt", "t", "yyyyy", "yyyy", "yyy", "yy", "y",
+            "zzz", "zz", "z", ":", "/"
+        }; //% //\
+
+        //internal static readonly string[] Standard
+
+        //d, dd, ddd, dddd, f, ff, fff, ffff, fffff, ffffff, fffffff
+        //F, FF, FFF, FFFF, FFFFF, FFFFFF, FFFFFFF
+        //g, gg
+        //h, hh, H, HH, K, m, mm, M, MM, MMM, MMMM
+        //s, ss, t, tt, y, yy, yyy, yyyy, yyyyy
+        //z, zz, zzz, :, /, %, \
+
+
+        public static string GetFormatFromSingleCharFormat(char format, int decimalDigit, IFormatProvider provider) // Length = 1;
+        {
+            //CultureInfo ci;
+            if(provider is CultureInfo ci)
+            {
+                return ci.DateTimeFormat.GetAllDateTimePatterns(format)[0];
+            }
+            else
+            {
+
+            }
+            return null;
+        }
+
+        public static string FormatDateTimeFull(ArDateTime adt, string format, int decimalDigit = 7, IFormatProvider provider = null)
+        {
+            if (format.Length == 1)
+                format = GetFormatFromSingleCharFormat(format[0], decimalDigit, provider);
+            ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
+            if (timeTicks < 0)
+                timeTicks += 864000000000L;
+            ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out int tick);
+
+            return null;
+        }
 
         internal static string FormatStandardDateTime(ArDateTime adt, ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7, IFormatProvider formatProvider = null)
         {
@@ -254,14 +309,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             int i = 0, j;
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, millisecond = 0, dayOfWeek;
-            char[] SupportedFormatChar = { 'D', 'd', 'F', 'f', 'M', 'm', 'Y', 'y', 'G', 'g', 'T', 't' };
+            
 
             //A表示普通系統時間
             if (format == "A")
                 return ParseExact(s, format, null, dateTimeStyles);
             //沒有支援，改用普通ParseExact
-            if (format.Length != 1 || !SupportedFormatChar.Any(m => m == format[0]))
-                return ParseExact(s, format, CultureInfo.GetCultureInfo(ArinaBaseCultureName) , dateTimeStyles);
+            if (format.Length != 1 || !SupportFormatChar.Any(m => m == format[0]))
+                return ParseExact(s, format, CultureInfo.GetCultureInfo(ArinaBaseCultureName), dateTimeStyles);
             if ((dateTimeStyles & DateTimeStyles.AllowLeadingWhite) != 0)
                 s = s.TrimStart();
             if ((dateTimeStyles & DateTimeStyles.AllowTrailingWhite) != 0)

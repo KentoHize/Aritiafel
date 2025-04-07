@@ -14,6 +14,12 @@ namespace AritiafelTest
     [TestClass]
     public class RaeriharUniversityTest
     {
+        internal static readonly char[] AllStandardFormatChar =
+        {
+            'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'o', 'O',
+            'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y'
+        };
+
         List<TestDateTime> dateTimes = new List<TestDateTime> {
                 new TestDateTime(1, 1, 1, 0, 0, 0),  new TestDateTime(400, 1, 1, 0 ,0, 0, 1),
                 new TestDateTime(401, 1, 1, 12, 20, 10, 20), new TestDateTime(402, 2, 5, 13, 2, 2),
@@ -30,6 +36,8 @@ namespace AritiafelTest
                 testDateTime.Month, testDateTime.Day,
                 testDateTime.Hour, testDateTime.Minute,
                 testDateTime.Second, testDateTime.Millisecond);
+
+        string[] cultureInfoA = { "zh-TW", "ja-JP", "en-US", "zh-CN" };
 
         public TestContext TestContext { get; set; }
 
@@ -183,7 +191,7 @@ namespace AritiafelTest
         {
             string format;
             string[] formatArray = { "M", "Y", "F", "f", "g" };
-            string[] cultureInfoA = { "zh-TW", "ja-JP", "en-US", "zh-CN" };
+            
             int tl = dateTimes.Count;
             for (int i = 0; i < tl; i++)
             {
@@ -284,7 +292,23 @@ namespace AritiafelTest
         {
             //StringBuilder sb = null;
             //TestContext.WriteLine(ArDateTime.DaysInMonth(1, 1).ToString());
-            TestContext.WriteLine("AR +3".CompareTo("AR -4").ToString());
+            //TestContext.WriteLine("AR +3".CompareTo("AR -4").ToString());
+            CultureInfo ci = CultureInfo.GetCultureInfo("ja-JP");
+            for(int i = 0; i < AllStandardFormatChar.Length; i++)
+            {
+                TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
+                string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
+                foreach (var item in sa)
+                {
+                    TestContext.WriteLine(item.ToString());
+                    
+                }
+            }
+
+            //Console.WriteLine(DateTime.Now.ToString("D", ci));
+            //Console.WriteLine(DateTime.Now.ToString("d", ci));
+            //Console.WriteLine(DateTime.Now.ToString("f", ci));
+
         }
 
         [TestMethod]
@@ -352,25 +376,39 @@ namespace AritiafelTest
             for (int i = 0; i < dateTimes.Count; i++)
             {
                 ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
-                string s = adt.ToStandardString(ArDateTimeType.DateTime, 7);
+
+                string s = ArDateTimeFormat.GetFormatFromSingleCharFormat('D', 6, null);
+                TestContext.WriteLine(s);
+                for (int j = 0; j < cultureInfoA[j].Length; j++)
+                {
+                    s = ArDateTimeFormat.GetFormatFromSingleCharFormat('D', 6, CultureInfo.GetCultureInfo(cultureInfoA[j]));
+                    TestContext.WriteLine(s);
+                }
+                //ArDateTimeFormat.FormatDateTimeFull(adt, "");
+                
+                
+                
+
+                //string s = adt.ToStandardString(ArDateTimeType.DateTime, 7);
                 //TestContext.WriteLine(s);
-                int d = cb.DrawOutByte(7);
-                TestContext.WriteLine($"{d}:{ArDateTime.Parse(s).ToStandardString(ArDateTimeType.DateTime, d)}");
+                //int d = cb.DrawOutByte(7);
+                //TestContext.WriteLine(s);
+                //TestContext.WriteLine($"{d}:{ArDateTime.Parse(s).ToStandardString(ArDateTimeType.DateTime, d)}");
 
-                s = adt.ToStandardString(ArDateTimeType.Date);                
-                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.Date));
+                //s = adt.ToStandardString(ArDateTimeType.Date);                
+                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.Date));
 
-                s = adt.ToStandardString(ArDateTimeType.Time);                
-                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.Time));
+                //s = adt.ToStandardString(ArDateTimeType.Time);                
+                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.Time));
 
-                s = adt.ToStandardString(ArDateTimeType.ShortTime);                
-                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.ShortTime));
+                //s = adt.ToStandardString(ArDateTimeType.ShortTime);                
+                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.ShortTime));
 
-                s = adt.ToStandardString(ArDateTimeType.LongDate);                
-                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.LongDate));
+                //s = adt.ToStandardString(ArDateTimeType.LongDate);                
+                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.LongDate));
 
-                s = adt.ToStandardString(ArDateTimeType.System);
-                TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.System));
+                //s = adt.ToStandardString(ArDateTimeType.System);
+                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.System));
             }
         }
 
