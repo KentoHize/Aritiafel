@@ -28,6 +28,7 @@ namespace Aritiafel.Locations
 {    
     public static class DisassembleShop
     {
+        public static bool RecordValueWithoutEscapeChar { get; set; } = true;
         public static ArOutStringPartInfo[] Disassemble(string s, string[] reserved)
             => DisassembleStringFull(s, reserved.ToStringPartInfoArray());
         public static ArOutStringPartInfo[] Disassemble(string s, ArStringPartInfo[] reserved)
@@ -60,8 +61,8 @@ namespace Aritiafel.Locations
                         if (reserved[i].Type == ArStringPartType.Escape1)
                         {
                             if (s.Length < 2)
-                                throw new FormatException(); //逃逸字元後面無字
-                            result.Add(new ArOutStringPartInfo(i, reserved[i].Name, s.Substring(0, 2), ArStringPartType.Escape1));
+                                throw new FormatException(); //逃逸字元後面無字                            
+                            result.Add(new ArOutStringPartInfo(i, reserved[i].Name, s.Substring(RecordValueWithoutEscapeChar ? 1 : 0,  2), ArStringPartType.Escape1));
                             s = s.Substring(reserved[i].Value.Length + 1);
                         }
                         else
@@ -77,7 +78,7 @@ namespace Aritiafel.Locations
 
                 if (!found)
                 {
-                    result.Add(new ArOutStringPartInfo(0, "", s[0].ToString()));
+                    result.Add(new ArOutStringPartInfo(-1, "", s[0].ToString()));
                     s = s.Substring(1);
                 }
 

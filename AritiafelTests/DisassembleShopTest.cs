@@ -20,13 +20,14 @@ namespace AritiafelTest
             'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y'
         };
 
-        internal static readonly string[] AllCustomFormatString =
+        internal static readonly string[] SortedAllCustomFormatString =
         {
-            "dddd", "ddd", "dd", "d", "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
-            "FFFFFFF", "FFFFFF", "FFFFF", "FFFF", "FFF", "FF", "F",
-            "gg", "g", "HH", "H", "hh", "h", "K", "mm", "m", "MMMM", "MMM", "MM", "M",
-            "ss", "s", "tt", "t", "yyyyy", "yyyy", "yyy", "yy", "y",
-            "zzz", "zz", "z", ":", "/"
+            ":", "/", "hh", "HH", "mm", "ss", "h", "H", "m", "s",
+            "dddd", "ddd", "dd", "yyyyy", "yyyy", "yyy", "yy",
+            "MMMM", "MMM", "MM", "y", "M", "d",
+            "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
+            "tt", "t", "gg", "g", "zzz", "zz", "z", "K", "FFFFFFF", "FFFFFF",
+            "FFFFF", "FFFF", "FFF", "FF", "F"
         };
 
         List<TestDateTime> dateTimes = new List<TestDateTime> {
@@ -45,7 +46,7 @@ namespace AritiafelTest
         internal ArStringPartInfo[] CreateReversedString()
         {
             List<ArStringPartInfo> result;
-            result = AllCustomFormatString.ToStringPartInfoList();
+            result = SortedAllCustomFormatString.ToStringPartInfoList();
             result.Insert(0, new ArStringPartInfo("EscapeChar", "%", ArStringPartType.Escape1));
             result.Insert(0, new ArStringPartInfo("EscapeChar", "\\", ArStringPartType.Escape1));
             return result.ToArray();
@@ -97,15 +98,15 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
-            
-            TestContext.WriteLine(DateTime.Now.ToString("\\\\dddd"));
-            TestContext.WriteLine(DateTime.Now.ToString("ddd"));
-            TestContext.WriteLine(DateTime.Now.ToString("dd"));
-            TestContext.WriteLine(DateTime.Now.ToString("d"));
-            TestContext.WriteLine(DateTime.Now.ToString("%dddd"));
-            TestContext.WriteLine(DateTime.Now.ToString("%yyyyy"));
-            TestContext.WriteLine(DateTime.Now.ToString("\\nHH"));
-            TestContext.WriteLine(DateTime.Now.ToString("\\HHH"));
+            TestContext.WriteLine(SortedAllCustomFormatString.Length.ToString());
+            //TestContext.WriteLine(DateTime.Now.ToString("\\\\dddd"));
+            //TestContext.WriteLine(DateTime.Now.ToString("ddd"));
+            //TestContext.WriteLine(DateTime.Now.ToString("dd"));
+            //TestContext.WriteLine(DateTime.Now.ToString("d"));
+            //TestContext.WriteLine(DateTime.Now.ToString("%dddd"));
+            //TestContext.WriteLine(DateTime.Now.ToString("%yyyyy"));
+            //TestContext.WriteLine(DateTime.Now.ToString("\\nHH"));
+            //TestContext.WriteLine(DateTime.Now.ToString("\\HHH"));
         }
 
     }

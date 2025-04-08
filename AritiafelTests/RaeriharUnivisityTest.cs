@@ -409,13 +409,13 @@ namespace AritiafelTest
             {
                 ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
 
-                string s = ArDateTimeFormat.GetDateTimeFormatFromSingleCharFormat('D', 6, null);
-                TestContext.WriteLine(s);
-                for (int j = 0; j < cultureInfoA[j].Length; j++)
-                {
-                    s = ArDateTimeFormat.GetDateTimeFormatFromSingleCharFormat('D', 6, CultureInfo.GetCultureInfo(cultureInfoA[j]));
-                    TestContext.WriteLine(s);
-                }
+                //string s = ArDateTimeFormat.GetDateTimeFormatFromSingleCharFormat('D', 6, null);
+                //TestContext.WriteLine(s);
+                //for (int j = 0; j < cultureInfoA[j].Length; j++)
+                //{
+                //    s = ArDateTimeFormat.GetDateTimeFormatFromSingleCharFormat('D', 6, CultureInfo.GetCultureInfo(cultureInfoA[j]));
+                //    TestContext.WriteLine(s);
+                //}
                 //ArDateTimeFormat.FormatDateTimeFull(adt, "");
                 //string s = adt.ToStandardString(ArDateTimeType.DateTime, 7);
                 //TestContext.WriteLine(s);

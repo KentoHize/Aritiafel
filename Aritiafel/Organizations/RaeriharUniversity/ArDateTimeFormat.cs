@@ -45,50 +45,35 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         internal static readonly string[] SortedAllCustomFormatString =
         {
-            ":", "/", "hh", "HH", "mm", "ss", "h", "HH", "m", "s", 
-            "dddd", "ddd", "dd", "yyyyy", "yyyy", "yyy", "yy", "y", "d",
+            ":", "/", "hh", "HH", "mm", "ss", "h", "H", "m", "s",
+            "dddd", "ddd", "dd", "yyyyy", "yyyy", "yyy", "yy",
+            "MMMM", "MMM", "MM", "y", "M", "d",
             "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
-            "tt", "t", "gg", "g", "zzz", "zz", "z", "FFFFFFF", "FFFFFF",
+            "tt", "t", "gg", "g", "zzz", "zz", "z", "K", "FFFFFFF", "FFFFFF",
             "FFFFF", "FFFF", "FFF", "FF", "F"
-        }; //% //\
-
-        //internal static readonly string[] Standard
-
-        //d, dd, ddd, dddd, f, ff, fff, ffff, fffff, ffffff, fffffff
-        //F, FF, FFF, FFFF, FFFFF, FFFFFF, FFFFFFF
-        //g, gg
-        //h, hh, H, HH, K, m, mm, M, MM, MMM, MMMM
-        //s, ss, t, tt, y, yy, yyy, yyyy, yyyyy
-        //z, zz, zzz, :, /, %, \
+        }; 
 
         static internal ArStringPartInfo[] CreateReversedStringPartInfo()
         {
             List<ArStringPartInfo> result;
             result = SortedAllCustomFormatString.ToStringPartInfoList();
-            result.Insert(0, new ArStringPartInfo("EscapeChar", "%", ArStringPartType.Escape1));
-            result.Insert(0, new ArStringPartInfo("EscapeChar", "\\", ArStringPartType.Escape1));
+            result.Insert(0, new ArStringPartInfo("p", "%", ArStringPartType.Escape1));
+            result.Insert(0, new ArStringPartInfo("bs", "\\", ArStringPartType.Escape1));
             return result.ToArray();
-        }
-
-        public static string GetDateTimeFormatFromSingleCharFormat(char format, int decimalDigit, IFormatProvider provider) // Length = 1;
-        {               
-            if(provider is CultureInfo ci)
-            {   
-                return ci.DateTimeFormat.GetAllDateTimePatterns(format)[0];
-            }            
-            else if(provider is DateTimeFormatInfo di)
-            {
-                return di.GetAllDateTimePatterns(format)[0];
-            }
-            return null;
         }
 
         public static string FormatDateTimeFull(ArDateTime adt, string format, int decimalDigit = 7, IFormatProvider provider = null)
         {
+            DateTimeFormatInfo dtf = null;
+            if (provider is CultureInfo ci)
+                dtf = ci.DateTimeFormat;
+            else if (provider is DateTimeFormatInfo di)
+                dtf = di;
+            else
+                dtf = Aritiafel.ArinaOrganization.ArinaCultureInfo.DateTimeFormat;
             if (format.Length == 1)
-                format = GetDateTimeFormatFromSingleCharFormat(format[0], decimalDigit, provider);
-            //拆解
-            SortedAllCustomFormatString.ToStringPartInfoList();
+                format = dtf.GetAllDateTimePatterns(format[0])[0];            
+            
             ArStringPartInfo[] reservedString = CreateReversedStringPartInfo();            
             ArOutStringPartInfo[] ospi = DisassembleShop.Disassemble(format, reservedString);
             
@@ -96,13 +81,164 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (timeTicks < 0)
                 timeTicks += 864000000000L;
             ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out int tick);
+            string decimalPart = (millisecond * 10000 + tick).ToString().PadLeft(7, '0');
+            //.Substring(0, decimalDigit).TrimEnd('0');
+            int dow = ArDateTime.GetDayOfWeek(year, month, day);
+            if (dow == 7) 
+                dow = 0;
+            if (provider is ArCultureInfo)
+                year = ArDateTime.GetARYear(year);
 
             StringBuilder sb = new StringBuilder();
             for(int i = 0; i < ospi.Length; i++)
             {
-                if (ospi[i].Type == ArStringPartType.Escape1)
+                if (ospi[i].Index == 1)
+                    ospi[i].Index = Array.FindIndex(reservedString, m => m.Value == ospi[i].Value);
+
+                switch (ospi[i].Index)
                 {
-                    //sb.
+                    case -1:
+                    case 0:
+                        sb.Append(ospi[i].Value);
+                        break;
+                    case 1: // %
+                        throw new FormatException("%");
+                        break;
+                    case 2: // :
+                        sb.Append(dtf.TimeSeparator);
+                        break;
+                    case 3: // /
+                        sb.Append(dtf.DateSeparator);
+                        break;
+                    case 4: // "hh"
+                        sb.Append((hour % 12 + 12).ToString("00"));
+                        break;
+                    case 5: // "HH"
+                        sb.Append(hour.ToString("00"));
+                        break;
+                    case 6: // "mm"
+                        sb.Append(minute.ToString("00"));
+                        break;
+                    case 7: // "ss"
+                        sb.Append(second.ToString("00"));
+                        break;
+                    case 8: // "h"
+                        sb.Append(hour % 12 + 12);
+                        break;
+                    case 9: // "H"
+                        sb.Append(hour);
+                        break;
+                    case 10: // "m"
+                        sb.Append(minute);
+                        break;
+                    case 11: // "s"
+                        sb.Append(second);
+                        break;
+                    case 12: // "dddd"                        
+                        sb.Append(dtf.GetDayName((DayOfWeek)dow));
+                        break;
+                    case 13: // "ddd"
+                        sb.Append(dtf.GetAbbreviatedDayName((DayOfWeek)dow));
+                        break;
+                    case 14: // "dd"
+                        sb.Append(day.ToString("00"));
+                        break;
+                    case 15: // "yyyyy"
+                        sb.Append(year.ToString("00000"));
+                        break;
+                    case 16: // "yyyy"
+                        sb.Append(year.ToString("0000"));
+                        break;
+                    case 17: // "yyy"
+                        sb.Append(year.ToString("000"));
+                        break;
+                    case 18: // "yy"
+                        sb.Append((year % 100).ToString("00"));
+                        break;
+                    case 19: // "MMMM"
+                        sb.Append(dtf.GetMonthName(month));
+                        break;
+                    case 20: // "MMM"
+                        sb.Append(dtf.GetAbbreviatedMonthName(month));
+                        break;
+                    case 21: // "MM"
+                        sb.Append(month.ToString("00"));
+                        break;
+                    case 22: // "y"
+                        sb.Append(year.ToString("00"));
+                        break;
+                    case 23: // "M"
+                        sb.Append(month);
+                        break;
+                    case 24: // "d"
+                        sb.Append(day);
+                        break;
+                    case 25: // "fffffff"
+                        sb.Append(decimalPart.Substring(0, 7));
+                        break;
+                    case 26: // "ffffff"
+                        sb.Append(decimalPart.Substring(0, 6));
+                        break;
+                    case 27: // "fffff"
+                        sb.Append(decimalPart.Substring(0, 5));
+                        break;
+                    case 28: // "ffff"
+                        sb.Append(decimalPart.Substring(0, 4));
+                        break;
+                    case 29: // "fff"
+                        sb.Append(decimalPart.Substring(0, 3));
+                        break;
+                    case 30: // "ff"
+                        sb.Append(decimalPart.Substring(0, 2));
+                        break;
+                    case 31: // "f"
+                        sb.Append(decimalPart[0]);
+                        break;
+                    case 32: // "tt"                        
+                        sb.Append(dtf.PMDesignator);
+                        break;
+                    case 33: // "t"
+                        sb.Append(dtf.PMDesignator[0]);
+                        break;
+                    case 34: // "gg"                        
+                    case 35: // "g"
+                        sb.Append(dtf.GetEraName(0));
+                        break;
+                    case 36: // "zzz"
+                        sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString("hh:mm"));
+                        break;
+                    case 37: // "zz"
+                        sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours.ToString("00"));
+                        break;
+                    case 38: // "z"
+                        sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours);
+                        break;
+                    case 39: // "K"
+                        sb.Append(TimeZoneInfo.Local.StandardName);
+                        break;
+                    case 40: // "FFFFFFF"
+                        sb.Append(decimalPart.Substring(0, 7).TrimEnd('0'));
+                        break;
+                    case 41: // "FFFFFF"
+                        sb.Append(decimalPart.Substring(0, 6).TrimEnd('0'));
+                        break;
+                    case 42: // "FFFFF"
+                        sb.Append(decimalPart.Substring(0, 5).TrimEnd('0'));
+                        break;
+                    case 43: // "FFFF"
+                        sb.Append(decimalPart.Substring(0, 4).TrimEnd('0'));
+                        break;
+                    case 44: // "FFF"
+                        sb.Append(decimalPart.Substring(0, 3).TrimEnd('0'));
+                        break;
+                    case 45: // "FF"
+                        sb.Append(decimalPart.Substring(0, 2).TrimEnd('0'));
+                        break;
+                    case 46: // "F"
+                        sb.Append(decimalPart.Substring(0, 1).TrimEnd('0'));
+                        break;                    
+                    default:
+                        throw new NotImplementedException();
                 }
             }
 
