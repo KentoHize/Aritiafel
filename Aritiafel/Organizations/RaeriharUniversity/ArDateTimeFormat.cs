@@ -49,7 +49,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             "dddd", "ddd", "dd", "yyyyy", "yyyy", "yyy", "yy",
             "MMMM", "MMM", "MM", "y", "M", "d",
             "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
-            "tt", "t", "gg", "g", "zzz", "zz", "z", "K", "FFFFFFF", "FFFFFF",
+            "tt", "t", "gg", "g", "K", "zzz", "zz", "z", "FFFFFFF", "FFFFFF",
             "FFFFF", "FFFF", "FFF", "FF", "F"
         }; 
 
@@ -62,7 +62,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return result.ToArray();
         }
 
-        public static string FormatDateTimeFull(ArDateTime adt, string format, int decimalDigit = 7, IFormatProvider provider = null)
+        public static string FormatDateTimeFull(ArDateTime adt, string format, IFormatProvider provider = null)
         {
             DateTimeFormatInfo dtf = null;
             if (provider is CultureInfo ci)
@@ -70,7 +70,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             else if (provider is DateTimeFormatInfo di)
                 dtf = di;
             else
-                dtf = Aritiafel.ArinaOrganization.ArinaCultureInfo.DateTimeFormat;
+                dtf = Mylar.ArinaCultureInfo.DateTimeFormat;
             if (format.Length == 1)
                 format = dtf.GetAllDateTimePatterns(format[0])[0];            
             
@@ -82,12 +82,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 timeTicks += 864000000000L;
             ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out int tick);
             string decimalPart = (millisecond * 10000 + tick).ToString().PadLeft(7, '0');
-            //.Substring(0, decimalDigit).TrimEnd('0');
+            string s;
+
             int dow = ArDateTime.GetDayOfWeek(year, month, day);
             if (dow == 7) 
                 dow = 0;
-            if (provider is ArCultureInfo)
-                year = ArDateTime.GetARYear(year);
+            ArCultureInfo ac = provider as ArCultureInfo;
+            if (ac != null)
+                year = ArDateTime.GetARYear(year);                
 
             StringBuilder sb = new StringBuilder();
             for(int i = 0; i < ospi.Length; i++)
@@ -102,8 +104,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         sb.Append(ospi[i].Value);
                         break;
                     case 1: // %
-                        throw new FormatException("%");
-                        break;
+                        throw new FormatException("%");                        
                     case 2: // :
                         sb.Append(dtf.TimeSeparator);
                         break;
@@ -111,7 +112,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         sb.Append(dtf.DateSeparator);
                         break;
                     case 4: // "hh"
-                        sb.Append((hour % 12 + 12).ToString("00"));
+                        sb.Append((hour % 12).ToString("00"));
                         break;
                     case 5: // "HH"
                         sb.Append(hour.ToString("00"));
@@ -123,7 +124,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         sb.Append(second.ToString("00"));
                         break;
                     case 8: // "h"
-                        sb.Append(hour % 12 + 12);
+                        sb.Append(hour % 12);
                         break;
                     case 9: // "H"
                         sb.Append(hour);
@@ -165,7 +166,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         sb.Append(month.ToString("00"));
                         break;
                     case 22: // "y"
-                        sb.Append(year.ToString("00"));
+                        sb.Append(year % 100);
                         break;
                     case 23: // "M"
                         sb.Append(month);
@@ -195,27 +196,44 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         sb.Append(decimalPart[0]);
                         break;
                     case 32: // "tt"                        
-                        sb.Append(dtf.PMDesignator);
+                        sb.Append(hour < 12 ? dtf.AMDesignator : dtf.PMDesignator);
                         break;
                     case 33: // "t"
-                        sb.Append(dtf.PMDesignator[0]);
+                        sb.Append(hour < 12 ? dtf.AMDesignator[0] : dtf.PMDesignator[0]);
                         break;
-                    case 34: // "gg"                        
+                    case 34: // "gg"
                     case 35: // "g"
-                        sb.Append(dtf.GetEraName(0));
+                        if (ac != null)
+                            s = ospi[i].Index == 34 ? "有奈" : "AR";
+                        else if (ospi[i].Index == 34)
+                            s = dtf.GetEraName(0);
+                        else
+                            s = dtf.GetAbbreviatedEraName(0);
+                        if (s == "AD")
+                            s = "CE";
+                            sb.Append(s);
                         break;
-                    case 36: // "zzz"
-                        sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString("hh:mm"));
+                    case 36: // "K"
+                    case 37: // "zzz"
+                        if (ospi[i].Index == 36 && TimeZoneInfo.Local.BaseUtcOffset.Ticks == 0)
+                            sb.Append("Z");                    
+                        else if(TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
+                            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString("\\+hh\\:mm"));
+                        else
+                            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString($"\\-hh\\:mm"));
                         break;
-                    case 37: // "zz"
-                        sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours.ToString("00"));
+                    case 38: // "zz"
+                        if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
+                            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours.ToString("\\+00"));
+                        else
+                            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours.ToString("\\-00"));
                         break;
-                    case 38: // "z"
-                        sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours);
-                        break;
-                    case 39: // "K"
-                        sb.Append(TimeZoneInfo.Local.StandardName);
-                        break;
+                    case 39: // "z"                        
+                        if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
+                            sb.Append($"+{TimeZoneInfo.Local.BaseUtcOffset.Hours}");
+                        else
+                            sb.Append($"-{TimeZoneInfo.Local.BaseUtcOffset.Hours}");
+                        break;                    
                     case 40: // "FFFFFFF"
                         sb.Append(decimalPart.Substring(0, 7).TrimEnd('0'));
                         break;

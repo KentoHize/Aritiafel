@@ -290,20 +290,35 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
+            DateTime d = DateTime.Now;
+            Console.WriteLine(d.ToString("%g", CultureInfo.GetCultureInfo("zh-TW")));
+            Console.WriteLine(d.ToString("gg", CultureInfo.GetCultureInfo("zh-TW")));
+
+
+            
+            //TestContext.WriteLine(d.ToString("F", CultureInfo.GetCultureInfo("zh-TW")));
+            //TestContext.WriteLine(d.ToString("t", CultureInfo.GetCultureInfo("zh-TW")));
+            //TestContext.WriteLine(d.ToString("T", CultureInfo.GetCultureInfo("zh-TW")));
             //StringBuilder sb = null;
             //TestContext.WriteLine(ArDateTime.DaysInMonth(1, 1).ToString());
             //TestContext.WriteLine("AR +3".CompareTo("AR -4").ToString());
-            CultureInfo ci = CultureInfo.GetCultureInfo("ja-JP");
-            for (int i = 0; i < AllStandardFormatChar.Length; i++)
-            {
-                TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
-                string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
-                foreach (var item in sa)
-                {
-                    TestContext.WriteLine(item.ToString());
+            //CultureInfo ci = CultureInfo.GetCultureInfo("ja-JP");
+            //for (int i = 0; i < AllStandardFormatChar.Length; i++)
+            //{
+            //    TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
+            //    string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
+            //    foreach (var item in sa)
+            //    {
+            //        TestContext.WriteLine(item.ToString());
+            //TimeZoneInfo pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            //TestContext.WriteLine(pstTimeZone.BaseUtcOffset.ToString("hh\\:mm"));
 
-                }
-            }
+            //    }
+            //}            
+            //TimeZoneInfo.Local.BaseUtcOffset.
+            //TestContext.WriteLine(TimeZoneInfo.Local.BaseUtcOffset.ToString("t"));
+            //TestContext.WriteLine(TimeZoneInfo.Local.BaseUtcOffset.ToString("");
+            //TestContext.WriteLine(DateTime.Now.ToString("K yyyy"));
 
             //Console.WriteLine(DateTime.Now.ToString("D", ci));
             //Console.WriteLine(DateTime.Now.ToString("d", ci));
@@ -370,16 +385,34 @@ namespace AritiafelTest
                 else
                     dateTimes.Add(dateTimes[i].Reverse());
             }
-
-            ArDateTime adt = ArDateTime.Now;
-            CultureInfo ci = CultureInfo.GetCultureInfo("zh-TW");
-            ci = ArinaOrganization.ArinaCultureInfo;
-            for (int i = 0; i < AllStandardFormatChar.Length; i++)
-            {
-                string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[i].ToString(), 0, ci);
-                TestContext.WriteLine(s);
-            }
             
+            for (int i = 0; i < dateTimes.Count; i++)
+            {
+                ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
+                for (int j = 0; j < cultureInfoA.Length + 1; j++)
+                {
+                    //j = cultureInfoA.Length;
+                    CultureInfo ci;
+                    if (j == cultureInfoA.Length)
+                        ci = Mylar.ArinaCultureInfo;
+                    else
+                        ci = CultureInfo.GetCultureInfo(cultureInfoA[j]);
+                    TestContext.WriteLine($"{ci.Name} {ci.DisplayName}");
+                    for (int k = 0; k < AllStandardFormatChar.Length; k++)
+                    {
+                        string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[k].ToString(), ci);
+                        TestContext.WriteLine($"{AllStandardFormatChar[k]}:{s}");
+                    }                    
+                    string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
+                    string s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);
+                    TestContext.WriteLine($"{f}:{s2}");
+
+                    f = "K gg yyyyy/MM/dd tt hh:mm:ss.ffff z";
+                    s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);
+                    TestContext.WriteLine($"{f}:{s2}");
+                    //break;
+                }
+            }            
 
             ChaosBox cb = new ChaosBox();
             for (int i = 0; i < dateTimes.Count; i++)

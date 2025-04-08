@@ -28,6 +28,7 @@ namespace AritiafelTest
             TestContext.WriteLine(ci.DisplayName);
             TestContext.WriteLine(ci.Name);
 
+            
             //CultureInfo ct = RyabrarFactory.CreateOrGet<CultureSupportNegativeYear>(
             //    new ArProductInfo(typeof(CultureSupportNegativeYear), CultureInfo.CurrentCulture.Name));
 

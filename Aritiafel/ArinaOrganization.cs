@@ -1,4 +1,5 @@
 ﻿using Aritiafel.Organizations.ArinaOrganization;
+using Aritiafel.Organizations.RaeriharUniversity;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,10 +13,7 @@ namespace Aritiafel
 {
     //Extension and others    
     public static class ArinaOrganization
-    {
-        private static ArCultureInfo _ArinaCultureInfo;
-        public static ArCultureInfo ArinaCultureInfo
-            => _ArinaCultureInfo ??= new ArCultureInfo();
+    {        
         public static ConcurrentDictionary<string, string> EnumStringDictionary { get; set; }
 
         public static object ParseArString(this string s, Type t)
@@ -52,6 +50,8 @@ namespace Aritiafel
                     int.Parse(s.Substring(5, 2), NumberStyles.HexNumber));
             else if (t == typeof(DateTime))
                 return DateTime.Parse(s);
+            else if(t == typeof(ArDateTime))
+                return ArDateTime.Parse(s);
             else if (t == typeof(TimeSpan))
                 return TimeSpan.Parse(s);
             else if (t == typeof(CultureInfo))
@@ -75,7 +75,7 @@ namespace Aritiafel
             }
             else if (o is IFormattable r1)
             {
-                return r1.ToString(format, ArinaCultureInfo);
+                return r1.ToString(format, Mylar.ArinaCultureInfo);
             }   
             return o.ToString();
         }

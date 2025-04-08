@@ -6,29 +6,33 @@ using System.Text;
 
 namespace Aritiafel.Organizations.ArinaOrganization
 {
-    public class ArCultureInfo : CultureInfo
+    public partial class ArCultureInfo : CultureInfo
     {
-        
-        //public ArCultureInfo(CultureInfo baseCultureInfo)
-        //{
-            
-        //}
-
         internal ArCultureInfo()
-            : this("ja-JP", true)
+            : this("zh-TW", true)
         { }
 
         internal ArCultureInfo(string name, bool useUserOverride) 
             : base(name, useUserOverride)
-        { }
+        {
+            CreateDateTimeFormatInfo();
+        }
+
         public override string Name => "zh-AA";
+        public override string EnglishName => "Chinese (Arina)";
+        public override string DisplayName => "中文 (有奈)";
 
-        //public override Calendar Calendar
-        //{
-        //    get { return new ArNegativeCalendar(); }
-        //}
-            
-
-        //format -x/x/x x:x:x.xxx(xxxx)
+        internal void CreateDateTimeFormatInfo()
+        {
+            DateTimeFormat.DayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
+            DateTimeFormat.AbbreviatedDayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
+            DateTimeFormat.ShortDatePattern = "M, d, Ar. yyyy";
+            DateTimeFormat.LongDatePattern = "M, d, Ar. yyyy";
+            DateTimeFormat.ShortTimePattern = "H:m:s";
+            DateTimeFormat.LongTimePattern = "H:m:s.fff";
+            DateTimeFormat.YearMonthPattern = "M, Ar. yyyy";
+            DateTimeFormat.MonthDayPattern = "M, d";            
+            DateTimeFormat.FullDateTimePattern = "M, d, Ar. yyyy H:m:s.fff";
+        }
     }
 }
