@@ -18,7 +18,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
             CreateDateTimeFormatInfo();
         }
 
-        public override string Name => "zh-AA";
+        public override string Name => "zh-AO";
         public override string EnglishName => "Chinese (Arina)";
         public override string DisplayName => "中文 (有奈)";
 

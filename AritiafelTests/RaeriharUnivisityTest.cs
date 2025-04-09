@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Data.SqlTypes;
 using Aritiafel.Organizations.ArinaOrganization;
 using Aritiafel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AritiafelTest
 {
@@ -294,8 +295,9 @@ namespace AritiafelTest
             Console.WriteLine(d.ToString("%g", CultureInfo.GetCultureInfo("zh-TW")));
             Console.WriteLine(d.ToString("gg", CultureInfo.GetCultureInfo("zh-TW")));
 
+            Console.WriteLine(d.ToString("MM/dd/yyyy g",
+                  CultureInfo.CreateSpecificCulture("fr-FR")));
 
-            
             //TestContext.WriteLine(d.ToString("F", CultureInfo.GetCultureInfo("zh-TW")));
             //TestContext.WriteLine(d.ToString("t", CultureInfo.GetCultureInfo("zh-TW")));
             //TestContext.WriteLine(d.ToString("T", CultureInfo.GetCultureInfo("zh-TW")));
@@ -403,13 +405,13 @@ namespace AritiafelTest
                         string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[k].ToString(), ci);
                         TestContext.WriteLine($"{AllStandardFormatChar[k]}:{s}");
                     }                    
-                    string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
-                    string s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);
-                    TestContext.WriteLine($"{f}:{s2}");
+                    //string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
+                    //string s2 = ArDateTimeFormat.FormatDateTimeFull(f, adt, ci);
+                    //TestContext.WriteLine($"{f}:{s2}");
 
-                    f = "K gg yyyyy/MM/dd tt hh:mm:ss.ffff z";
-                    s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);
-                    TestContext.WriteLine($"{f}:{s2}");
+                    //f = "K gg yyyyy/MM/dd tt hh:mm:ss.ffff z";
+                    //s2 = ArDateTimeFormat.FormatDateTimeFull(f, adt, ci);
+                    //TestContext.WriteLine($"{f}:{s2}");
                     //break;
                 }
             }            

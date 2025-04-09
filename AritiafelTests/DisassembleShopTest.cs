@@ -46,7 +46,8 @@ namespace AritiafelTest
         internal ArStringPartInfo[] CreateReversedString()
         {
             List<ArStringPartInfo> result;
-            result = SortedAllCustomFormatString.ToStringPartInfoList();
+            DisassembleShop ds = new DisassembleShop();
+            result = DisassembleShop.StringToPartInfoList(SortedAllCustomFormatString);
             result.Insert(0, new ArStringPartInfo("EscapeChar", "%", ArStringPartType.Escape1));
             result.Insert(0, new ArStringPartInfo("EscapeChar", "\\", ArStringPartType.Escape1));
             return result.ToArray();
@@ -61,9 +62,10 @@ namespace AritiafelTest
             };
 
             ArStringPartInfo[] re2 = CreateReversedString();
+            DisassembleShop ds = new DisassembleShop();
             for (int i = 0; i < testString.Length; i++)
-            {
-                ArOutStringPartInfo[] result = DisassembleShop.Disassemble(testString[i], re2);
+            {   
+                ArOutStringPartInfo[] result = ds.Disassemble(testString[i], re2);
                 foreach (var item in result)
                 {
                     TestContext.Write($"{item.Value}-");
@@ -78,13 +80,14 @@ namespace AritiafelTest
             ArStringPartInfo[] re2 = CreateReversedString();
 
             CultureInfo ci = CultureInfo.GetCultureInfo("zh-TW");
+            DisassembleShop ds = new DisassembleShop();
             for (int i = 0; i < AllStandardFormatChar.Length; i++)
             {
                 TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
                 string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
                 foreach (var item in sa)
                 {
-                    ArOutStringPartInfo[] result = DisassembleShop.Disassemble(item.ToString(), re2);
+                    ArOutStringPartInfo[] result = ds.Disassemble(item.ToString(), re2);
                     foreach (var item2 in result)
                     {   
                         TestContext.Write($"{item2.Value}-");

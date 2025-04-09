@@ -266,15 +266,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public string ToString(string format)
             => ToString(format, null);
         public string ToString(string format, IFormatProvider formatProvider)
-            => ArDateTimeFormat.Format(format, this, formatProvider);
+            => ArDateTimeFormat.Format(this, format, formatProvider);
         public string ToLongDateString(IFormatProvider formatProvider = null)
-            => ArDateTimeFormat.Format("D", this, formatProvider);
+            => ArDateTimeFormat.Format(this, "D", formatProvider);
         public string ToShortDateString(IFormatProvider formatProvider = null)
-            => ArDateTimeFormat.Format("d", this, formatProvider);
+            => ArDateTimeFormat.Format(this, "d", formatProvider);
         public string ToLongTimeString(IFormatProvider formatProvider = null)
-            => ArDateTimeFormat.Format("T", this, formatProvider);
+            => ArDateTimeFormat.Format(this, "T", formatProvider);
         public string ToShortTimeString(IFormatProvider formatProvider = null)
-            => ArDateTimeFormat.Format("t", this, formatProvider);
+            => ArDateTimeFormat.Format(this, "t", formatProvider);
         public string ToStandardString(ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7, IFormatProvider formatProvider = null)
             => ArDateTimeFormat.FormatStandardDateTime(this, type, decimalDigit, formatProvider);
         public void GetObjectData(SerializationInfo info, StreamingContext context)

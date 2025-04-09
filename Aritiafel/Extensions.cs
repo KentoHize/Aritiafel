@@ -7,6 +7,8 @@ namespace Aritiafel
     //待整理
     public static class Extensions
     {
+        //public static double 
+
         public static string GetNestedTypeName(this Type type)
         {
             if (type.DeclaringType == null)
