@@ -75,6 +75,28 @@ namespace AritiafelTest
         }
 
         [TestMethod]
+        public void CaptureNumberStringTest()
+        {
+            string[] testString = { " ", "+", "-", "+3", "-4", "5d", "6.d", "-7.e", "6.2e", "-7.2e+", "0.3e+1", "0.4e1", "-0.63e+500" };
+            int length;
+            string s;
+            for (int i = 0; i < testString.Length; i++)
+            {
+                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.UnsignedInteger, out length);
+                TestContext.WriteLine($"UI {testString[i]}: {s} {length}");
+
+                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Integer, out length);
+                TestContext.WriteLine($" I {testString[i]}: {s} {length}");
+
+                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Decimal, out length);
+                TestContext.WriteLine($" D {testString[i]}: {s} {length}");
+
+                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.ScientificNotation, out length);
+                TestContext.WriteLine($"SN {testString[i]}: {s} {length}");
+            }
+        }
+
+        [TestMethod]
         public void DissaembleCultureInfo()
         {   
             ArStringPartInfo[] re2 = CreateReversedString();

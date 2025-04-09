@@ -49,13 +49,13 @@ namespace Aritiafel.Locations
             => StringToPartInfoList(reserved).ToArray();
 
         //[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?
-        public string CaptureNumberString(string s, out int length)
+        public static string CaptureNumberString(string s, ArNumberStringType numberStringType, out int length)
         {
             length = 0;
             StringBuilder sb = new StringBuilder();
             if (s[length] == '+' || s[length] == '-')
             {
-                if (DiscernNumber != ArNumberStringType.UnsignedInteger)
+                if (numberStringType != ArNumberStringType.UnsignedInteger)
                 {
                     sb.Append(s[length]);
                     length += 1;
@@ -67,16 +67,16 @@ namespace Aritiafel.Locations
             if (s.Length == length || !char.IsDigit(s[length]))
                 goto RF;
 
-            while (char.IsDigit(s[length]) && s.Length != length)
+            while (s.Length != length && char.IsDigit(s[length]))
             {
                 sb.Append(s[length]);
                 length += 1;
             }
 
-            if (s.Length == length || s.Length == length - 1 || DiscernNumber == ArNumberStringType.Integer ||
-                DiscernNumber == ArNumberStringType.UnsignedInteger ||
+            if (s.Length == length || s.Length == length + 1 || numberStringType == ArNumberStringType.Integer ||
+                numberStringType == ArNumberStringType.UnsignedInteger ||
                 (s[length] != '.' && s[length] != 'e' && s[length] != 'E') ||
-                (s[length] != '.' && DiscernNumber == ArNumberStringType.Decimal) ||
+                (s[length] != '.' && numberStringType == ArNumberStringType.Decimal) ||
                 (s[length] == '.' && !char.IsDigit(s[length + 1])))                
                 return sb.ToString();
             else
@@ -93,23 +93,23 @@ namespace Aritiafel.Locations
                     }
                 }
 
-                if (s.Length == length ||
-                    DiscernNumber == ArNumberStringType.Decimal ||
+                if (s.Length == length || s.Length == length + 1 ||
+                    numberStringType == ArNumberStringType.Decimal ||
                     (s[length] != 'e' && s[length] != 'E') ||
-                    ((s[length] == 'e' || s.Length == 'E') && (s[length + 1] == '+' || s[length + 1] == '-') && (s.Length == length - 2 || !char.IsDigit(s[length + 2]))) ||
-                    ((s[length] == 'e' || s.Length == 'E') && !char.IsDigit(s[length + 1])))
+                    ((s[length] == 'e' || s.Length == 'E') && (s[length + 1] == '+' || s[length + 1] == '-') && (s.Length == length + 2 || !char.IsDigit(s[length + 2]))) ||
+                    ((s[length] == 'e' || s.Length == 'E') && (s[length + 1] != '+' && s[length + 1] != '-'  && !char.IsDigit(s[length + 1]))))
                     return sb.ToString();
 
                 sb.Append(s[length]);
                 length += 1;
 
-                if (sb[length] == '+' || sb[length] == '-')
+                if (s[length] == '+' || s[length] == '-')
                 {
                     sb.Append(s[length]);
                     length += 1;
                 }
 
-                while(char.IsDigit(s[length]) && s.Length != length)
+                while(s.Length != length && char.IsDigit(s[length]))
                 {
                     sb.Append(s[length]);
                     length += 1;
