@@ -2,6 +2,7 @@
 using Aritiafel.Items;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -23,15 +24,27 @@ using System.Text.RegularExpressions;
 //=>    }]
 //=> }
 
-//分辨數字功能(待開發)
+//分辨數字功能
 
 namespace Aritiafel.Locations
 {
     public class DisassembleShop
     {
-        public bool RecordValueWithoutEscapeChar { get; set; } = true;
-        public ArNumberStringType DiscernNumber { get; set; } = ArNumberStringType.Undefined;
+        public bool RecordValueWithoutEscapeChar { get; set; }
+        public ArNumberStringType DiscernNumber { get; set; }
         public bool DiscernNumberFirst { get; set; } = false;
+
+        public DisassembleShop()
+            : this(new DisassembleShopSetting())
+        { }
+
+        public DisassembleShop(DisassembleShopSetting setting)
+        { 
+            RecordValueWithoutEscapeChar = setting.RecordValueWithoutEscapeChar;
+            DiscernNumber = setting.DiscernNumber;
+            DiscernNumberFirst = setting.DiscernNumberFirst;
+        }
+
         public ArOutStringPartInfo[] Disassemble(string s, string[] reserved)
             => DisassembleStringFull(s, StringToPartInfoArray(reserved));
         public ArOutStringPartInfo[] Disassemble(string s, ArStringPartInfo[] reserved)
@@ -50,8 +63,10 @@ namespace Aritiafel.Locations
 
         //[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?
         public static string CaptureNumberString(string s, ArNumberStringType numberStringType, out int length)
-        {
+        {   
             length = 0;
+            if (string.IsNullOrEmpty(s))
+                return "";
             StringBuilder sb = new StringBuilder();
             if (s[length] == '+' || s[length] == '-')
             {
@@ -86,7 +101,7 @@ namespace Aritiafel.Locations
                     sb.Append(s[length]);
                     length += 1;
 
-                    while (char.IsDigit(s[length]) && s.Length != length)
+                    while (s.Length != length && char.IsDigit(s[length]))
                     {
                         sb.Append(s[length]);
                         length += 1;
@@ -124,30 +139,35 @@ namespace Aritiafel.Locations
 
         internal ArOutStringPartInfo[] DisassembleStringFull(string s, ArStringPartInfo[] reserved)
         {
+            string s2;
+            int i;
             if (string.IsNullOrEmpty(s))
                 throw new ArgumentException(nameof(s));
 
             List<ArOutStringPartInfo> result = new List<ArOutStringPartInfo>();
-            while (true)
+            while (s.Length != 0)
             {
-                bool found = false;
-
+                bool found = false;                
                 if (DiscernNumber != ArNumberStringType.Undefined && DiscernNumberFirst)
                 {
-
+                   s2 = CaptureNumberString(s, DiscernNumber, out i);
+                   if(i != 0)
+                    {
+                        result.Add(new ArOutStringPartInfo(i, "d", s2, ArStringPartType.Number));
+                        s = s.Substring(i);
+                        continue;
+                    }
                 }
 
-                for (int i = 0; i < reserved.Length; i++)
-                {
-                    //Match m = Regex.Match(s, $"^{reserved[i].Value}");
-                    if (s.StartsWith(reserved[i].Value))
-                    //if (m.Success)
+                for (i = 0; i < reserved.Length; i++)
+                {   
+                    if (s.StartsWith(reserved[i].Value))                 
                     {
                         if (reserved[i].Type == ArStringPartType.Escape1)
                         {
                             if (s.Length < 2)
                                 throw new FormatException(); //逃逸字元後面無字                            
-                            result.Add(new ArOutStringPartInfo(i, reserved[i].Name, s.Substring(RecordValueWithoutEscapeChar ? 1 : 0, 2), ArStringPartType.Escape1));
+                            result.Add(new ArOutStringPartInfo(i, reserved[i].Name, s.Substring(RecordValueWithoutEscapeChar ? 1 : 0,  RecordValueWithoutEscapeChar ? 1 : 2), ArStringPartType.Escape1));
                             s = s.Substring(reserved[i].Value.Length + 1);
                         }
                         else
@@ -155,7 +175,6 @@ namespace Aritiafel.Locations
                             result.Add(new ArOutStringPartInfo(i, reserved[i].Name, reserved[i].Value));
                             s = s.Substring(reserved[i].Value.Length);
                         }
-
                         found = true;
                         break;
                     }
@@ -165,17 +184,21 @@ namespace Aritiafel.Locations
                 {
                     if (DiscernNumber != ArNumberStringType.Undefined && !DiscernNumberFirst)
                     {
-
+                        s2 = CaptureNumberString(s, DiscernNumber, out i);
+                        if (i != 0)
+                        {
+                            result.Add(new ArOutStringPartInfo(i, "d", s2, ArStringPartType.Number));
+                            s = s.Substring(i);
+                            continue;
+                        }
                     }
 
                     result.Add(new ArOutStringPartInfo(-1, "", s[0].ToString()));
                     s = s.Substring(1);
                 }
-
-                if (s.Length == 0)
-                    return result.ToArray();
             }
-        }
 
+            return result.ToArray();
+        }
     }
 }

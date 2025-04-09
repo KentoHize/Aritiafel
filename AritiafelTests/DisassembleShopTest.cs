@@ -57,12 +57,15 @@ namespace AritiafelTest
         public void DissaembleTest()
         {
             string[] testString = { 
-                "\\n\\d\\e\\r",
+                "\\n\\d23\\e\\r",
                 "%d%r%f%g"
             };
 
             ArStringPartInfo[] re2 = CreateReversedString();
-            DisassembleShop ds = new DisassembleShop();
+            DisassembleShop ds = new DisassembleShop(new DisassembleShopSetting {
+                DiscernNumber = ArNumberStringType.Integer
+            });
+            
             for (int i = 0; i < testString.Length; i++)
             {   
                 ArOutStringPartInfo[] result = ds.Disassemble(testString[i], re2);
@@ -77,22 +80,32 @@ namespace AritiafelTest
         [TestMethod]
         public void CaptureNumberStringTest()
         {
-            string[] testString = { " ", "+", "-", "+3", "-4", "5d", "6.d", "-7.e", "6.2e", "-7.2e+", "0.3e+1", "0.4e1", "-0.63e+500" };
+            string[] testString = { "a","e45e", "+", "-e", "+3", "-4", "5d", "-20f",
+                "6.d", "-7.e", "2.333", "-4.44ef", "6.2e", "-7.2e+", "0.3e+1", "0.2e-4",
+                "0.4e1", "4e1", "5dfffe.1", "2.55e+300", "2e+401a", "2e-356", "3e-.33",
+                "-0.63e+500", "99..3e+5", "98.84e+30.52e" };
             int length;
             string s;
             for (int i = 0; i < testString.Length; i++)
             {
+                TestContext.WriteLine($"\"{testString[i]}\"：");
                 s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.UnsignedInteger, out length);
-                TestContext.WriteLine($"UI {testString[i]}: {s} {length}");
+                TestContext.WriteLine($"UI:\"{s}\"");
+                Assert.AreEqual(s.Length, length);
 
                 s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Integer, out length);
-                TestContext.WriteLine($" I {testString[i]}: {s} {length}");
+                TestContext.WriteLine($" I:\"{s}\"");
+                Assert.AreEqual(s.Length, length);
 
                 s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Decimal, out length);
-                TestContext.WriteLine($" D {testString[i]}: {s} {length}");
+                TestContext.WriteLine($" D:\"{s}\"");
+                Assert.AreEqual(s.Length, length);
 
                 s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.ScientificNotation, out length);
-                TestContext.WriteLine($"SN {testString[i]}: {s} {length}");
+                TestContext.WriteLine($"SN:\"{s}\"");
+                Assert.AreEqual(s.Length, length);
+
+                TestContext.WriteLine("");
             }
         }
 

@@ -10,6 +10,7 @@ namespace Aritiafel.Definitions
         Escape1,
         Escape2,
         ContainerStart,
-        ContainerEnd
+        ContainerEnd,
+        Number,
     }
 }
