@@ -8,6 +8,8 @@ using Aritiafel.Items;
 using System.Globalization;
 using static AritiafelTest.RaeriharUniversityTest;
 using Aritiafel.Definitions;
+using Aritiafel.Artifacts;
+using System.Net;
 
 namespace AritiafelTest
 {
@@ -41,37 +43,66 @@ namespace AritiafelTest
                 TestDateTime.Now, new TestDateTime(new DateTime(2000, 1, 1).AddTicks(-1).Ticks, false),
             };
 
-        public TestContext TestContext { get; set; }        
+        public TestContext TestContext { get; set; }
 
-        internal ArStringPartInfo[] CreateReversedString()
+        internal ArStringPartInfo[] CreateReversedString(bool analyzeInteger = false)
         {
             List<ArStringPartInfo> result;
-            DisassembleShop ds = new DisassembleShop();
             result = DisassembleShop.StringToPartInfoList(SortedAllCustomFormatString);
-            result.Insert(0, new ArStringPartInfo("EscapeChar", "%", ArStringPartType.Escape1));
-            result.Insert(0, new ArStringPartInfo("EscapeChar", "\\", ArStringPartType.Escape1));
+            result.Insert(0, new ArStringPartInfo("p", "%", ArStringPartType.Escape1));
+            result.Insert(0, new ArStringPartInfo("bs", "\\\\", ArStringPartType.Escape1));
+            if (analyzeInteger)
+            {
+                result.Insert(0, new ArStringPartInfo("n4", "", ArStringPartType.Integer, 4));
+                result.Insert(0, new ArStringPartInfo("n2", "", ArStringPartType.Integer, 2));
+            }
             return result.ToArray();
         }
 
         [TestMethod]
         public void DissaembleTest()
         {
-            string[] testString = { 
-                "\\n\\d23\\e\\r",
-                "%d%r%f%g"
-            };
+            //    string[] testString = { 
+            //        "\\n\\d23e\\e\\r",
+            //        "%d%r%f%g"
+            //    };
 
-            ArStringPartInfo[] re2 = CreateReversedString();
-            DisassembleShop ds = new DisassembleShop(new DisassembleShopSetting {
-                DiscernNumber = ArNumberStringType.Integer
-            });
-            
-            for (int i = 0; i < testString.Length; i++)
-            {   
-                ArOutStringPartInfo[] result = ds.Disassemble(testString[i], re2);
+            //產生隨機測試文字
+            ChaosBox cb = new ChaosBox();
+            ArStringPartInfo[] re2 = CreateReversedString(true);
+
+            for (int i = 0; i < 200; i++)
+            {
+                int a = 0;
+                StringBuilder sb = new StringBuilder();
+                while (a != 4)
+                {   
+                    if (a == 0)
+                        sb.Append(' ');
+                    else if (a == 1)
+                        sb.Append(cb.DrawOutFromArray(re2).Value);
+                    else if (a == 2)
+                        sb.Append(cb.DrawOutDiversityDouble().ToString());
+                    else if (a == 3)
+                        sb.Append((char)cb.DrawOutByte());
+                    if (sb[sb.Length - 1] == '\\' || sb[sb.Length - 1] == '%')
+                        sb.Remove(sb.Length - 1, 1);
+                    a = cb.DrawOutByte(4);
+                }
+                
+
+                DisassembleShop ds = new DisassembleShop();
+                string testString = sb.ToString();
+                TestContext.WriteLine(testString);
+                ArOutStringPartInfo[] result = ds.Disassemble(testString, re2);
                 foreach (var item in result)
                 {
-                    TestContext.Write($"{item.Value}-");
+                    TestContext.Write($"{item.Value}");
+                    if (item.Type == ArStringPartType.Escape1)
+                        TestContext.Write("(e)");
+                    else if (item.Type != ArStringPartType.Normal)
+                        TestContext.Write("(n)");
+                    TestContext.Write($"-");
                 }
                 TestContext.WriteLine("");
             }
@@ -89,19 +120,19 @@ namespace AritiafelTest
             for (int i = 0; i < testString.Length; i++)
             {
                 TestContext.WriteLine($"\"{testString[i]}\"：");
-                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.UnsignedInteger, out length);
+                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.UnsignedInteger, 4, out length);
                 TestContext.WriteLine($"UI:\"{s}\"");
                 Assert.AreEqual(s.Length, length);
 
-                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Integer, out length);
+                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Integer, 4,out length);
                 TestContext.WriteLine($" I:\"{s}\"");
                 Assert.AreEqual(s.Length, length);
 
-                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Decimal, out length);
+                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Decimal, 4,out length);
                 TestContext.WriteLine($" D:\"{s}\"");
                 Assert.AreEqual(s.Length, length);
 
-                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.ScientificNotation, out length);
+                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.ScientificNotation, 9, out length);
                 TestContext.WriteLine($"SN:\"{s}\"");
                 Assert.AreEqual(s.Length, length);
 
@@ -111,7 +142,7 @@ namespace AritiafelTest
 
         [TestMethod]
         public void DissaembleCultureInfo()
-        {   
+        {
             ArStringPartInfo[] re2 = CreateReversedString();
 
             CultureInfo ci = CultureInfo.GetCultureInfo("zh-TW");
@@ -124,7 +155,7 @@ namespace AritiafelTest
                 {
                     ArOutStringPartInfo[] result = ds.Disassemble(item.ToString(), re2);
                     foreach (var item2 in result)
-                    {   
+                    {
                         TestContext.Write($"{item2.Value}-");
                     }
                     TestContext.WriteLine("");

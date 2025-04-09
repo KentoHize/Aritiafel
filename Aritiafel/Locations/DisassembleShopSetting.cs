@@ -8,14 +8,16 @@ namespace Aritiafel.Locations
     public class DisassembleShopSetting
     {
         public bool RecordValueWithoutEscapeChar { get; set; }
-        public ArNumberStringType DiscernNumber { get; set; }
-        public bool DiscernNumberFirst { get; set; }
+        //public int DiscernNumberMaxLength { get; set; }
+        //public ArNumberStringType DiscernNumber { get; set; }
+        //public bool DiscernNumberFirst { get; set; }
 
         public DisassembleShopSetting()
         {
             RecordValueWithoutEscapeChar = true;
-            DiscernNumber = ArNumberStringType.Undefined;
-            DiscernNumberFirst = false;
+            //DiscernNumberMaxLength = 0;
+            //DiscernNumber = ArNumberStringType.Undefined;
+            //DiscernNumberFirst = false;
         }
     }
 }

@@ -38,12 +38,17 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             "FFFFF", "FFFF", "FFF", "FF", "F"
         }; 
 
-        static internal ArStringPartInfo[] CreateReversedStringPartInfo()
+        static internal ArStringPartInfo[] CreateReversedStringPartInfo(bool analyzeInteger = false)
         {
             List<ArStringPartInfo> result;
             result = DisassembleShop.StringToPartInfoList(SortedAllCustomFormatString);
             result.Insert(0, new ArStringPartInfo("p", "%", ArStringPartType.Escape1));
             result.Insert(0, new ArStringPartInfo("bs", "\\\\", ArStringPartType.Escape1));
+            if (analyzeInteger)
+            {
+                result.Insert(0, new ArStringPartInfo("n4", "", ArStringPartType.Integer, 4));
+                result.Insert(0, new ArStringPartInfo("n2", "", ArStringPartType.Integer, 2));
+            }
             return result.ToArray();
         }
 
@@ -266,7 +271,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             DisassembleShop ds = new DisassembleShop();
             ArOutStringPartInfo[] ospi = ds.Disassemble(format, reservedString);
             
-            //Regex.Match()
+            //ds.Disassemble()
             return ArDateTime.Now;
             //int dow = ArDateTime.GetDayOfWeek(year, month, day);
             //if (dow == 7)
