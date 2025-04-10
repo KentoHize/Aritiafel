@@ -6,7 +6,8 @@ namespace Aritiafel.Definitions
 {
     public enum ArStringPartType
     {
-        Normal = 0,       
+        Normal = 0,        
+        
         //Number
         UnsignedInteger, // 22, 333
         Integer, // 14, -1, +4
@@ -17,5 +18,7 @@ namespace Aritiafel.Definitions
         Escape2,
         ContainerStart,
         ContainerEnd,
+
+        Char,
     }
 }

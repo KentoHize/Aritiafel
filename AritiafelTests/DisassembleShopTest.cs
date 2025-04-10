@@ -53,10 +53,58 @@ namespace AritiafelTest
             result.Insert(0, new ArStringPartInfo("bs", "\\\\", ArStringPartType.Escape1));
             if (analyzeInteger)
             {
-                result.Insert(0, new ArStringPartInfo("n4", "", ArStringPartType.Integer, 4));
                 result.Insert(0, new ArStringPartInfo("n2", "", ArStringPartType.Integer, 2));
+                result.Insert(0, new ArStringPartInfo("n4", "", ArStringPartType.Integer, 4));
             }
             return result.ToArray();
+        }
+
+        [TestMethod]
+        public void DissaembleTimesTest()
+        {   
+            ChaosBox cb = new ChaosBox();
+            
+
+            for (int i = 0; i < 200; i++)
+            {
+                List<ArStringPartInfo> re2 = new List<ArStringPartInfo>();
+                re2.Add(new ArStringPartInfo("n4", "", ArStringPartType.Integer, 4, 1));
+                re2.Add(new ArStringPartInfo("n2", "", ArStringPartType.Integer, 2, 2));
+                re2.Add(new ArStringPartInfo("n3", "", ArStringPartType.Integer, 2, 1));
+                re2.Add(new ArStringPartInfo("dc", "", ArStringPartType.Decimal, 0, 1));
+                int a = 0;
+                StringBuilder sb = new StringBuilder();
+                while (a != 4)
+                {
+                    if (a == 0)
+                        sb.Append(' ');
+                    else if (a == 1)
+                        sb.Append(cb.DrawOutDiversityDouble().ToString());
+                    else if (a == 2)
+                        sb.Append(cb.DrawOutDiversityDouble().ToString());
+                    else if (a == 3)
+                        sb.Append((char)cb.DrawOutByte());
+                    if (sb[sb.Length - 1] == '\\' || sb[sb.Length - 1] == '%')
+                        sb.Remove(sb.Length - 1, 1);
+                    a = cb.DrawOutByte(4);
+                }
+
+
+                DisassembleShop ds = new DisassembleShop();
+                string testString = sb.ToString();
+                TestContext.WriteLine(testString);
+                ArOutStringPartInfo[] result = ds.Disassemble(testString, re2.ToArray());
+                foreach (var item in result)
+                {
+                    TestContext.Write($"{item.Value}");
+                    if (item.Type == ArStringPartType.Escape1)
+                        TestContext.Write("(e)");
+                    else if (item.Type != ArStringPartType.Char)
+                        TestContext.Write($"({item.Name})");
+                    TestContext.Write($"-");
+                }
+                TestContext.WriteLine("");
+            }
         }
 
         [TestMethod]
@@ -100,8 +148,8 @@ namespace AritiafelTest
                     TestContext.Write($"{item.Value}");
                     if (item.Type == ArStringPartType.Escape1)
                         TestContext.Write("(e)");
-                    else if (item.Type != ArStringPartType.Normal)
-                        TestContext.Write("(n)");
+                    else if (item.Type != ArStringPartType.Char)
+                        TestContext.Write($"({item.Name})");
                     TestContext.Write($"-");
                 }
                 TestContext.WriteLine("");

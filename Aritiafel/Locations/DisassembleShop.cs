@@ -151,6 +151,9 @@ namespace Aritiafel.Locations
                 bool found = false;
                 for (i = 0; i < reserved.Length; i++)
                 {
+                    if (reserved[i].Times == 0)
+                        continue;
+
                     if (!string.IsNullOrEmpty(reserved[i].Value) && s.StartsWith(reserved[i].Value))
                     {
                         if (reserved[i].Type == ArStringPartType.Escape1)
@@ -168,11 +171,11 @@ namespace Aritiafel.Locations
                             result.Add(new ArOutStringPartInfo(i, reserved[i].Name, reserved[i].Value));
                             s = s.Substring(reserved[i].Value.Length);
                         }
+                        else
+                            throw new NotImplementedException();
                         found = true;
-                        break;
                     }
-                    
-                    if (reserved[i].Type == ArStringPartType.UnsignedInteger ||
+                    else if (reserved[i].Type == ArStringPartType.UnsignedInteger ||
                         reserved[i].Type == ArStringPartType.Integer ||
                         reserved[i].Type == ArStringPartType.Decimal ||
                         reserved[i].Type == ArStringPartType.ScientificNotation)
@@ -182,15 +185,21 @@ namespace Aritiafel.Locations
                         {
                             result.Add(new ArOutStringPartInfo(i, reserved[i].Name, s2, reserved[i].Type));
                             s = s.Substring(j);
-                            found = true;
-                            break;
+                            found = true;                            
                         }
+                    }
+
+                    if(found)
+                    {
+                        if (reserved[i].Times > 0)
+                            reserved[i].Times -= 1;
+                        break;
                     }
                 }
 
                 if(!found)
                 {
-                    result.Add(new ArOutStringPartInfo(-1, "", s[0].ToString()));
+                    result.Add(new ArOutStringPartInfo(-1, "", s[0].ToString(), ArStringPartType.Char));
                     s = s.Substring(1);
                 }
             }

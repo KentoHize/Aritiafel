@@ -38,17 +38,221 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             "FFFFF", "FFFF", "FFF", "FF", "F"
         }; 
 
-        static internal ArStringPartInfo[] CreateReversedStringPartInfo(bool analyzeInteger = false)
+        static internal ArStringPartInfo[] CreateParseStringPratInfo(DateTimeFormatInfo dtfi)
+        {
+            List<ArStringPartInfo> result = [
+                new ArStringPartInfo($"AM", dtfi.AMDesignator), 
+                new ArStringPartInfo($"PM", dtfi.PMDesignator),
+                new ArStringPartInfo($"ds", dtfi.DateSeparator),
+                new ArStringPartInfo($"ts", dtfi.TimeSeparator),
+                new ArStringPartInfo($"'", "'"),
+                new ArStringPartInfo($".", "."),
+                new ArStringPartInfo($"-", "-"),
+                ];            
+
+            for (int i = 0; i < 7; i++)
+                result.Add(new ArStringPartInfo($"wl{i}", dtfi.GetDayName((DayOfWeek)i)));
+            for (int i = 0; i < 7; i++)
+                result.Add(new ArStringPartInfo($"wa{i}", dtfi.GetAbbreviatedDayName((DayOfWeek)i)));
+            for (int i = 0; i < 7; i++)
+                result.Add(new ArStringPartInfo($"ws{i}", dtfi.GetShortestDayName((DayOfWeek)i)));
+            
+            for (int i = 0; i < dtfi.MonthNames.Length; i++)
+                result.Add(new ArStringPartInfo($"m{i + 1}", dtfi.MonthNames[i]));
+
+            for (int i = 0; i < dtfi.MonthGenitiveNames.Length; i++)
+                result.Add(new ArStringPartInfo($"mg{i + 1}", dtfi.MonthGenitiveNames[i]));
+
+            for (int i = 0; i < dtfi.Calendar.Eras.Length; i++)
+                result.Add(new ArStringPartInfo($"e{i}", dtfi.GetEraName(dtfi.Calendar.Eras[i])));
+            for (int i = 0; i < dtfi.Calendar.Eras.Length; i++)
+                result.Add(new ArStringPartInfo($"ea{i}", dtfi.GetAbbreviatedEraName(dtfi.Calendar.Eras[i])));
+
+            result.Insert(0, new ArStringPartInfo("n4", "", ArStringPartType.Integer, 4));
+            return result.ToArray();
+        }
+
+        static internal ArStringPartInfo[] CreateScanStringPartInfo(ArOutStringPartInfo[] patternInfo, DateTimeFormatInfo dtfi)
+        {   
+            bool abbreviatedDayNameAdded = false;
+            bool dayNameAdded = false;
+            bool monthNameAdded = false;
+            bool monthGenitiveNamesAdded = false;
+            bool shortestDayNamesAdded = false;
+            bool eraNameAdded = false;
+            bool abbreviatedEraNamesAdded = false;
+            bool designatorAdded = false;
+            bool abbreviatedDesignatorAdded = false;
+            bool K = false;
+            bool zzz = false;
+            List<ArStringPartInfo> result = new List<ArStringPartInfo>();
+            for (int i = 0; i < patternInfo.Length; i++)
+            {
+                int maxLength = 0;
+                
+                ArStringPartType type = ArStringPartType.Normal;                
+                string value = patternInfo[i].Value;
+                switch (patternInfo[i].Index)
+                {
+                    case 2:
+                        value = dtfi.TimeSeparator;                        
+                        break;
+                    case 3:
+                        value = dtfi.DateSeparator;
+                        break;
+                    case 12:
+                        type = ArStringPartType.Escape1;
+                        dayNameAdded = true;
+                        break;
+                    case 13:
+                        type = ArStringPartType.Escape1;
+                        abbreviatedDayNameAdded = true;
+                        break;
+                    case 19:
+                        type = ArStringPartType.Escape1;
+                        monthNameAdded = true;
+                        break;
+                    case 20:
+                        type = ArStringPartType.Escape1;
+                        monthGenitiveNamesAdded = true;
+                        break;
+                    case 32:
+                        type = ArStringPartType.Escape1;
+                        designatorAdded = true;
+                        break;
+                    case 33:
+                        type = ArStringPartType.Escape1;
+                        abbreviatedDesignatorAdded = true;                        
+                        maxLength = 1;
+                        break;
+                    case 34:
+                        type = ArStringPartType.Escape1;
+                        eraNameAdded = true;
+                        break;
+                    case 35:
+                        type = ArStringPartType.Escape1;
+                        abbreviatedEraNamesAdded = true;
+                        break;
+                    case 36: //K
+                        type = ArStringPartType.Escape1;
+                        K = true;
+                        break;
+                    case 37: //zzz
+                        type = ArStringPartType.Escape1;
+                        zzz = true;
+                        break;
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:                        
+                    case 14:
+                    case 18:
+                    case 21:
+                    case 22:
+                    case 23:
+                    case 24:
+                    case 30:
+                    case 45:
+                        type = ArStringPartType.Integer;
+                        maxLength = 2;
+                        break;
+                    case 31:
+                    case 46:
+                        type = ArStringPartType.Integer;
+                        maxLength = 1;
+                        break;
+                    case 17:
+                    case 29:
+                    case 38:
+                    case 39:
+                    case 44:
+                        type = ArStringPartType.Integer;
+                        maxLength = 3;
+                        break;
+                    case 16:
+                    case 28:
+                    case 43:
+                        type = ArStringPartType.Integer;
+                        maxLength = 4;
+                        break;
+                    case 15:
+                    case 42:
+                        type = ArStringPartType.Integer;
+                        maxLength = 5;
+                        break;
+                    case 26:
+                    case 41:
+                        type = ArStringPartType.Integer;
+                        maxLength = 6;
+                        break;
+                    case 25:
+                    case 40:
+                        type = ArStringPartType.Integer;
+                        maxLength = 7;
+                        break;
+                }
+                if(type != ArStringPartType.Escape1)
+                    result.Add(new ArStringPartInfo(patternInfo[i].Name, value, type, maxLength, 1));
+                else
+                {
+                    if(K || zzz)
+                    {
+                        if (K)
+                            result.Add(new ArStringPartInfo("K", "Z", ArStringPartType.Normal, 0, 1));                        
+                        result.Add(new ArStringPartInfo("zzz1", "", ArStringPartType.Integer, 2, 1));
+                        result.Add(new ArStringPartInfo("zzz2", ":", ArStringPartType.Normal, 0, 1));
+                        result.Add(new ArStringPartInfo("zzz3", "", ArStringPartType.Integer, 2, 1));
+                        K = zzz = false;
+                    }
+                }
+            }
+
+            if (!dayNameAdded)
+                for (int j = 0; j < 7; j++)
+                    result.Add(new ArStringPartInfo($"wl{j}", dtfi.GetDayName((DayOfWeek)j)));
+            if (abbreviatedDayNameAdded)
+                for (int j = 0; j < 7; j++)
+                    result.Add(new ArStringPartInfo($"wa{j}", dtfi.GetAbbreviatedDayName((DayOfWeek)j)));
+            if (monthNameAdded)
+                for (int j = 0; j < dtfi.MonthNames.Length; j++)
+                    result.Add(new ArStringPartInfo($"m{j + 1}", dtfi.MonthNames[j]));
+            if (monthGenitiveNamesAdded)
+                for (int j = 0; j < dtfi.MonthGenitiveNames.Length; j++)
+                    result.Add(new ArStringPartInfo($"mg{j + 1}", dtfi.MonthGenitiveNames[j]));
+            if (designatorAdded)
+            {
+                result.Add(new ArStringPartInfo($"AM", dtfi.AMDesignator));
+                result.Add(new ArStringPartInfo($"PM", dtfi.PMDesignator));
+            }
+            if (abbreviatedDesignatorAdded)
+            {
+                result.Add(new ArStringPartInfo($"AM1", dtfi.AMDesignator[0].ToString()));
+                result.Add(new ArStringPartInfo($"PM1", dtfi.PMDesignator[0].ToString()));
+            }
+            if(eraNameAdded)
+            {
+                for (int i = 0; i < dtfi.Calendar.Eras.Length; i++)
+                    result.Add(new ArStringPartInfo($"e{i}", dtfi.GetEraName(dtfi.Calendar.Eras[i])));                
+            }
+            if(abbreviatedEraNamesAdded)
+            {
+                for (int i = 0; i < dtfi.Calendar.Eras.Length; i++)
+                    result.Add(new ArStringPartInfo($"ea{i}", dtfi.GetAbbreviatedEraName(dtfi.Calendar.Eras[i])));
+            }
+
+            return result.ToArray();
+        }
+
+        static internal ArStringPartInfo[] CreateReversedStringPartInfo()
         {
             List<ArStringPartInfo> result;
             result = DisassembleShop.StringToPartInfoList(SortedAllCustomFormatString);
             result.Insert(0, new ArStringPartInfo("p", "%", ArStringPartType.Escape1));
-            result.Insert(0, new ArStringPartInfo("bs", "\\\\", ArStringPartType.Escape1));
-            if (analyzeInteger)
-            {
-                result.Insert(0, new ArStringPartInfo("n4", "", ArStringPartType.Integer, 4));
-                result.Insert(0, new ArStringPartInfo("n2", "", ArStringPartType.Integer, 2));
-            }
+            result.Insert(0, new ArStringPartInfo("bs", "\\\\", ArStringPartType.Escape1));            
             return result.ToArray();
         }
 
@@ -211,7 +415,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         else if(TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
                             sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString("\\+hh\\:mm"));
                         else
-                            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString($"\\-hh\\:mm"));
+                            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString("\\-hh\\:mm"));
                         break;
                     case 38: // "zz"
                         if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
@@ -255,21 +459,35 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         //未指定長度之相黏數字將會無法判斷，使用上須避免
         public static ArDateTime ParseExactArDateTimeFull(string s, string format, IFormatProvider provider, DateTimeStyles dateTimeStyles)
-        {
-            
-            DateTimeFormatInfo dtf = null;
+        {   
+            DateTimeFormatInfo dtfi = null;
             if (provider is CultureInfo ci)
-                dtf = ci.DateTimeFormat;
+                dtfi = ci.DateTimeFormat;
             else if (provider is DateTimeFormatInfo di)
-                dtf = di;
+                dtfi = di;
             else
-                dtf = Mylar.ArinaCultureInfo.DateTimeFormat;
+                dtfi = Mylar.ArinaCultureInfo.DateTimeFormat;
             if (format.Length == 1)
-                format = dtf.GetAllDateTimePatterns(format[0])[0];
+                format = dtfi.GetAllDateTimePatterns(format[0])[0];
 
             ArStringPartInfo[] reservedString = CreateReversedStringPartInfo();
             DisassembleShop ds = new DisassembleShop();
             ArOutStringPartInfo[] ospi = ds.Disassemble(format, reservedString);
+
+            ArStringPartInfo[] scanString = CreateScanStringPartInfo(ospi, dtfi);
+            ////將新字放入
+            //for(int i = 0; i < ospi.Length; i++)
+            //{
+
+            //}
+
+            //reservedString = CreateParseStringPratInfo(dtfi);
+            //ospi = ds.Disassemble(s, reservedString);
+            for (int i = 0; i < scanString.Length; i++)
+            {
+                Console.Write($"{scanString[i].Value}({scanString[i].Name}) ");
+            }
+            Console.WriteLine();
             
             //ds.Disassemble()
             return ArDateTime.Now;
@@ -279,173 +497,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             //ArCultureInfo ac = provider as ArCultureInfo;
             //if (ac != null)
             //    year = ArDateTime.GetARYear(year);
-            for (int i = 0; i < ospi.Length; i++)
-            {
-                if (ospi[i].Index == 1)
-                    ospi[i].Index = Array.FindIndex(reservedString, m => m.Value == ospi[i].Value);
-
-                //switch (ospi[i].Index)
-                //{
-                //    case -1:
-                //    case 0:
-                //        sb.Append(ospi[i].Value);
-                //        break;
-                //    case 1: // %
-                //        throw new FormatException("%");
-                //    case 2: // :
-                //        sb.Append(dtf.TimeSeparator);
-                //        break;
-                //    case 3: // /
-                //        sb.Append(dtf.DateSeparator);
-                //        break;
-                //    case 4: // "hh"
-                //        sb.Append((hour % 12).ToString("00"));
-                //        break;
-                //    case 5: // "HH"
-                //        sb.Append(hour.ToString("00"));
-                //        break;
-                //    case 6: // "mm"
-                //        sb.Append(minute.ToString("00"));
-                //        break;
-                //    case 7: // "ss"
-                //        sb.Append(second.ToString("00"));
-                //        break;
-                //    case 8: // "h"
-                //        sb.Append(hour % 12);
-                //        break;
-                //    case 9: // "H"
-                //        sb.Append(hour);
-                //        break;
-                //    case 10: // "m"
-                //        sb.Append(minute);
-                //        break;
-                //    case 11: // "s"
-                //        sb.Append(second);
-                //        break;
-                //    case 12: // "dddd"                        
-                //        sb.Append(dtf.GetDayName((DayOfWeek)dow));
-                //        break;
-                //    case 13: // "ddd"
-                //        sb.Append(dtf.GetAbbreviatedDayName((DayOfWeek)dow));
-                //        break;
-                //    case 14: // "dd"
-                //        sb.Append(day.ToString("00"));
-                //        break;
-                //    case 15: // "yyyyy"
-                //        sb.Append(year.ToString("00000"));
-                //        break;
-                //    case 16: // "yyyy"
-                //        sb.Append(year.ToString("0000"));
-                //        break;
-                //    case 17: // "yyy"
-                //        sb.Append(year.ToString("000"));
-                //        break;
-                //    case 18: // "yy"
-                //        sb.Append((year % 100).ToString("00"));
-                //        break;
-                //    case 19: // "MMMM"
-                //        sb.Append(dtf.GetMonthName(month));
-                //        break;
-                //    case 20: // "MMM"
-                //        sb.Append(dtf.GetAbbreviatedMonthName(month));
-                //        break;
-                //    case 21: // "MM"
-                //        sb.Append(month.ToString("00"));
-                //        break;
-                //    case 22: // "y"
-                //        sb.Append(year % 100);
-                //        break;
-                //    case 23: // "M"
-                //        sb.Append(month);
-                //        break;
-                //    case 24: // "d"
-                //        sb.Append(day);
-                //        break;
-                //    case 25: // "fffffff"
-                //        sb.Append(decimalPart.Substring(0, 7));
-                //        break;
-                //    case 26: // "ffffff"
-                //        sb.Append(decimalPart.Substring(0, 6));
-                //        break;
-                //    case 27: // "fffff"
-                //        sb.Append(decimalPart.Substring(0, 5));
-                //        break;
-                //    case 28: // "ffff"
-                //        sb.Append(decimalPart.Substring(0, 4));
-                //        break;
-                //    case 29: // "fff"
-                //        sb.Append(decimalPart.Substring(0, 3));
-                //        break;
-                //    case 30: // "ff"
-                //        sb.Append(decimalPart.Substring(0, 2));
-                //        break;
-                //    case 31: // "f"
-                //        sb.Append(decimalPart[0]);
-                //        break;
-                //    case 32: // "tt"                        
-                //        sb.Append(hour < 12 ? dtf.AMDesignator : dtf.PMDesignator);
-                //        break;
-                //    case 33: // "t"
-                //        sb.Append(hour < 12 ? dtf.AMDesignator[0] : dtf.PMDesignator[0]);
-                //        break;
-                //    case 34: // "gg"
-                //    case 35: // "g"
-                //        if (ac != null)
-                //            s = ospi[i].Index == 34 ? "有奈" : "Ar";
-                //        else if (ospi[i].Index == 34)
-                //            s = dtf.GetEraName(0);
-                //        else
-                //            s = dtf.GetAbbreviatedEraName(0);
-                //        if (s == "AD")
-                //            s = "CE";
-                //        sb.Append(s);
-                //        break;
-                //    case 36: // "K"
-                //    case 37: // "zzz"
-                //        if (ospi[i].Index == 36 && TimeZoneInfo.Local.BaseUtcOffset.Ticks == 0)
-                //            sb.Append("Z");
-                //        else if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
-                //            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString("\\+hh\\:mm"));
-                //        else
-                //            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString($"\\-hh\\:mm"));
-                //        break;
-                //    case 38: // "zz"
-                //        if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
-                //            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours.ToString("\\+00"));
-                //        else
-                //            sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours.ToString("\\-00"));
-                //        break;
-                //    case 39: // "z"                        
-                //        if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
-                //            sb.Append($"+{TimeZoneInfo.Local.BaseUtcOffset.Hours}");
-                //        else
-                //            sb.Append($"-{TimeZoneInfo.Local.BaseUtcOffset.Hours}");
-                //        break;
-                //    case 40: // "FFFFFFF"
-                //        sb.Append(decimalPart.Substring(0, 7).TrimEnd('0'));
-                //        break;
-                //    case 41: // "FFFFFF"
-                //        sb.Append(decimalPart.Substring(0, 6).TrimEnd('0'));
-                //        break;
-                //    case 42: // "FFFFF"
-                //        sb.Append(decimalPart.Substring(0, 5).TrimEnd('0'));
-                //        break;
-                //    case 43: // "FFFF"
-                //        sb.Append(decimalPart.Substring(0, 4).TrimEnd('0'));
-                //        break;
-                //    case 44: // "FFF"
-                //        sb.Append(decimalPart.Substring(0, 3).TrimEnd('0'));
-                //        break;
-                //    case 45: // "FF"
-                //        sb.Append(decimalPart.Substring(0, 2).TrimEnd('0'));
-                //        break;
-                //    case 46: // "F"
-                //        sb.Append(decimalPart.Substring(0, 1).TrimEnd('0'));
-                //        break;
-                //    default:
-                //        throw new NotImplementedException();
-                //}
-            }
+   
+           
+            //}
 
 
             //DateTime.Parse()

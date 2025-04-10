@@ -412,7 +412,7 @@ namespace AritiafelTest
                         TestContext.Write($"{AllStandardFormatChar[k]}:{s}");
 
                         adt = ArDateTimeFormat.ParseExactArDateTimeFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
-                        TestContext.WriteLine($" {adt.ToString()}");
+                        //TestContext.WriteLine($" {adt.ToString()}");
                     }                    
                     //string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
                     //string s2 = ArDateTimeFormat.FormatDateTimeFull(f, adt, ci);
