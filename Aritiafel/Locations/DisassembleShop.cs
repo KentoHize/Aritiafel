@@ -11,7 +11,7 @@ using System.Windows.Forms;
 //=>  1 -1 2 -1 -1 -1 3 0
 //=> BB B CC D 2 2 D1 AA
 
-//合拆(尚待開發)
+//合拆
 //{} [] () 
 //{CC3BB(AA)}
 //=>
@@ -41,11 +41,11 @@ namespace Aritiafel.Locations
         }
 
         public ArOutPartInfoList Disassemble(string s, string[] reserved)
-            => DisassembleStringFull(s, new ArDissambleInfo(null, StringToPartInfoArray(reserved)));
+            => DisassembleStringFull(s, new ArDissambleInfo(StringToPartInfoArray(reserved), null));
         public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved)
-            => DisassembleStringFull(s, new ArDissambleInfo(null, reserved));
+            => DisassembleStringFull(s, new ArDissambleInfo(reserved, null));
         public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved, ArContainerPartInfo[] containers)
-            => DisassembleStringFull(s, new ArDissambleInfo(containers, reserved));
+            => DisassembleStringFull(s, new ArDissambleInfo(reserved, containers));
         public ArOutPartInfoList Disassemble(string s, ArDissambleInfo dissambleInfo)
             => DisassembleStringFull(s, dissambleInfo);
 
@@ -161,11 +161,13 @@ namespace Aritiafel.Locations
                         target.Value.Add(newList);
                         containers.Push(target);
                         target = newList;
+                        s = s.Substring(di.ContainerPartInfo[i].StartString.Length);
                         found = true;
                     }
                     else if (containerEndString != "" && s.StartsWith(containerEndString))
                     {
                         target = containers.Pop();
+                        s = s.Substring(containerEndString.Length);
                         containerEndString = target.EndString;
                         found = true;
                     }

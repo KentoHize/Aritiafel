@@ -109,51 +109,78 @@ namespace AritiafelTest
 
         [TestMethod]
         public void DissaembleTest()
-        {
-            //    string[] testString = { 
-            //        "\\n\\d23e\\e\\r",
-            //        "%d%r%f%g"
-            //    };
-
+        {   
             //產生隨機測試文字
-            //ChaosBox cb = new ChaosBox();
-            //ArStringPartInfo[] re2 = CreateReversedString(true);
+            ChaosBox cb = new ChaosBox();
+            ArStringPartInfo[] re2 = CreateReversedString(true);
+            ArContainerPartInfo[] cp2 = [ new ArContainerPartInfo("brackets", "(", ")"),
+            new ArContainerPartInfo("square brackets", "[", "]"), new ArContainerPartInfo("curly brackets", "{", "}")];
 
-            //for (int i = 0; i < 200; i++)
-            //{
-            //    int a = 0;
-            //    StringBuilder sb = new StringBuilder();
-            //    while (a != 4)
-            //    {   
-            //        if (a == 0)
-            //            sb.Append(' ');
-            //        else if (a == 1)
-            //            sb.Append(cb.DrawOutFromArray(re2).Value);
-            //        else if (a == 2)
-            //            sb.Append(cb.DrawOutDiversityDouble().ToString());
-            //        else if (a == 3)
-            //            sb.Append((char)cb.DrawOutByte());
-            //        if (sb[sb.Length - 1] == '\\' || sb[sb.Length - 1] == '%')
-            //            sb.Remove(sb.Length - 1, 1);
-            //        a = cb.DrawOutByte(4);
-            //    }
-                
+            for (int i = 0; i < 200; i++)
+            {
+                int a = 0;
+                StringBuilder sb = new StringBuilder();
+                Stack<string> cs = new Stack<string>();
+                while (a != 6)
+                {
+                    if (a == 0)
+                        sb.Append(' ');
+                    else if (a == 1)
+                        sb.Append(cb.DrawOutFromArray(re2).Value);
+                    else if (a == 2)
+                        sb.Append(cb.DrawOutDiversityDouble().ToString());
+                    else if (a == 3)
+                        sb.Append((char)cb.DrawOutByte());
+                    else if (a == 4)
+                    {
+                        ArContainerPartInfo acpi = cb.DrawOutFromArray(cp2);
+                        cs.Push(acpi.EndString);
+                        sb.Append(acpi.StartString);
+                    }
+                    else if (a == 5)
+                    {
+                        if(cs.Count != 0)
+                            sb.Append(cs.Pop());
+                    }
 
-            //    DisassembleShop ds = new DisassembleShop();
-            //    string testString = sb.ToString();
-            //    TestContext.WriteLine(testString);
-            //    ArOutStringPartInfo[] result = ds.Disassemble(testString, re2);
-            //    foreach (var item in result)
-            //    {
-            //        TestContext.Write($"{item.Value}");
-            //        if (item.Type == ArStringPartType.Escape1)
-            //            TestContext.Write("(e)");
-            //        else if (item.Type != ArStringPartType.Char)
-            //            TestContext.Write($"({item.Name})");
-            //        TestContext.Write($"-");
-            //    }
-            //    TestContext.WriteLine("");
-            //}
+                    if (sb[sb.Length - 1] == '\\' || sb[sb.Length - 1] == '%')
+                        sb.Remove(sb.Length - 1, 1);
+                    a = cb.DrawOutByte(6);
+                }
+
+                while(cs.Count > 0)
+                    sb.Append(cs.Pop());
+
+                DisassembleShop ds = new DisassembleShop();
+                string testString = sb.ToString();
+                TestContext.WriteLine(testString);
+                ArOutPartInfoList result = ds.Disassemble(testString, re2, cp2);
+                TestContext.WriteLine(ArOutPartInfoStringOutput(result));
+            }
+        }
+
+        internal string ArOutPartInfoStringOutput(ArOutPartInfoList opil)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (ArOutPartInfo opi in opil.Value)
+            {
+                if(opi is ArOutPartInfoList pl)
+                {
+                    sb.Append(pl.StartString);                    
+                    sb.Append(ArOutPartInfoStringOutput(pl));
+                    sb.Append(pl.EndString);
+                }
+                else if(opi is ArOutStringPartInfo pi)
+                {
+                    sb.Append($"{ pi.Value}");
+                    if (pi.Type == ArStringPartType.Escape1)
+                        sb.Append("(e)");
+                    else if (pi.Type != ArStringPartType.Char)
+                        sb.Append($"({pi.Name})");
+                    sb.Append($" ");
+                }
+            }
+            return sb.ToString();
         }
 
         [TestMethod]

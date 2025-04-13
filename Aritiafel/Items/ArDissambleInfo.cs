@@ -6,16 +6,15 @@ namespace Aritiafel.Items
 {
     public class ArDissambleInfo
     {
-        public ArContainerPartInfo[] ContainerPartInfo { get; set; }
-        public ArStringPartInfo[] StringPartInfo { get; set; }        
-        public ArDissambleInfo(ArContainerPartInfo[] containerPartInfo = null, ArStringPartInfo[] stringPartInfo = null)
-        {
-            ContainerPartInfo = containerPartInfo ?? [];
+        public ArStringPartInfo[] StringPartInfo { get; set; }
+        public ArContainerPartInfo[] ContainerPartInfo { get; set; }        
+        public ArDissambleInfo(ArStringPartInfo[] stringPartInfo = null, ArContainerPartInfo[] containerPartInfo = null)
+        {   
             StringPartInfo = stringPartInfo ?? [];
+            ContainerPartInfo = containerPartInfo ?? [];
         }
-
-        public ArDissambleInfo(List<ArContainerPartInfo> containerPartInfo, List<ArStringPartInfo> stringPartInfo)
-            : this(containerPartInfo.ToArray(), stringPartInfo.ToArray())
+        public ArDissambleInfo(List<ArStringPartInfo> stringPartInfo, List<ArContainerPartInfo> containerPartInfo)
+            : this(stringPartInfo.ToArray(), containerPartInfo.ToArray())
         { }
     }
 }
