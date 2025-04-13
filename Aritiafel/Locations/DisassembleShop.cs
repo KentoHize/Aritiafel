@@ -2,9 +2,8 @@
 using Aritiafel.Items;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 //拆解字串，提供初步分析
 //AA, BB, CC, D1
@@ -31,9 +30,6 @@ namespace Aritiafel.Locations
     public class DisassembleShop
     {
         public bool RecordValueWithoutEscapeChar { get; set; }
-        //public ArNumberStringType DiscernNumber { get; set; }
-        //public int DiscernNumberMaxLength { get; set; }
-        //public bool DiscernNumberFirst { get; set; }
 
         public DisassembleShop()
             : this(new DisassembleShopSetting())
@@ -41,13 +37,17 @@ namespace Aritiafel.Locations
 
         public DisassembleShop(DisassembleShopSetting setting)
         {
-            RecordValueWithoutEscapeChar = setting.RecordValueWithoutEscapeChar;            
+            RecordValueWithoutEscapeChar = setting.RecordValueWithoutEscapeChar;
         }
 
-        public ArOutStringPartInfo[] Disassemble(string s, string[] reserved)
-            => DisassembleStringFull(s, StringToPartInfoArray(reserved));
-        public ArOutStringPartInfo[] Disassemble(string s, ArStringPartInfo[] reserved)
-            => DisassembleStringFull(s, reserved);
+        public ArOutPartInfoList Disassemble(string s, string[] reserved)
+            => DisassembleStringFull(s, new ArDissambleInfo(null, StringToPartInfoArray(reserved)));
+        public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved)
+            => DisassembleStringFull(s, new ArDissambleInfo(null, reserved));
+        public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved, ArContainerPartInfo[] containers)
+            => DisassembleStringFull(s, new ArDissambleInfo(containers, reserved));
+        public ArOutPartInfoList Disassemble(string s, ArDissambleInfo dissambleInfo)
+            => DisassembleStringFull(s, dissambleInfo);
 
         public static List<ArStringPartInfo> StringToPartInfoList(string[] reserved)
         {
@@ -138,72 +138,95 @@ namespace Aritiafel.Locations
             return "";
         }
 
-        internal ArOutStringPartInfo[] DisassembleStringFull(string s, ArStringPartInfo[] reserved)
-        {            
-            string s2;
-            int i, j;
+        internal ArOutPartInfoList DisassembleStringFull(string s, ArDissambleInfo di)
+        {
+            string s2, containerEndString = "";
+            int i;
             if (string.IsNullOrEmpty(s))
                 throw new ArgumentException(nameof(s));
 
-            List<ArOutStringPartInfo> result = new List<ArOutStringPartInfo>();
+            ArOutPartInfoList target = new ArOutPartInfoList();
+            Stack<ArOutPartInfoList> containers = new Stack<ArOutPartInfoList>();            
             while (s.Length != 0)
             {
                 bool found = false;
-                for (i = 0; i < reserved.Length; i++)
+                for (i = 0; i < di.ContainerPartInfo.Length; i++)
                 {
-                    if (reserved[i].Times == 0)
-                        continue;
-
-                    if (!string.IsNullOrEmpty(reserved[i].Value) && s.StartsWith(reserved[i].Value))
+                    if (s.StartsWith(di.ContainerPartInfo[i].StartString))
                     {
-                        if (reserved[i].Type == ArStringPartType.Escape1)
-                        {
-                            if (s.Length < 2)
-                                throw new FormatException(); //逃逸字元後面無字
-                            if (RecordValueWithoutEscapeChar)
-                                result.Add(new ArOutStringPartInfo(i, reserved[i].Name, s.Substring(1, 1), ArStringPartType.Escape1));
-                            else
-                                result.Add(new ArOutStringPartInfo(i, reserved[i].Name, s.Substring(0, 2), ArStringPartType.Escape1));
-                            s = s.Substring(reserved[i].Value.Length + 1);
-                        }
-                        else if (reserved[i].Type == ArStringPartType.Normal)
-                        {
-                            result.Add(new ArOutStringPartInfo(i, reserved[i].Name, reserved[i].Value));
-                            s = s.Substring(reserved[i].Value.Length);
-                        }
-                        else
-                            throw new NotImplementedException();
+                        ArOutPartInfoList newList = new ArOutPartInfoList(null,
+                            di.ContainerPartInfo[i].Name, di.ContainerPartInfo[i].StartString,
+                            di.ContainerPartInfo[i].EndString);
+                        containerEndString = di.ContainerPartInfo[i].EndString;
+                        target.Value.Add(newList);
+                        containers.Push(target);
+                        target = newList;
                         found = true;
                     }
-                    else if (reserved[i].Type == ArStringPartType.UnsignedInteger ||
-                        reserved[i].Type == ArStringPartType.Integer ||
-                        reserved[i].Type == ArStringPartType.Decimal ||
-                        reserved[i].Type == ArStringPartType.ScientificNotation)
+                    else if (containerEndString != "" && s.StartsWith(containerEndString))
                     {
-                        s2 = CaptureNumberString(s, (ArNumberStringType)reserved[i].Type, reserved[i].MaxLength, out j);
-                        if (j != 0)
-                        {
-                            result.Add(new ArOutStringPartInfo(i, reserved[i].Name, s2, reserved[i].Type));
-                            s = s.Substring(j);
-                            found = true;                            
-                        }
-                    }
-
-                    if(found)
-                    {
-                        if (reserved[i].Times > 0)
-                            reserved[i].Times -= 1;
-                        break;
+                        target = containers.Pop();
+                        containerEndString = target.EndString;
+                        found = true;
                     }
                 }
 
-                if(!found)
+                if (!found)
                 {
-                    result.Add(new ArOutStringPartInfo(-1, "", s[0].ToString(), ArStringPartType.Char));
+                    for (i = 0; i < di.StringPartInfo.Length; i++)
+                    {
+                        if (di.StringPartInfo[i].Times == 0)
+                            continue;
+
+                        if (!string.IsNullOrEmpty(di.StringPartInfo[i].Value) && s.StartsWith(di.StringPartInfo[i].Value))
+                        {
+                            if (di.StringPartInfo[i].Type == ArStringPartType.Escape1)
+                            {
+                                if (s.Length < 2)
+                                    throw new FormatException(); //逃逸字元後面無字
+                                if (RecordValueWithoutEscapeChar)
+                                    target.Value.Add(new ArOutStringPartInfo(i, di.StringPartInfo[i].Name, s.Substring(1, 1), ArStringPartType.Escape1));
+                                else
+                                    target.Value.Add(new ArOutStringPartInfo(i, di.StringPartInfo[i].Name, s.Substring(0, 2), ArStringPartType.Escape1));
+                                s = s.Substring(di.StringPartInfo[i].Value.Length + 1);
+                            }
+                            else if (di.StringPartInfo[i].Type == ArStringPartType.Normal)
+                            {
+                                target.Value.Add(new ArOutStringPartInfo(i, di.StringPartInfo[i].Name, di.StringPartInfo[i].Value));
+                                s = s.Substring(di.StringPartInfo[i].Value.Length);
+                            }
+                            else
+                                throw new NotImplementedException();
+                            found = true;
+                        }
+                        else if (di.StringPartInfo[i].Type == ArStringPartType.UnsignedInteger ||
+                            di.StringPartInfo[i].Type == ArStringPartType.Integer ||
+                            di.StringPartInfo[i].Type == ArStringPartType.Decimal ||
+                            di.StringPartInfo[i].Type == ArStringPartType.ScientificNotation)
+                        {
+                            s2 = CaptureNumberString(s, (ArNumberStringType)di.StringPartInfo[i].Type, di.StringPartInfo[i].MaxLength, out int j);
+                            if (j != 0)
+                            {
+                                target.Value.Add(new ArOutStringPartInfo(i, di.StringPartInfo[i].Name, s2, di.StringPartInfo[i].Type));
+                                s = s.Substring(j);
+                                found = true;
+                            }
+                        }
+                        if (found)
+                        {
+                            if (di.StringPartInfo[i].Times > 0)
+                                di.StringPartInfo[i].Times -= 1;
+                            break;
+                        }
+                    }
+                }
+                if (!found)
+                {
+                    target.Value.Add(new ArOutStringPartInfo(-1, "", s[0].ToString(), ArStringPartType.Char));
                     s = s.Substring(1);
                 }
             }
-            return result.ToArray();
+            return target;
         }
     }
 }

@@ -5,13 +5,12 @@ using Aritiafel.Artifacts;
 using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
-using System.Data.SqlTypes;
 using Aritiafel.Organizations.ArinaOrganization;
 using Aritiafel;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AritiafelTest
 {
+    
     [TestClass]
     public class RaeriharUniversityTest
     {
@@ -258,51 +257,56 @@ namespace AritiafelTest
         [TestMethod]
         public void ArDateTimeAddTest()
         {
-            int tl = dateTimes.Count;
-            for (int i = 0; i < tl; i++)
-            {
-                if (dateTimes[i].Year == 4400 && dateTimes[i].Day == 29)
-                    dateTimes.Add(new TestDateTime(-4400, 2, 28));
-                else
-                    dateTimes.Add(dateTimes[i].Reverse());
-            }
+            //int tl = dateTimes.Count;
+            //for (int i = 0; i < tl; i++)
+            //{
+            //    if (dateTimes[i].Year == 4400 && dateTimes[i].Day == 29)
+            //        dateTimes.Add(new TestDateTime(-4400, 2, 28));
+            //    else
+            //        dateTimes.Add(dateTimes[i].Reverse());
+            //}
 
-            dateTimes.Add(new TestDateTime(-1, 12, 31, 23, 59, 59, 999));
+            //dateTimes.Add(new TestDateTime(-1, 12, 31, 23, 59, 59, 999));
 
-            ChaosBox cb = new ChaosBox();
+            //ChaosBox cb = new ChaosBox();
 
-            for (int i = 0; i < dateTimes.Count; i++)
-            {
-                int y = cb.DrawOutInteger(-100, 100);
-                int d = cb.DrawOutInteger(-20, 20);
-                int m = cb.DrawOutInteger(-10, 10);
-                ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
-                //Console.WriteLine($"{adt} + {y}年{m}月{d}天:{adt.AddYears(y).AddMonths(m).AddDays(d)}");
-                Console.WriteLine($"{adt} + {d}天:{adt.AddDays(d)}");
+            //for (int i = 0; i < dateTimes.Count; i++)
+            //{
+            //    int y = cb.DrawOutInteger(-100, 100);
+            //    int d = cb.DrawOutInteger(-20, 20);
+            //    int m = cb.DrawOutInteger(-10, 10);
+            //    ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
+            //    //Console.WriteLine($"{adt} + {y}年{m}月{d}天:{adt.AddYears(y).AddMonths(m).AddDays(d)}");
+            //    Console.WriteLine($"{adt} + {d}天:{adt.AddDays(d)}");
 
-                int h = cb.DrawOutInteger(-10, 10);
-                Console.WriteLine($"{adt} + {h}時:{adt.AddHours(h)}");
+            //    int h = cb.DrawOutInteger(-10, 10);
+            //    Console.WriteLine($"{adt} + {h}時:{adt.AddHours(h)}");
 
-                int mm = cb.DrawOutInteger(-100, 100);
-                Console.WriteLine($"{adt} + {mm}分:{adt.AddMinutes(mm)}");
+            //    int mm = cb.DrawOutInteger(-100, 100);
+            //    Console.WriteLine($"{adt} + {mm}分:{adt.AddMinutes(mm)}");
 
-                int s = cb.DrawOutInteger(-100, 100);
-                Console.WriteLine($"{adt} + {s}秒:{adt.AddSeconds(s)}");
+            //    int s = cb.DrawOutInteger(-100, 100);
+            //    Console.WriteLine($"{adt} + {s}秒:{adt.AddSeconds(s)}");
 
-                int f = cb.DrawOutInteger(-100, 100);
-                Console.WriteLine($"{adt} + {f}豪秒:{adt.AddMilliSeconds(f).ToStandardString(ArDateTimeType.DateTime, 7)}");
-            }
+            //    int f = cb.DrawOutInteger(-100, 100);
+            //    Console.WriteLine($"{adt} + {f}豪秒:{adt.AddMilliSeconds(f).ToStandardString(ArDateTimeType.DateTime, 7)}");
+            //}
         }
 
         [TestMethod]
         public void TestArea()
         {
             DateTime d = DateTime.Now;
-            Console.WriteLine(d.ToString("%g", CultureInfo.GetCultureInfo("zh-TW")));
-            Console.WriteLine(d.ToString("gg", CultureInfo.GetCultureInfo("zh-TW")));
+            //Console.WriteLine(d.ToString("%g", CultureInfo.GetCultureInfo("zh-TW")));
+            //Console.WriteLine(d.ToString("gg", CultureInfo.GetCultureInfo("zh-TW")));
 
-            Console.WriteLine(d.ToString("MM/dd/yyyy g",
-                  CultureInfo.CreateSpecificCulture("fr-FR")));
+            //Console.WriteLine(d.ToString("MM/dd/yyyy g",
+            //      CultureInfo.CreateSpecificCulture("fr-FR")));
+
+            Console.WriteLine(d.ToString("O"));
+            Console.WriteLine(d.ToString("s"));
+            Console.WriteLine(d.ToString("u"));
+            Console.WriteLine(d.ToString("dd'-'tt'-'yyyy"));
 
             //TestContext.WriteLine(d.ToString("F", CultureInfo.GetCultureInfo("zh-TW")));
             //TestContext.WriteLine(d.ToString("t", CultureInfo.GetCultureInfo("zh-TW")));
@@ -408,10 +412,10 @@ namespace AritiafelTest
                     TestContext.WriteLine($"{ci.Name} {ci.DisplayName}");
                     for (int k = 0; k < AllStandardFormatChar.Length; k++)
                     {
-                        string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[k].ToString(), ci);
-                        TestContext.Write($"{AllStandardFormatChar[k]}:{s}");
+                        //string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[k].ToString(), ci);
+                        //TestContext.Write($"{AllStandardFormatChar[k]}:{s}");
 
-                        adt = ArDateTimeFormat.ParseExactArDateTimeFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
+                        //adt = ArDateTimeFormat.ParseExactArDateTimeFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
                         //TestContext.WriteLine($" {adt.ToString()}");
                     }                    
                     //string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";

@@ -275,8 +275,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ArDateTimeFormat.Format(this, "T", formatProvider);
         public string ToShortTimeString(IFormatProvider formatProvider = null)
             => ArDateTimeFormat.Format(this, "t", formatProvider);
-        public string ToStandardString(ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7, IFormatProvider formatProvider = null)
-            => ArDateTimeFormat.FormatStandardDateTime(this, type, decimalDigit, formatProvider);
+        //public string ToStandardString(ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7, IFormatProvider formatProvider = null)
+        //    => ArDateTimeFormat.FormatStandardDateTime(this, type, decimalDigit, formatProvider);
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => info.AddValue("data", _data);
         public TypeCode GetTypeCode()

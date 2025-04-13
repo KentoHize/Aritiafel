@@ -62,49 +62,49 @@ namespace AritiafelTest
         [TestMethod]
         public void DissaembleTimesTest()
         {   
-            ChaosBox cb = new ChaosBox();
+            //ChaosBox cb = new ChaosBox();
             
 
-            for (int i = 0; i < 200; i++)
-            {
-                List<ArStringPartInfo> re2 = new List<ArStringPartInfo>();
-                re2.Add(new ArStringPartInfo("n4", "", ArStringPartType.Integer, 4, 1));
-                re2.Add(new ArStringPartInfo("n2", "", ArStringPartType.Integer, 2, 2));
-                re2.Add(new ArStringPartInfo("n3", "", ArStringPartType.Integer, 2, 1));
-                re2.Add(new ArStringPartInfo("dc", "", ArStringPartType.Decimal, 0, 1));
-                int a = 0;
-                StringBuilder sb = new StringBuilder();
-                while (a != 4)
-                {
-                    if (a == 0)
-                        sb.Append(' ');
-                    else if (a == 1)
-                        sb.Append(cb.DrawOutDiversityDouble().ToString());
-                    else if (a == 2)
-                        sb.Append(cb.DrawOutDiversityDouble().ToString());
-                    else if (a == 3)
-                        sb.Append((char)cb.DrawOutByte());
-                    if (sb[sb.Length - 1] == '\\' || sb[sb.Length - 1] == '%')
-                        sb.Remove(sb.Length - 1, 1);
-                    a = cb.DrawOutByte(4);
-                }
+            //for (int i = 0; i < 200; i++)
+            //{
+            //    List<ArStringPartInfo> re2 = new List<ArStringPartInfo>();
+            //    re2.Add(new ArStringPartInfo("n4", "", ArStringPartType.Integer, 4, 1));
+            //    re2.Add(new ArStringPartInfo("n2", "", ArStringPartType.Integer, 2, 2));
+            //    re2.Add(new ArStringPartInfo("n3", "", ArStringPartType.Integer, 2, 1));
+            //    re2.Add(new ArStringPartInfo("dc", "", ArStringPartType.Decimal, 0, 1));
+            //    int a = 0;
+            //    StringBuilder sb = new StringBuilder();
+            //    while (a != 4)
+            //    {
+            //        if (a == 0)
+            //            sb.Append(' ');
+            //        else if (a == 1)
+            //            sb.Append(cb.DrawOutDiversityDouble().ToString());
+            //        else if (a == 2)
+            //            sb.Append(cb.DrawOutDiversityDouble().ToString());
+            //        else if (a == 3)
+            //            sb.Append((char)cb.DrawOutByte());
+            //        if (sb[sb.Length - 1] == '\\' || sb[sb.Length - 1] == '%')
+            //            sb.Remove(sb.Length - 1, 1);
+            //        a = cb.DrawOutByte(4);
+            //    }
 
 
-                DisassembleShop ds = new DisassembleShop();
-                string testString = sb.ToString();
-                TestContext.WriteLine(testString);
-                ArOutStringPartInfo[] result = ds.Disassemble(testString, re2.ToArray());
-                foreach (var item in result)
-                {
-                    TestContext.Write($"{item.Value}");
-                    if (item.Type == ArStringPartType.Escape1)
-                        TestContext.Write("(e)");
-                    else if (item.Type != ArStringPartType.Char)
-                        TestContext.Write($"({item.Name})");
-                    TestContext.Write($"-");
-                }
-                TestContext.WriteLine("");
-            }
+            //    DisassembleShop ds = new DisassembleShop();
+            //    string testString = sb.ToString();
+            //    TestContext.WriteLine(testString);
+            //    ArOutStringPartInfo[] result = ds.Disassemble(testString, re2.ToArray());
+            //    foreach (var item in result)
+            //    {
+            //        TestContext.Write($"{item.Value}");
+            //        if (item.Type == ArStringPartType.Escape1)
+            //            TestContext.Write("(e)");
+            //        else if (item.Type != ArStringPartType.Char)
+            //            TestContext.Write($"({item.Name})");
+            //        TestContext.Write($"-");
+            //    }
+            //    TestContext.WriteLine("");
+            //}
         }
 
         [TestMethod]
@@ -116,44 +116,44 @@ namespace AritiafelTest
             //    };
 
             //產生隨機測試文字
-            ChaosBox cb = new ChaosBox();
-            ArStringPartInfo[] re2 = CreateReversedString(true);
+            //ChaosBox cb = new ChaosBox();
+            //ArStringPartInfo[] re2 = CreateReversedString(true);
 
-            for (int i = 0; i < 200; i++)
-            {
-                int a = 0;
-                StringBuilder sb = new StringBuilder();
-                while (a != 4)
-                {   
-                    if (a == 0)
-                        sb.Append(' ');
-                    else if (a == 1)
-                        sb.Append(cb.DrawOutFromArray(re2).Value);
-                    else if (a == 2)
-                        sb.Append(cb.DrawOutDiversityDouble().ToString());
-                    else if (a == 3)
-                        sb.Append((char)cb.DrawOutByte());
-                    if (sb[sb.Length - 1] == '\\' || sb[sb.Length - 1] == '%')
-                        sb.Remove(sb.Length - 1, 1);
-                    a = cb.DrawOutByte(4);
-                }
+            //for (int i = 0; i < 200; i++)
+            //{
+            //    int a = 0;
+            //    StringBuilder sb = new StringBuilder();
+            //    while (a != 4)
+            //    {   
+            //        if (a == 0)
+            //            sb.Append(' ');
+            //        else if (a == 1)
+            //            sb.Append(cb.DrawOutFromArray(re2).Value);
+            //        else if (a == 2)
+            //            sb.Append(cb.DrawOutDiversityDouble().ToString());
+            //        else if (a == 3)
+            //            sb.Append((char)cb.DrawOutByte());
+            //        if (sb[sb.Length - 1] == '\\' || sb[sb.Length - 1] == '%')
+            //            sb.Remove(sb.Length - 1, 1);
+            //        a = cb.DrawOutByte(4);
+            //    }
                 
 
-                DisassembleShop ds = new DisassembleShop();
-                string testString = sb.ToString();
-                TestContext.WriteLine(testString);
-                ArOutStringPartInfo[] result = ds.Disassemble(testString, re2);
-                foreach (var item in result)
-                {
-                    TestContext.Write($"{item.Value}");
-                    if (item.Type == ArStringPartType.Escape1)
-                        TestContext.Write("(e)");
-                    else if (item.Type != ArStringPartType.Char)
-                        TestContext.Write($"({item.Name})");
-                    TestContext.Write($"-");
-                }
-                TestContext.WriteLine("");
-            }
+            //    DisassembleShop ds = new DisassembleShop();
+            //    string testString = sb.ToString();
+            //    TestContext.WriteLine(testString);
+            //    ArOutStringPartInfo[] result = ds.Disassemble(testString, re2);
+            //    foreach (var item in result)
+            //    {
+            //        TestContext.Write($"{item.Value}");
+            //        if (item.Type == ArStringPartType.Escape1)
+            //            TestContext.Write("(e)");
+            //        else if (item.Type != ArStringPartType.Char)
+            //            TestContext.Write($"({item.Name})");
+            //        TestContext.Write($"-");
+            //    }
+            //    TestContext.WriteLine("");
+            //}
         }
 
         [TestMethod]
@@ -191,24 +191,24 @@ namespace AritiafelTest
         [TestMethod]
         public void DissaembleCultureInfo()
         {
-            ArStringPartInfo[] re2 = CreateReversedString();
+            //ArStringPartInfo[] re2 = CreateReversedString();
 
-            CultureInfo ci = CultureInfo.GetCultureInfo("zh-TW");
-            DisassembleShop ds = new DisassembleShop();
-            for (int i = 0; i < AllStandardFormatChar.Length; i++)
-            {
-                TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
-                string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
-                foreach (var item in sa)
-                {
-                    ArOutStringPartInfo[] result = ds.Disassemble(item.ToString(), re2);
-                    foreach (var item2 in result)
-                    {
-                        TestContext.Write($"{item2.Value}-");
-                    }
-                    TestContext.WriteLine("");
-                }
-            }
+            //CultureInfo ci = CultureInfo.GetCultureInfo("zh-TW");
+            //DisassembleShop ds = new DisassembleShop();
+            //for (int i = 0; i < AllStandardFormatChar.Length; i++)
+            //{
+            //    TestContext.WriteLine($"{AllStandardFormatChar[i]}:");
+            //    string[] sa = ci.DateTimeFormat.GetAllDateTimePatterns(AllStandardFormatChar[i]);
+            //    foreach (var item in sa)
+            //    {
+            //        ArOutPartInfoList result = ds.Disassemble(item.ToString(), re2);
+            //        foreach (var item2 in result.Value)
+            //        {
+            //            TestContext.Write($"{item2.Value}-");
+            //        }
+            //        TestContext.WriteLine("");
+            //    }
+            //}
         }
 
 

@@ -5,18 +5,17 @@ using System.Text;
 
 namespace Aritiafel.Items
 {
-    public class ArOutStringPartInfo
+    public class ArOutStringPartInfo : ArOutPartInfo
     {
-        public int Index { get; set; }
-        public string Name { get; set; }
-        public string Value { get; set; }
+        public int Index { get; set; }        
+        public string Value { get; set; } //如果為Char或是String => 值為Name
         public ArStringPartType Type { get; set; }
 
-        public ArOutStringPartInfo(int index, string name = "", string value = "", ArStringPartType type = ArStringPartType.Normal)
+        public ArOutStringPartInfo(int index, string name = "", string value = null, ArStringPartType type = ArStringPartType.Normal)
+            : base(name)
         {
             Index = index;
-            Name = name ?? throw new ArgumentNullException(nameof(value));
-            Value = value ?? throw new ArgumentNullException(nameof(value));
+            Value = value;
             Type = type;
         }
 
