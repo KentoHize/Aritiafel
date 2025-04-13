@@ -46,6 +46,8 @@ namespace Aritiafel.Locations
             => DisassembleStringFull(s, new ArDissambleInfo(reserved, null));
         public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved, ArContainerPartInfo[] containers)
             => DisassembleStringFull(s, new ArDissambleInfo(reserved, containers));
+        public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[][] reserved, ArContainerPartInfo[] containers)
+            => DisassembleStringFull(s, new ArDissambleInfo(reserved, containers));
         public ArOutPartInfoList Disassemble(string s, ArDissambleInfo dissambleInfo)
             => DisassembleStringFull(s, dissambleInfo);
 
@@ -141,83 +143,89 @@ namespace Aritiafel.Locations
         internal ArOutPartInfoList DisassembleStringFull(string s, ArDissambleInfo di)
         {
             string s2, containerEndString = "";
-            int i;
+            int i, reservedStringsIndex = 0; //-1 = No Reserved
             if (string.IsNullOrEmpty(s))
                 throw new ArgumentException(nameof(s));
 
             ArOutPartInfoList target = new ArOutPartInfoList();
-            Stack<ArOutPartInfoList> containers = new Stack<ArOutPartInfoList>();            
+            Stack<ArOutPartInfoList> containers = new Stack<ArOutPartInfoList>();
+            Stack<int> reservedIndexes = new Stack<int>();
             while (s.Length != 0)
             {
                 bool found = false;
                 for (i = 0; i < di.ContainerPartInfo.Length; i++)
-                {
-                    if (s.StartsWith(di.ContainerPartInfo[i].StartString))
+                {   
+                    if (containerEndString != "" && s.StartsWith(containerEndString))
+                    {
+                        target = containers.Pop();
+                        reservedStringsIndex = reservedIndexes.Pop();
+                        s = s.Substring(containerEndString.Length);
+                        containerEndString = target.EndString;
+                        found = true;
+                        break;
+                    }
+                    else if (s.StartsWith(di.ContainerPartInfo[i].StartString))
                     {
                         ArOutPartInfoList newList = new ArOutPartInfoList(null,
                             di.ContainerPartInfo[i].Name, di.ContainerPartInfo[i].StartString,
                             di.ContainerPartInfo[i].EndString);
+                        reservedIndexes.Push(reservedStringsIndex);
+                        reservedStringsIndex = di.ContainerPartInfo[i].ReservedStringInfoIndex;
                         containerEndString = di.ContainerPartInfo[i].EndString;
                         target.Value.Add(newList);
                         containers.Push(target);
                         target = newList;
                         s = s.Substring(di.ContainerPartInfo[i].StartString.Length);
                         found = true;
-                    }
-                    else if (containerEndString != "" && s.StartsWith(containerEndString))
-                    {
-                        target = containers.Pop();
-                        s = s.Substring(containerEndString.Length);
-                        containerEndString = target.EndString;
-                        found = true;
+                        break;
                     }
                 }
-
-                if (!found)
+                
+                if (reservedStringsIndex != -1 && !found)
                 {
-                    for (i = 0; i < di.StringPartInfo.Length; i++)
+                    for (i = 0; i < di.ReservedStringInfo[reservedStringsIndex].Length; i++)
                     {
-                        if (di.StringPartInfo[i].Times == 0)
+                        if (di.ReservedStringInfo[reservedStringsIndex][i].Times == 0)
                             continue;
 
-                        if (!string.IsNullOrEmpty(di.StringPartInfo[i].Value) && s.StartsWith(di.StringPartInfo[i].Value))
+                        if (!string.IsNullOrEmpty(di.ReservedStringInfo[reservedStringsIndex][i].Value) && s.StartsWith(di.ReservedStringInfo[reservedStringsIndex][i].Value))
                         {
-                            if (di.StringPartInfo[i].Type == ArStringPartType.Escape1)
+                            if (di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Escape1)
                             {
                                 if (s.Length < 2)
                                     throw new FormatException(); //逃逸字元後面無字
                                 if (RecordValueWithoutEscapeChar)
-                                    target.Value.Add(new ArOutStringPartInfo(i, di.StringPartInfo[i].Name, s.Substring(1, 1), ArStringPartType.Escape1));
+                                    target.Value.Add(new ArOutStringPartInfo(i, di.ReservedStringInfo[reservedStringsIndex][i].Name, s.Substring(1, 1), ArStringPartType.Escape1));
                                 else
-                                    target.Value.Add(new ArOutStringPartInfo(i, di.StringPartInfo[i].Name, s.Substring(0, 2), ArStringPartType.Escape1));
-                                s = s.Substring(di.StringPartInfo[i].Value.Length + 1);
+                                    target.Value.Add(new ArOutStringPartInfo(i, di.ReservedStringInfo[reservedStringsIndex][i].Name, s.Substring(0, 2), ArStringPartType.Escape1));
+                                s = s.Substring(di.ReservedStringInfo[reservedStringsIndex][i].Value.Length + 1);
                             }
-                            else if (di.StringPartInfo[i].Type == ArStringPartType.Normal)
+                            else if (di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Normal)
                             {
-                                target.Value.Add(new ArOutStringPartInfo(i, di.StringPartInfo[i].Name, di.StringPartInfo[i].Value));
-                                s = s.Substring(di.StringPartInfo[i].Value.Length);
+                                target.Value.Add(new ArOutStringPartInfo(i, di.ReservedStringInfo[reservedStringsIndex][i].Name, di.ReservedStringInfo[reservedStringsIndex][i].Value));
+                                s = s.Substring(di.ReservedStringInfo[reservedStringsIndex][i].Value.Length);
                             }
                             else
                                 throw new NotImplementedException();
                             found = true;
                         }
-                        else if (di.StringPartInfo[i].Type == ArStringPartType.UnsignedInteger ||
-                            di.StringPartInfo[i].Type == ArStringPartType.Integer ||
-                            di.StringPartInfo[i].Type == ArStringPartType.Decimal ||
-                            di.StringPartInfo[i].Type == ArStringPartType.ScientificNotation)
+                        else if (di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.UnsignedInteger ||
+                            di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Integer ||
+                            di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Decimal ||
+                            di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.ScientificNotation)
                         {
-                            s2 = CaptureNumberString(s, (ArNumberStringType)di.StringPartInfo[i].Type, di.StringPartInfo[i].MaxLength, out int j);
+                            s2 = CaptureNumberString(s, (ArNumberStringType)di.ReservedStringInfo[reservedStringsIndex][i].Type, di.ReservedStringInfo[reservedStringsIndex][i].MaxLength, out int j);
                             if (j != 0)
                             {
-                                target.Value.Add(new ArOutStringPartInfo(i, di.StringPartInfo[i].Name, s2, di.StringPartInfo[i].Type));
+                                target.Value.Add(new ArOutStringPartInfo(i, di.ReservedStringInfo[reservedStringsIndex][i].Name, s2, di.ReservedStringInfo[reservedStringsIndex][i].Type));
                                 s = s.Substring(j);
                                 found = true;
                             }
                         }
                         if (found)
                         {
-                            if (di.StringPartInfo[i].Times > 0)
-                                di.StringPartInfo[i].Times -= 1;
+                            if (di.ReservedStringInfo[reservedStringsIndex][i].Times > 0)
+                                di.ReservedStringInfo[reservedStringsIndex][i].Times -= 1;
                             break;
                         }
                     }

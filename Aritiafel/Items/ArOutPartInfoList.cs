@@ -5,7 +5,7 @@ using System.Text;
 namespace Aritiafel.Items
 {    
     public class ArOutPartInfoList : ArOutPartInfo
-    {
+    {   
         public string StartString { get; set; }
         public string EndString { get; set; }
         public List<ArOutPartInfo> Value { get; set; }

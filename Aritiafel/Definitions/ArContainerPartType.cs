@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Aritiafel.Definitions
 {
-    public enum ArPartType
-    {   
-        None = 0,
-        String = 1,
-        Array = 2,
+    public enum ArContainerPartType
+    {
+        Normal = 0,
+        Text = 1,
+        Custom = 2        
     }
 }

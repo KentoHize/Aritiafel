@@ -402,8 +402,7 @@ namespace AritiafelTest
             {
                 ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
                 for (int j = 0; j < cultureInfoA.Length + 1; j++)
-                {
-                    //j = cultureInfoA.Length;
+                {   
                     CultureInfo ci;
                     if (j == cultureInfoA.Length)
                         ci = Mylar.ArinaCultureInfo;
@@ -412,19 +411,21 @@ namespace AritiafelTest
                     TestContext.WriteLine($"{ci.Name} {ci.DisplayName}");
                     for (int k = 0; k < AllStandardFormatChar.Length; k++)
                     {
-                        //string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[k].ToString(), ci);
-                        //TestContext.Write($"{AllStandardFormatChar[k]}:{s}");
+                        //if (AllStandardFormatChar[k] != 'r')
+                        //    continue;
+                        string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[k].ToString(), ci);
+                        TestContext.Write($"{AllStandardFormatChar[k]}:{s}");
 
                         //adt = ArDateTimeFormat.ParseExactArDateTimeFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
-                        //TestContext.WriteLine($" {adt.ToString()}");
+                        TestContext.WriteLine($" {adt.ToString()}");
                     }                    
-                    //string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
-                    //string s2 = ArDateTimeFormat.FormatDateTimeFull(f, adt, ci);
-                    //TestContext.WriteLine($"{f}:{s2}");
+                    string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
+                    string s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);
+                    TestContext.WriteLine($"{f}:{s2}");
 
-                    //f = "K gg yyyyy/MM/dd tt hh:mm:ss.ffff z";
-                    //s2 = ArDateTimeFormat.FormatDateTimeFull(f, adt, ci);
-                    //TestContext.WriteLine($"{f}:{s2}");
+                    f = "K g yyyyy/MM/dd tt 'aaa\\d' hh:mm:ss.FFFFF zz \"ff\"";
+                    s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);
+                    TestContext.WriteLine($"{f}:{s2}");
                     //break;
                 }
             }            
