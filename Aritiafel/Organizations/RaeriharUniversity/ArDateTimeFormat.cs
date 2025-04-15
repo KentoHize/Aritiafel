@@ -1,4 +1,6 @@
-﻿using Aritiafel.Definitions;
+﻿using Aritiafel.Artifacts;
+using Aritiafel.Characters.Heroes;
+using Aritiafel.Definitions;
 using Aritiafel.Items;
 using Aritiafel.Locations;
 using Aritiafel.Organizations.ArinaOrganization;
@@ -21,12 +23,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             "FFFFF", "FFFF", "FFF", "FF", "F"
         };
 
-        static internal ArStringPartInfo[] CreateTextReservedStringPartInfo()
-        {
-            List<ArStringPartInfo> result = new List<ArStringPartInfo>();
-            result.Add(new ArStringPartInfo("bs", "\\\\", ArStringPartType.Escape1));
-            return result.ToArray();
-        }
+        static internal ArDisassembleInfo CreateFormatDisassembleInfo(ArStringPartInfo[] dateTimeReservedString = null)
+            => new ArDisassembleInfo([dateTimeReservedString ?? CreateDateTimeReservedStringPartInfo(), CreateTextReservedStringPartInfo()],
+                [new ArContainerPartInfo("", "'", "'", 1), new ArContainerPartInfo("", "\"", "\"", 1)]);
+
+        static internal ArStringPartInfo[] CreateTextReservedStringPartInfo()        
+            => [new ArStringPartInfo("bs", "\\\\", ArStringPartType.Escape1)];        
 
         static internal ArStringPartInfo[] CreateDateTimeReservedStringPartInfo()
         {
@@ -34,6 +36,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             result.Insert(0, new ArStringPartInfo("p", "%", ArStringPartType.Escape1));
             result.Insert(0, new ArStringPartInfo("bs", "\\\\", ArStringPartType.Escape1));
             return result.ToArray();
+        }
+
+        static internal ArDisassembleInfo CreateScanDisassembleInfo()
+        {
+            ArDisassembleInfo di = new ArDisassembleInfo();
+            di.ReservedStringInfo = [CreateScanStringPartInfo(null, null)];
+            //di.ContainerPartInfo = 
+            return di;
         }
 
         static internal ArStringPartInfo[] CreateScanStringPartInfo(ArOutPartInfoList patternInfo, DateTimeFormatInfo dtfi)
@@ -50,12 +60,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             bool K = false;
             bool zzz = false;
             List<ArStringPartInfo> result = new List<ArStringPartInfo>();
-            for (int i = 0; i < patternInfo.Length; i++)
+            for (int i = 0; i < patternInfo.Value.Count; i++)
             {
                 int maxLength = 0;
 
                 ArStringPartType type = ArStringPartType.Normal;
-                string value = patternInfo[i].Value;
+                patternInfo.Value[i] = ;
+                //object value = patternInfo.Value[i];
                 switch (patternInfo[i].Index)
                 {
                     case 2:
@@ -220,6 +231,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
 
         public static ArDateTime ParseExact(string s, string format, IFormatProvider provider, DateTimeStyles dateTimeStyles)
+            => ParseExactFull(s, format, provider, dateTimeStyles);
+
+        public static ArDateTime ParseExactFull(string s, string format, IFormatProvider provider, DateTimeStyles dateTimeStyles)
         {   
             DateTimeFormatInfo dtfi = null;
             if (provider is CultureInfo ci)
@@ -233,35 +247,36 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (format.Length == 1)
                 format = dtfi.GetAllDateTimePatterns(format[0])[0];
 
-            ArStringPartInfo[] reservedString = CreateTextReservedStringPartInfo();
+            ArStringPartInfo[] reservedString = CreateDateTimeReservedStringPartInfo();
             DisassembleShop ds = new DisassembleShop();
-            ArOutPartInfoList ospi = ds.Disassemble(format, reservedString);
+            ArOutPartInfoList ospi = ds.Disassemble(format, CreateFormatDisassembleInfo(reservedString));
+            Sophia.SeeThrough(ospi);
 
             //To Do
-            ArStringPartInfo[] scanString = CreateScanStringPartInfo(ospi, dtfi);            
-            ArOutStringPartInfo[] ospi2 = ds.Disassemble(s, scanString);
+            //ArStringPartInfo[] scanString = CreateScanStringPartInfo(ospi, dtfi);
+            //ArOutStringPartInfo ospi2 = ds.Disassemble(s, scanString);
 
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalPart = 0, dayOfWeek = 0;
             string era = "";
 
-            for (int i = 0; i < ospi2.Length; i++)
-            {
-                switch (ospi2[i].Name)
-                {
-                    case "yyyyy":
-                    case "yyyy":
-                    case "yyy":
-                        year = int.Parse(ospi2[i].Value);
-                        break;
-                    case "yy":
-                    case "y":
-                        year = int.Parse(ospi2[i].Value);
-                        break;
-                }
-            }
+            //for (int i = 0; i < ospi2.Length; i++)
+            //{
+            //    switch (ospi2[i].Name)
+            //    {
+            //        case "yyyyy":
+            //        case "yyyy":
+            //        case "yyy":
+            //            year = int.Parse(ospi2[i].Value);
+            //            break;
+            //        case "yy":
+            //        case "y":
+            //            year = int.Parse(ospi2[i].Value);
+            //            break;
+            //    }
+            //}
 
             Console.WriteLine($"{s}, {format}");
-            Console.WriteLine($"{year}/{month}/{day} {hour}:{minute}:{second}.{decimalPart} [{dayOfWeek}] {era}");
+            //Console.WriteLine($"{year}/{month}/{day} {hour}:{minute}:{second}.{decimalPart} [{dayOfWeek}] {era}");
 
             return ArDateTime.Now;
         }
@@ -486,8 +501,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
             ArStringPartInfo[] reservedString = CreateDateTimeReservedStringPartInfo();
             DisassembleShop ds = new DisassembleShop();
-            ArOutPartInfoList opil = ds.Disassemble(format, [reservedString, CreateTextReservedStringPartInfo()],
-                [new ArContainerPartInfo("", "'", "'", 1), new ArContainerPartInfo("", "\"", "\"", 1)]);
+            ArOutPartInfoList opil = ds.Disassemble(format, CreateFormatDisassembleInfo(reservedString));
 
             ArDateTime.TicksToDateTime(adt._data, out int year, out int month, out int day, out long timeTicks);
             if (timeTicks < 0)

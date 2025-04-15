@@ -21,6 +21,6 @@ namespace Aritiafel.Items
             Type = type;
             MaxLength = maxLength;
             Times = times;
-        }
+        }        
     }
 }

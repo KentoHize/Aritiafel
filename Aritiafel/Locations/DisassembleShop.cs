@@ -41,14 +41,14 @@ namespace Aritiafel.Locations
         }
 
         public ArOutPartInfoList Disassemble(string s, string[] reserved)
-            => DisassembleStringFull(s, new ArDissambleInfo(StringToPartInfoArray(reserved), null));
+            => DisassembleStringFull(s, new ArDisassembleInfo(StringToPartInfoArray(reserved), null));
         public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved)
-            => DisassembleStringFull(s, new ArDissambleInfo(reserved, null));
+            => DisassembleStringFull(s, new ArDisassembleInfo(reserved, null));
         public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved, ArContainerPartInfo[] containers)
-            => DisassembleStringFull(s, new ArDissambleInfo(reserved, containers));
+            => DisassembleStringFull(s, new ArDisassembleInfo(reserved, containers));
         public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[][] reserved, ArContainerPartInfo[] containers)
-            => DisassembleStringFull(s, new ArDissambleInfo(reserved, containers));
-        public ArOutPartInfoList Disassemble(string s, ArDissambleInfo dissambleInfo)
+            => DisassembleStringFull(s, new ArDisassembleInfo(reserved, containers));
+        public ArOutPartInfoList Disassemble(string s, ArDisassembleInfo dissambleInfo)
             => DisassembleStringFull(s, dissambleInfo);
 
         public static List<ArStringPartInfo> StringToPartInfoList(string[] reserved)
@@ -140,7 +140,7 @@ namespace Aritiafel.Locations
             return "";
         }
 
-        internal ArOutPartInfoList DisassembleStringFull(string s, ArDissambleInfo di)
+        internal ArOutPartInfoList DisassembleStringFull(string s, ArDisassembleInfo di)
         {
             string s2, containerEndString = "";
             int i, reservedStringsIndex = 0; //-1 = No Reserved
