@@ -12,7 +12,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
             : this("zh-TW", true)
         { }
 
-        internal ArCultureInfo(string name, bool useUserOverride) 
+        internal ArCultureInfo(string name, bool useUserOverride)
             : base(name, useUserOverride)
         {
             CreateDateTimeFormatInfo();
@@ -26,13 +26,14 @@ namespace Aritiafel.Organizations.ArinaOrganization
         {
             DateTimeFormat.DayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
             DateTimeFormat.AbbreviatedDayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
-            DateTimeFormat.ShortDatePattern = "M, d, Ar. yyyy";
-            DateTimeFormat.LongDatePattern = "M, d, Ar. yyyy";
+            DateTimeFormat.ShortDatePattern = "M, d, g. yyyy";
+            DateTimeFormat.LongDatePattern = "M, d, g. yyyy";
             DateTimeFormat.ShortTimePattern = "H:m:s";
             DateTimeFormat.LongTimePattern = "H:m:s.fff";
-            DateTimeFormat.YearMonthPattern = "M, Ar. yyyy";
-            DateTimeFormat.MonthDayPattern = "M, d";            
-            DateTimeFormat.FullDateTimePattern = "M, d, Ar. yyyy H:m:s.fff";
-        }
+            DateTimeFormat.YearMonthPattern = "M, g. yyyy";
+            DateTimeFormat.MonthDayPattern = "M, d";
+            DateTimeFormat.FullDateTimePattern = "M, d, g. yyyy H:m:s.fff";
+            
+        }        
     }
 }

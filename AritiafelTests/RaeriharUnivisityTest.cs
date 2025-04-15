@@ -7,6 +7,8 @@ using System.Text;
 using System.Globalization;
 using Aritiafel.Organizations.ArinaOrganization;
 using Aritiafel;
+using Aritiafel.Items;
+using System.Collections;
 
 namespace AritiafelTest
 {
@@ -296,6 +298,11 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
+            List<int> a;
+            //List<ArStringPartInfo>// lll;
+            //Array a = new List<ArStringPartInfo>();
+            //ArrayList al = (ArrayList)a;
+            //Console.WriteLine(al != null);
             DateTime d = DateTime.Now;
             //Console.WriteLine(d.ToString("%g", CultureInfo.GetCultureInfo("zh-TW")));
             //Console.WriteLine(d.ToString("gg", CultureInfo.GetCultureInfo("zh-TW")));
@@ -414,18 +421,19 @@ namespace AritiafelTest
                         //if (AllStandardFormatChar[k] != 'r')
                         //    continue;
                         string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[k].ToString(), ci);
-                        TestContext.Write($"{AllStandardFormatChar[k]}:{s}");
+                        //Console.Write()
+                        //TestContext.Write($"{AllStandardFormatChar[k]}:{s}");
 
                         adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
-                        TestContext.WriteLine($" {adt.ToString()}");
+                        //TestContext.WriteLine($" {adt.ToString()}");
                     }                    
                     string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
                     string s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);
-                    TestContext.WriteLine($"{f}:{s2}");
+                    //TestContext.WriteLine($"{f}:{s2}");
 
                     f = "K g yyyyy/MM/dd tt 'aaa\\d' hh:mm:ss.FFFFF zz \"ff\"";
                     s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);
-                    TestContext.WriteLine($"{f}:{s2}");
+                    //TestContext.WriteLine($"{f}:{s2}");
                     //break;
                 }
             }            

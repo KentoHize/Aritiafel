@@ -1,5 +1,6 @@
 ﻿using Aritiafel.Items;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,12 +16,13 @@ namespace Aritiafel.Artifacts
             else if (o is ArOutPartInfo opi)
                 return SeeThrough(opi);
             else if (o is ArStringPartInfo spi)
-                return SeeThrough(spi);            
-            else if (o is Array a)
+                return SeeThrough(spi);           
+            else if (o is IEnumerable ie)
             {
                 StringBuilder sb = new StringBuilder();
-                for (long i = 0; i < a.LongLength; i++)
-                    sb.Append($"[{i}]:{SeeThrough(a.GetValue(i))} ");
+                var en =  ie.GetEnumerator();
+                for (int i = 0; en.MoveNext(); i++)
+                    sb.Append($"[{i}]:{SeeThrough(en.Current)} ");                    
                 if (sb.Length != 0)
                     sb.Remove(sb.Length - 1, 1);
                 return sb.ToString();
