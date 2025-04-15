@@ -213,7 +213,6 @@ namespace Aritiafel.Artifacts
             => DrawOutFloats(count, 0, maxValue, repeatable);
         public float[] DrawOutFloats(long count, float minValue, float maxValue, bool repeatable = true)
             => Array.ConvertAll(DrawOutDoubles(count, minValue, maxValue, repeatable), m => (float)m);
-
         public short[] DrawOutShorts(long count, bool repeatable = true)
             => DrawOutShorts(count, 0, short.MaxValue, repeatable);
         public short[] DrawOutShorts(long count, short maxValue, bool repeatable = true)

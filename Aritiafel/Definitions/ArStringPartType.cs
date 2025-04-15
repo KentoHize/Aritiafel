@@ -19,5 +19,6 @@ namespace Aritiafel.Definitions
 
         Char,
         String,
+        Special
     }
 }

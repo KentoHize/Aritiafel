@@ -7,10 +7,12 @@ namespace Aritiafel.Locations
 {
     public class DisassembleShopSetting
     {
-        public bool RecordValueWithoutEscapeChar { get; set; }        
+        public bool RecordValueWithoutEscapeChar { get; set; }
+        public bool ErrorOccurIfNoMatch { get; set; }
         public DisassembleShopSetting()
         {
-            RecordValueWithoutEscapeChar = true;            
+            RecordValueWithoutEscapeChar = true;
+            ErrorOccurIfNoMatch = false;
         }
     }
 }

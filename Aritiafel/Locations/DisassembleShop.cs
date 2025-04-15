@@ -28,8 +28,9 @@ using System.Windows.Forms;
 namespace Aritiafel.Locations
 {
     public class DisassembleShop
-    {
+    {   
         public bool RecordValueWithoutEscapeChar { get; set; }
+        public bool ErrorOccurIfNoMatch { get; set; }
 
         public DisassembleShop()
             : this(new DisassembleShopSetting())
@@ -38,6 +39,7 @@ namespace Aritiafel.Locations
         public DisassembleShop(DisassembleShopSetting setting)
         {
             RecordValueWithoutEscapeChar = setting.RecordValueWithoutEscapeChar;
+            ErrorOccurIfNoMatch = setting.ErrorOccurIfNoMatch;
         }
 
         public ArOutPartInfoList Disassemble(string s, string[] reserved)
@@ -232,6 +234,8 @@ namespace Aritiafel.Locations
                 }
                 if (!found)
                 {
+                    if (ErrorOccurIfNoMatch)
+                        throw new KeyNotFoundException($"{s}");
                     target.Value.Add(new ArOutStringPartInfo(-1, "", s[0].ToString(), ArStringPartType.Char));
                     s = s.Substring(1);
                 }
