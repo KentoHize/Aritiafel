@@ -13,5 +13,10 @@ namespace Aritiafel.Characters.Heroes
         {   
             Console.WriteLine(Allseer.SeeThrough(o));
         }
+
+        public static void QuickSeeThrough(object o)
+        {
+            Console.Write(Allseer.SeeThrough(o));
+        }
     }
 }

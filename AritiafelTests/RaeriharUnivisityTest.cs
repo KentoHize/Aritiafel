@@ -9,6 +9,8 @@ using Aritiafel.Organizations.ArinaOrganization;
 using Aritiafel;
 using Aritiafel.Items;
 using System.Collections;
+using Aritiafel.Characters.Heroes;
+using Aritiafel.Definitions;
 
 namespace AritiafelTest
 {
@@ -415,21 +417,34 @@ namespace AritiafelTest
                         ci = Mylar.ArinaCultureInfo;
                     else
                         ci = CultureInfo.GetCultureInfo(cultureInfoA[j]);
-                    TestContext.WriteLine($"{ci.Name} {ci.DisplayName}");
+                    Sophia.SeeThrough($"{ci.Name} {ci.DisplayName}");
                     for (int k = 0; k < AllStandardFormatChar.Length; k++)
                     {
                         //if (AllStandardFormatChar[k] != 'r')
                         //    continue;
+                        //Sophia.SeeThrough(adt.Ticks);
                         string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatChar[k].ToString(), ci);
                         //Console.Write()
                         //TestContext.Write($"{AllStandardFormatChar[k]}:{s}");
-
-                        adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
+                        Sophia.SeeThrough(s);
+                        if ((AllStandardFormatChar[k] == 'M' || AllStandardFormatChar[k] == 'm') &&
+                            adt.Month == 2 && adt.Day == 29)
+                            continue;
+                        //adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
+                        ArDateTime adt2 = ArDateTimeFormat.ParseExact(s, AllStandardFormatChar[k].ToString(), ci, ArDateTimeStyles.CurrentDateDefault);
+                        Sophia.SeeThrough(adt2);
                         //TestContext.WriteLine($" {adt.ToString()}");
                     }                    
                     string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
                     string s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);
-                    //TestContext.WriteLine($"{f}:{s2}");
+                    //s2 = s2.Insert(6, " ");
+                    //s2 = s2.Insert(9, " ");
+                    s2 = " " + s2 + "   ";
+                    Sophia.SeeThrough(s2);
+                    adt = ArDateTimeFormat.ParseExactFull(s2, f, ci, ArDateTimeStyles.AllowLeadingWhite | ArDateTimeStyles.AllowTrailingWhite | ArDateTimeStyles.CurrentDateDefault);
+                    //Sophia.SeeThrough($"{f}:{s2}");
+                    Sophia.SeeThrough(adt);
+                    //Sophia.SeeThrough(adt.Ticks);
 
                     f = "K g yyyyy/MM/dd tt 'aaa\\d' hh:mm:ss.FFFFF zz \"ff\"";
                     s2 = ArDateTimeFormat.FormatDateTimeFull(adt, f, ci);

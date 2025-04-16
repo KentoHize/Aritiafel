@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aritiafel.Definitions;
+using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -454,36 +455,36 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public ArDateTime AddTicks(long ticks)
             => new ArDateTime(_data + ticks);
         public static ArDateTime ParseExact(string s, string format)
-            => ArDateTimeFormat.ParseExact(s, format, null, DateTimeStyles.None);
+            => ArDateTimeFormat.ParseExact(s, format, null, ArDateTimeStyles.None);
         public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider)
-            => ArDateTimeFormat.ParseExact(s, format, formatProvider, DateTimeStyles.None);
-        public static ArDateTime ParseExact(string s, string format, DateTimeStyles dateTimeStyles)
+            => ArDateTimeFormat.ParseExact(s, format, formatProvider, ArDateTimeStyles.None);
+        public static ArDateTime ParseExact(string s, string format, ArDateTimeStyles dateTimeStyles)
             => ArDateTimeFormat.ParseExact(s, format, null, dateTimeStyles);
-        public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
+        public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles)
             => ArDateTimeFormat.ParseExact(s, format, formatProvider, dateTimeStyles);
-        public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, out ArDateTime result)
+        public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
             => ArDateTimeFormat.TryParseExact(s, format, formatProvider, dateTimeStyles, out result);
         public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, out ArDateTime result)
-            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, DateTimeStyles.None, out result);
-        public static bool TryParseExact(string s, string format, DateTimeStyles dateTimeStyles, out ArDateTime result)
+            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, ArDateTimeStyles.None, out result);
+        public static bool TryParseExact(string s, string format, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
             => ArDateTimeFormat.TryParseExact(s, format, null, dateTimeStyles, out result);
         public static bool TryParseExact(string s, string format, out ArDateTime result)
-            => ArDateTimeFormat.TryParseExact(s, format, null, DateTimeStyles.None, out result);
+            => ArDateTimeFormat.TryParseExact(s, format, null, ArDateTimeStyles.None, out result);
         public static ArDateTime Parse(string s)
-            => Parse(s, null, DateTimeStyles.AllowWhiteSpaces);
+            => Parse(s, null, ArDateTimeStyles.AllowWhiteSpaces);
         public static ArDateTime Parse(string s, IFormatProvider formatProvider)
-            => Parse(s, formatProvider, DateTimeStyles.AllowWhiteSpaces);
-        public static ArDateTime Parse(string s, DateTimeStyles dateTimeStyles)
+            => Parse(s, formatProvider, ArDateTimeStyles.AllowWhiteSpaces);
+        public static ArDateTime Parse(string s, ArDateTimeStyles dateTimeStyles)
             => Parse(s, null, dateTimeStyles);
-        public static ArDateTime Parse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles)
+        public static ArDateTime Parse(string s, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles)
             => ArDateTimeFormat.Parse(s, formatProvider, dateTimeStyles);
         public static bool TryParse(string s, out ArDateTime result)
-            => TryParse(s, null, DateTimeStyles.None, out result);
+            => TryParse(s, null, ArDateTimeStyles.None, out result);
         public static bool TryParse(string s, IFormatProvider formatProvider, out ArDateTime result)
-            => TryParse(s, formatProvider, DateTimeStyles.None, out result);
-        public static bool TryParse(string s, DateTimeStyles dateTimeStyles, out ArDateTime result)
+            => TryParse(s, formatProvider, ArDateTimeStyles.None, out result);
+        public static bool TryParse(string s, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
             => TryParse(s, null, dateTimeStyles, out result);
-        public static bool TryParse(string s, IFormatProvider formatProvider, DateTimeStyles dateTimeStyles, out ArDateTime result)
+        public static bool TryParse(string s, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
         {
             try
             {

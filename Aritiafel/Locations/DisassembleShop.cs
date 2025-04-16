@@ -33,6 +33,7 @@ namespace Aritiafel.Locations
     {   
         public bool RecordValueWithoutEscapeChar { get; set; }
         public bool ErrorOccurIfNoMatch { get; set; }
+        public bool RemoveLimitedReservedStringIfNoMatch { get; set; }
 
         public DisassembleShop()
             : this(new DisassembleShopSetting())
@@ -42,6 +43,7 @@ namespace Aritiafel.Locations
         {
             RecordValueWithoutEscapeChar = setting.RecordValueWithoutEscapeChar;
             ErrorOccurIfNoMatch = setting.ErrorOccurIfNoMatch;
+            RemoveLimitedReservedStringIfNoMatch = setting.RemoveLimitedReservedStringIfNoMatch;
         }
 
         public ArOutPartInfoList Disassemble(string s, string[] reserved)
@@ -236,6 +238,9 @@ namespace Aritiafel.Locations
                                     break;
                                 }
                             }
+                            //Not Found
+                            if (RemoveLimitedReservedStringIfNoMatch && spi.Times != -1)                                
+                                 spi.Times = 0;
                         }
                         else if (di.ReservedStringInfo[reservedStringsIndex][i] is ArGroupStringPartInfo gspi)
                         {
@@ -246,7 +251,7 @@ namespace Aritiafel.Locations
                             {
                                 if (s.StartsWith(gspi.Value[j]))
                                 {   
-                                    target.Value.Add(new ArOutStringPartInfo(i, gspi.Name, gspi.Value[j]));
+                                    target.Value.Add(new ArOutStringPartInfo(i, gspi.Name, gspi.Value[j], ArStringPartType.Normal, j));
                                     found = true;
                                     if (gspi.Times > 0)
                                         gspi.Times--;
@@ -254,6 +259,9 @@ namespace Aritiafel.Locations
                                     break;
                                 }
                             }
+                            //Not Found
+                            if (RemoveLimitedReservedStringIfNoMatch && gspi.Times != -1)                                
+                                gspi.Times = 0;
                         }
                     }
                 }
