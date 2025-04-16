@@ -6,6 +6,7 @@ using Aritiafel.Locations;
 using Aritiafel.Organizations.ArinaOrganization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Text;
@@ -47,79 +48,81 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return di;
         }
 
-        static internal ArStringPartInfo[] CreateScanStringPartInfo(ArOutPartInfo patternInfo, DateTimeFormatInfo dtfi)
+        static internal ArPartInfo[] CreateScanStringPartInfo(ArOutPartInfo patternInfo, DateTimeFormatInfo dtfi)
         {
             //bool dayNameAdded = false; //a 0
             //bool abbreviatedDayNameAdded = false; //b 1
-            //bool monthNameAdded = false; //c 2
-            //bool monthGenitiveNamesAdded = false; //d 3
-            //dtfi.AbbreviatedMonthNames
-            //bool shortestDayNamesAdded = false;
-            //bool eraNameAdded = false; //g 6
-            //bool abbreviatedEraNamesAdded = false; //h 7
+            //bool monthNameAdded = false; //c 2            
+            //dtfi.AbbreviatedMonthNames //d 3            
             //bool designatorAdded = false; //e 4
             //bool abbreviatedDesignatorAdded = false; //f 5
-            List<ArStringPartInfo> result = CreateScanStringPartInfoLoop(patternInfo, dtfi);            
-            List<ArStringPartInfo> result2 = new List<ArStringPartInfo>();
-            bool[] flags = new bool[8];
-            for(int i = result.Count - 1; i >= 0; i--)
+            //bool eraNameAdded = false; //g 6
+            //bool abbreviatedEraNamesAdded = false; //h 7
+            List<ArPartInfo> result = CreateScanStringPartInfoLoop(patternInfo, dtfi);
+            string[] sa;
+            for (int i = result.Count - 1; i >= 0; i--)
             {
-                if (result[i].Type == ArStringPartType.Special)
+                if (result[i] is ArGroupStringPartInfo gspi)
                 {
-                    flags[result[i].Value[0] - 'a'] = true;
-                    result.RemoveAt(i);
+                    switch (gspi.Name)
+                    {
+                        case "wl":
+                            gspi.Value = (string[])dtfi.DayNames.Clone();
+                            break;
+                        case "wa":
+                            gspi.Value = (string[])dtfi.AbbreviatedDayNames.Clone();
+                            break;
+                        case "mn":
+                            sa = new string[12];                            
+                            Array.Copy(dtfi.MonthNames, 0, sa, 0, 12);
+                            gspi.Value = sa;
+                            break;
+                        case "ma":
+                            sa = new string[12];
+                            Array.Copy(dtfi.AbbreviatedMonthNames, 0, sa, 0, 12);
+                            gspi.Value = sa;                            
+                            break;
+                        case "dn":
+                            gspi.Value = [dtfi.AMDesignator, dtfi.PMDesignator];
+                            break;
+                        case "d1":
+                            gspi.Value = [dtfi.AMDesignator[0].ToString(), dtfi.PMDesignator[0].ToString()];
+                            break;
+                        case "er":
+                            if (dtfi.FullDateTimePattern == "M, d, g. yyyy H:m:s.fff") // ArCulture
+                                gspi.Value = ["有奈"];
+                            else
+                            {
+                                List<string> ls = [];
+                                for (int j = 0; j < dtfi.Calendar.Eras.Length; j++)
+                                    ls.Add(dtfi.GetEraName(dtfi.Calendar.Eras[i]));
+                                gspi.Value = ls.ToArray();
+                            }
+                            break;
+                        case "ea":
+                            if (dtfi.FullDateTimePattern == "M, d, g. yyyy H:m:s.fff") // ArCulture
+                                gspi.Value = ["Ar"];
+                            else
+                            {
+                                List<string> ls = [];
+                                for (int j = 0; j < dtfi.Calendar.Eras.Length; j++)
+                                    ls.Add(dtfi.GetAbbreviatedEraName(dtfi.Calendar.Eras[i]));
+                                gspi.Value = ls.ToArray();
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(gspi.Name);
+                    }
                 }
             }
-
-            if (flags[0])
-                for (int j = 0; j < 7; j++)
-                    result2.Add(new ArStringPartInfo($"wl", dtfi.DayNames[j]));
-            if (flags[1])
-                for (int j = 0; j < 7; j++)
-                    result2.Add(new ArStringPartInfo($"wa", dtfi.AbbreviatedDayNames[j]));
-            if (flags[2])
-                for (int j = 0; j < dtfi.MonthNames.Length; j++)
-                    if (dtfi.MonthNames[j] != "")
-                        result2.Add(new ArStringPartInfo($"mn", dtfi.MonthNames[j]));
-            if (flags[3])
-                for (int j = 0; j < dtfi.AbbreviatedMonthNames.Length; j++)
-                    if(dtfi.AbbreviatedMonthNames[j] != "")
-                        result2.Add(new ArStringPartInfo($"mg", dtfi.AbbreviatedMonthNames[j]));
-            if (flags[4])
-            {
-                result2.Add(new ArStringPartInfo($"dn", dtfi.AMDesignator));
-                result2.Add(new ArStringPartInfo($"dn", dtfi.PMDesignator));
-            }
-            if (flags[5])
-            {
-                result2.Add(new ArStringPartInfo($"dn1", dtfi.AMDesignator[0].ToString()));
-                result2.Add(new ArStringPartInfo($"dn1", dtfi.PMDesignator[0].ToString()));
-            }
-            if (flags[6])
-            {
-                if(dtfi.FullDateTimePattern == "M, d, g. yyyy H:m:s.fff") // ArCulture
-                    result2.Add(new ArStringPartInfo($"er", "有奈"));
-                else
-                    for (int i = 0; i < dtfi.Calendar.Eras.Length; i++)
-                        result2.Add(new ArStringPartInfo($"er", dtfi.GetEraName(dtfi.Calendar.Eras[i])));
-            }
-            if (flags[7])
-            {
-                if (dtfi.FullDateTimePattern == "M, d, g. yyyy H:m:s.fff") // ArCulture
-                    result2.Add(new ArStringPartInfo($"er", "Ar"));
-                else
-                    for (int i = 0; i < dtfi.Calendar.Eras.Length; i++)
-                        result2.Add(new ArStringPartInfo($"ea", dtfi.GetAbbreviatedEraName(dtfi.Calendar.Eras[i])));
-            }
-            result2.AddRange(result);
-            return result2.ToArray();
+            return result.ToArray();
         }
 
-        static internal List<ArStringPartInfo> CreateScanStringPartInfoLoop(ArOutPartInfo patternInfo, DateTimeFormatInfo dtfi)
+        static internal List<ArPartInfo> CreateScanStringPartInfoLoop(ArOutPartInfo patternInfo, DateTimeFormatInfo dtfi)
         {
             bool K = false;
             bool zzz = false;
-            List<ArStringPartInfo> result = new List<ArStringPartInfo>();
+            List<ArPartInfo> result = new List<ArPartInfo>();
             if (patternInfo is ArOutPartInfoList opil)
             {
                 for (int i = 0; i < opil.Value.Count; i++)
@@ -129,7 +132,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             {
                 int maxLength = 0;
                 ArStringPartType type = ArStringPartType.Normal;
-                string value = "";                
+                string value = "";
                 switch (ospi.Index)
                 {
                     case 2:
@@ -140,36 +143,36 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         break;
                     case 12:
                         type = ArStringPartType.Special; //表示多選                        
-                        value = "a";
+                        value = "wl";
                         break;
                     case 13:
                         type = ArStringPartType.Special;
-                        value = "b";                        
+                        value = "wa";
                         break;
                     case 19:
                         type = ArStringPartType.Special;
-                        value = "c";
+                        value = "mn";
                         break;
                     case 20:
                         type = ArStringPartType.Special;
-                        value = "d";
+                        value = "ma";
                         break;
                     case 32:
                         type = ArStringPartType.Special;
-                        value = "e";
+                        value = "dn";
                         break;
                     case 33:
                         type = ArStringPartType.Special;
-                        value = "f";
+                        value = "d1";
                         maxLength = 1;
                         break;
                     case 34:
                         type = ArStringPartType.Special;
-                        value = "g";
+                        value = "er";
                         break;
                     case 35:
                         type = ArStringPartType.Special;
-                        value = "h";
+                        value = "ea";
                         break;
                     case 36: //K
                         type = ArStringPartType.Escape1;
@@ -240,7 +243,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     result.Add(new ArStringPartInfo(ospi.Name, value, type, maxLength, 1));
                 else if (type == ArStringPartType.Integer)
                 {
-                    if(ospi.Index >= 15 && ospi.Index <= 19) //yyyy屬特例
+                    if (ospi.Index >= 15 && ospi.Index <= 19) //yyyy屬特例
                     {
                         result.Add(new ArStringPartInfo("-", "-", ArStringPartType.Normal, 0, 1));
                         result.Add(new ArStringPartInfo(ospi.Name, "", type, maxLength, 1));
@@ -249,7 +252,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         result.Add(new ArStringPartInfo(ospi.Name, "", type, maxLength, 1));
                 }
                 else if (type == ArStringPartType.Special)
-                    result.Add(new ArStringPartInfo("e", value, type, maxLength, 1));
+                    result.Add(new ArGroupStringPartInfo(value, null, 1));
                 else
                 {
                     if (K || zzz)
@@ -293,12 +296,19 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             ArOutPartInfoList ospi = ds.Disassemble(format, CreateFormatDisassembleInfo(reservedString));
             //Sophia.SeeThrough(ospi);
             //Sophia.SeeThrough(dtfi.GetEraName(0));
-            ArStringPartInfo[] scanString = CreateScanStringPartInfo(ospi, dtfi);
+            //ArStringPartInfo[] scanString = CreateScanStringPartInfo(ospi, dtfi);
             //Sophia.SeeThrough(scanString);
             ds.ErrorOccurIfNoMatch = true;
-            ArOutPartInfo ospi2 = ds.Disassemble(s, CreateScanDisassembleInfo(ospi, dtfi));
-            //Sophia.SeeThrough(ospi2);
-            //To Do
+            //Sophia.SeeThrough(s);
+            //Stopwatch sw = Stopwatch.StartNew();
+            //Sophia.SeeThrough(sw);
+            ospi = ds.Disassemble(s, CreateScanDisassembleInfo(ospi, dtfi));
+            //Sophia.SeeThrough(sw);
+            //sw.Stop();
+
+
+            //Sophia.SeeThrough(ospi);
+            
 
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalPart = 0, dayOfWeek = 0;
             string era = "";

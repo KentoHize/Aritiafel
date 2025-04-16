@@ -19,6 +19,6 @@ namespace Aritiafel.Definitions
 
         Char,
         String,
-        Special
+        Special //考慮增加同名全砍一次
     }
 }

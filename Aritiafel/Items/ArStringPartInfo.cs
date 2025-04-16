@@ -4,9 +4,8 @@ using System.Collections.Generic;
 
 namespace Aritiafel.Items
 {
-    public class ArStringPartInfo
+    public class ArStringPartInfo : ArPartInfo
     {   
-        public string Name { get; set; } //名字
         public string Value { get; set; } //值
         public ArStringPartType Type { get; set; } //類型
         public int MaxLength { get; set; } //最長字元
@@ -14,9 +13,9 @@ namespace Aritiafel.Items
         public ArStringPartInfo(string value)
             : this(value, value)
         { }
-        public ArStringPartInfo(string name, string value, ArStringPartType type = ArStringPartType.Normal, int maxLength = 0, int times = -1)            
-        {
-            Name = name;
+        public ArStringPartInfo(string name, string value, ArStringPartType type = ArStringPartType.Normal, int maxLength = 0, int times = -1)
+            : base(name)
+        {   
             Value = value ?? throw new ArgumentNullException(nameof(value));
             Type = type;
             MaxLength = maxLength;
