@@ -14,18 +14,23 @@ namespace Aritiafel.Organizations.ArinaOrganization
 
         internal ArCultureInfo(string name, bool useUserOverride)
             : base(name, useUserOverride)
-        {
+        {   
             CreateDateTimeFormatInfo();
         }
 
         public override string Name => "zh-AO";
         public override string EnglishName => "Chinese (Arina)";
         public override string DisplayName => "中文 (有奈)";
+        public override string NativeName => DisplayName;
+        public override int LCID => 0x7C04;
+
+        public const string SystemCalendarName = " AR"; //暫時
 
         internal void CreateDateTimeFormatInfo()
         {
+            DateTimeFormat.Calendar = new ArCalendar();
             DateTimeFormat.DayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
-            DateTimeFormat.AbbreviatedDayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
+            DateTimeFormat.AbbreviatedDayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];            
             DateTimeFormat.ShortDatePattern = "M, d, g. yyyy";
             DateTimeFormat.LongDatePattern = "M, d, g. yyyy";
             DateTimeFormat.ShortTimePattern = "H:m:s";
@@ -33,7 +38,6 @@ namespace Aritiafel.Organizations.ArinaOrganization
             DateTimeFormat.YearMonthPattern = "M, g. yyyy";
             DateTimeFormat.MonthDayPattern = "M, d";
             DateTimeFormat.FullDateTimePattern = "M, d, g. yyyy H:m:s.fff";
-            
         }        
     }
 }

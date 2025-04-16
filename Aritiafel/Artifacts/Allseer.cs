@@ -8,6 +8,7 @@ using System.Text;
 namespace Aritiafel.Artifacts
 {
     //主要用來Debug時送出物件資訊
+    //增加方法需要增加新的If判斷
     public static partial class Allseer
     {
         public static string SeeThrough(object o)

@@ -30,7 +30,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
     public struct ArDateTime : IComparable, IComparable<ArDateTime>, IConvertible, IEquatable<ArDateTime>, IFormattable, ISerializable
     {
         internal long _data;
-        static readonly int[] ConstDayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };        
+        static readonly int[] ConstDayInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
         public static readonly ArDateTime MaxValue = new ArDateTime(9999, 12, 31, 23, 59, 59, 999);
         public static readonly ArDateTime MinValue = new ArDateTime(-9999, 1, 1, 0, 0, 0, 0);
@@ -63,9 +63,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public ArDateTime(DateTime dt)
             => _data = dt.Ticks;
         public static ArDateTime Now
-            => new ArDateTime(DateTime.Now);
-        public static ArDateTime UtcNow
             => new ArDateTime(DateTime.UtcNow);
+        //public static ArDateTime UtcNow
+        //    => new ArDateTime(DateTime.UtcNow);
         public static ArDateTime Today
             => Now.Date;
 
@@ -73,7 +73,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             if (year == 0)
                 throw new ArgumentOutOfRangeException(nameof(year));
-            if(year < -9999 || year > 9999)
+            if (year < -9999 || year > 9999)
                 throw new ArgumentOutOfRangeException(nameof(year));
             if (month < 1 || month > 12)
                 throw new ArgumentOutOfRangeException(nameof(month));
@@ -100,7 +100,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (year == 0)
                 throw new ArgumentException(nameof(year));
             if (isArDate)
-                year = GetCEYear(year);            
+                year = GetCEYear(year);
             if (year < 0)
                 year = year % 400 + 401;
             if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))
@@ -142,7 +142,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         internal static long DateTimeToTicks(int year, int month, int day, int hour, int minute, int second, int millisecond, int tick)
         {
-            long result = 0, oy = year, d = 0;                   
+            long result = 0, oy = year, d = 0;
             d += day - 1;
             for (int i = 0; i < month - 1; i++)
             {
@@ -157,7 +157,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             d += Math.DivRem(oy, 100, out oy) * 36524;
             d += Math.DivRem(oy, 4, out oy) * 1461;
             d += oy * 365;
-            result += 864000000000L * d;            
+            result += 864000000000L * d;
             result += 36000000000L * hour;
             result += 600000000L * minute;
             result += 10000000L * second;
@@ -200,7 +200,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 n9 += 365;
             }
             //n9剩餘天數
-            
+
             year = (int)(n2 * 400 + n4 * 100 + n6 * 4 + n8);
             if (ticks >= 0)
                 year += +1;
@@ -276,8 +276,18 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ArDateTimeFormat.Format(this, "T", formatProvider);
         public string ToShortTimeString(IFormatProvider formatProvider = null)
             => ArDateTimeFormat.Format(this, "t", formatProvider);
-        //public string ToStandardString(ArDateTimeType type = ArDateTimeType.DateTime, int decimalDigit = 7, IFormatProvider formatProvider = null)
-        //    => ArDateTimeFormat.FormatStandardDateTime(this, type, decimalDigit, formatProvider);
+        public string ToStandardString(ArStandardDateTimeType type = ArStandardDateTimeType.DateTime, IFormatProvider formatProvider = null)
+            => type switch
+            {
+                ArStandardDateTimeType.DateTime => ArDateTimeFormat.Format(this, "A", formatProvider),
+                ArStandardDateTimeType.ShortDateTime => ArDateTimeFormat.Format(this, "a", formatProvider),
+                ArStandardDateTimeType.Date => ArDateTimeFormat.Format(this, "B", formatProvider),
+                ArStandardDateTimeType.ShortDate => ArDateTimeFormat.Format(this, "b", formatProvider),
+                ArStandardDateTimeType.Time => ArDateTimeFormat.Format(this, "C", formatProvider),
+                ArStandardDateTimeType.ShortTime => ArDateTimeFormat.Format(this, "c", formatProvider),
+                _ => throw new NotSupportedException()
+            };
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => info.AddValue("data", _data);
         public TypeCode GetTypeCode()
