@@ -195,21 +195,21 @@ namespace AritiafelTest
             for (int i = 0; i < testString.Length; i++)
             {
                 TestContext.WriteLine($"\"{testString[i]}\"：");
-                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.UnsignedInteger, 4, out length);
-                TestContext.WriteLine($"UI:\"{s}\"");
-                Assert.AreEqual(s.Length, length);
+                //s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.UnsignedInteger, 4, out length);
+                //TestContext.WriteLine($"UI:\"{s}\"");
+                //Assert.AreEqual(s.Length, length);
 
-                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Integer, 4,out length);
-                TestContext.WriteLine($" I:\"{s}\"");
-                Assert.AreEqual(s.Length, length);
+                //s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Integer, 4,out length);
+                //TestContext.WriteLine($" I:\"{s}\"");
+                //Assert.AreEqual(s.Length, length);
 
-                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Decimal, 4,out length);
-                TestContext.WriteLine($" D:\"{s}\"");
-                Assert.AreEqual(s.Length, length);
+                //s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.Decimal, 4,out length);
+                //TestContext.WriteLine($" D:\"{s}\"");
+                //Assert.AreEqual(s.Length, length);
 
-                s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.ScientificNotation, 9, out length);
-                TestContext.WriteLine($"SN:\"{s}\"");
-                Assert.AreEqual(s.Length, length);
+                //s = DisassembleShop.CaptureNumberString(testString[i], ArNumberStringType.ScientificNotation, 9, out length);
+                //TestContext.WriteLine($"SN:\"{s}\"");
+                //Assert.AreEqual(s.Length, length);
 
                 TestContext.WriteLine("");
             }

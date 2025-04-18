@@ -15,7 +15,7 @@ using static System.Windows.Forms.DataFormats;
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
-    public static class ArDateTimeFormat
+    internal static class ArDateTimeFormat
     {
         internal static readonly string[] SortedAllCustomFormatString =
 {
@@ -411,9 +411,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static ArDateTime Parse(string s, IFormatProvider provider, ArDateTimeStyles dateTimeStyles)
         {
             DateTimeFormatInfo dtf = null;
-            if (dateTimeStyles.HasFlag(DateTimeStyles.AllowLeadingWhite))
+            if (dateTimeStyles.HasFlag(ArDateTimeStyles.AllowLeadingWhite))
                 s = s.TrimStart();
-            if (dateTimeStyles.HasFlag(DateTimeStyles.AllowTrailingWhite))
+            if (dateTimeStyles.HasFlag(ArDateTimeStyles.AllowTrailingWhite))
                 s = s.TrimEnd();
             if (s.Trim().Length < 4)
                 throw new FormatException(s);
@@ -427,10 +427,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return ArDateTime.ParseExact(s, null, provider, dateTimeStyles);
             else
                 dtf = Mylar.ArinaCultureInfo.DateTimeFormat;
-            
-            DisassembleShop ds = new DisassembleShop();
-            ArDisassembleInfo di = new ArDisassembleInfo([dtf.DateSeparator, dtf.TimeSeparator, ".", " ", "GMT", "Z", "T", "-"]);
-            ArOutPartInfoList pi = ds.Disassemble(s, di);
+
+            DisassembleShop ds = new DisassembleShop();            
+            ArOutPartInfoList pi = ds.Disassemble(s, new ArDisassembleInfo([dtf.DateSeparator, dtf.TimeSeparator, ".", " ", "GMT", "Z", "T", "-"]));
             int dsr = 0, tsr = 0, dot = 0, sp = 0, gmt = 0, z = 0, t = 0, dash = 0;
             for (int i = 0; i < pi.Value.Count; i++)
             {
@@ -441,7 +440,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         break;
                     case 1:
                         tsr++;
-                        break;                    
+                        break;
                     case 2:
                         dot++;
                         break;
@@ -450,7 +449,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         break;
                     case 4:
                         gmt++;
-                        break;                    
+                        break;
                     case 5:
                         z++;
                         break;
@@ -463,25 +462,21 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 }
             }
             ArDateTime result;
-
             if ((char.IsLetter(s[0]) && char.IsLetter(s[1])) ||
                 ((char.IsLetter(s[0]) || char.IsWhiteSpace(s[0])) && char.IsLetter(s[1]) && char.IsLetter(s[2]))) //標準格式開頭
             {
-                if (s.Length >= Mylar.StandardDateTimeLength)
+                if (s.Length >= Mylar.StandardDateTimeLength - 1)
                     if (TryParseExact(s, "A", provider, dateTimeStyles, out result))
                         return result;
-                if (s.Length >= Mylar.StandardShortDateTimeLength)
+                if (s.Length >= Mylar.StandardShortDateTimeLength - 1)
                     if (TryParseExact(s, "a", provider, dateTimeStyles, out result))
                         return result;
-                if (s.Length >= Mylar.StandardDateLength)
+                if (s.Length >= Mylar.StandardDateLength - 1)
                     if (TryParseExact(s, "B", provider, dateTimeStyles, out result))
                         return result;
-                if (s.Length >= Mylar.StandardShortDateLength)
-                    if (TryParseExact(s, "b", provider, dateTimeStyles, out result))
-                        return result;
             }
-            
-            if(sp != 0)
+
+            if (sp != 0)
             {
                 if (gmt > 0)
                 {
@@ -504,56 +499,61 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         if (TryParseExact(s, "F", provider, dateTimeStyles, out result))
                             return result;
                     }
-                    else if(tsr == 1)
+                    else if (tsr == 1)
                     {
                         if (TryParseExact(s, "g", provider, dateTimeStyles, out result))
                             return result;
                         if (TryParseExact(s, "f", provider, dateTimeStyles, out result))
                             return result;
-                    }   
+                    }
                 }
-            }            
-            if (sp == 0 || dateTimeStyles.HasFlag(ArDateTimeStyles.AllowInnerWhite))
+            }
+
+            if (t > 0)
             {
-                if (t > 0)
-                {
-                    if (dash > 0)
-                        if (TryParseExact(s, "s", provider, dateTimeStyles, out result))
-                            return result;
-                    if (TryParseExact(s, "O", provider, dateTimeStyles, out result))
+                if (dash > 0)
+                    if (TryParseExact(s, "s", provider, dateTimeStyles, out result))
                         return result;
-                    if (TryParseExact(s, "o", provider, dateTimeStyles, out result))
-                        return result;
-                    throw new FormatException(s);
-                }
-                if (s.Length >= Mylar.StandardTimeLength && dot > 0)
-                    if (TryParseExact(s, "C", provider, dateTimeStyles, out result))
-                        return result;
-                if (s.Length >= Mylar.StandardShorTimeLength)
-                    if (TryParseExact(s, "c", provider, dateTimeStyles, out result))
-                        return result;
-                if (dsr == 2)
-                    if (TryParseExact(s, "d", provider, dateTimeStyles, out result))
-                        return result;
-                if (tsr == 2)
-                    if (TryParseExact(s, "T", provider, dateTimeStyles, out result))
-                        return result;
-                if (tsr == 1)
-                    if (TryParseExact(s, "t", provider, dateTimeStyles, out result))
-                        return result;
-                if (s.Length > 10)
-                    if (TryParseExact(s, "D", provider, dateTimeStyles, out result))
-                        return result;
-                if (TryParseExact(s, "M", provider, dateTimeStyles, out result))
+                if (TryParseExact(s, "O", provider, dateTimeStyles, out result))
                     return result;
-                if (TryParseExact(s, "Y", provider, dateTimeStyles, out result))
+                if (TryParseExact(s, "o", provider, dateTimeStyles, out result))
                     return result;
-                if (TryParseExact(s, "m", provider, dateTimeStyles, out result))
+            }
+
+            if (tsr == 2)
+                if (TryParseExact(s, "T", provider, dateTimeStyles, out result))
                     return result;
-                if (TryParseExact(s, "y", provider, dateTimeStyles, out result))
+            if (tsr == 1)
+                if (TryParseExact(s, "t", provider, dateTimeStyles, out result))
+                    return result;            
+            if (s.Length >= Mylar.StandardTimeLength && dot > 0)
+                if (TryParseExact(s, "C", provider, dateTimeStyles, out result))
                     return result;
-            }            
-            if (TryParseExact(s, "U", provider, dateTimeStyles, out result))
+            if (s.Length >= Mylar.StandardShorTimeLength)
+                if (TryParseExact(s, "c", provider, dateTimeStyles, out result))
+                    return result;
+            if (dsr == 2)
+            {
+                if (s.Length >= Mylar.StandardShortDateLength)
+                    if (TryParseExact(s, "b", provider, dateTimeStyles, out result))
+                        return result;
+                if (TryParseExact(s, "d", provider, dateTimeStyles, out result))
+                    return result;
+            }
+            if (s.Length > 10)
+            {
+                if (TryParseExact(s, "D", provider, dateTimeStyles, out result))
+                    return result;
+                if (TryParseExact(s, "U", provider, dateTimeStyles, out result))
+                    return result;
+            }   
+            if (TryParseExact(s, "M", provider, dateTimeStyles, out result))
+                return result;
+            if (TryParseExact(s, "Y", provider, dateTimeStyles, out result))
+                return result;            
+            if (TryParseExact(s, "m", provider, dateTimeStyles, out result))
+                return result;
+            if (TryParseExact(s, "y", provider, dateTimeStyles, out result))
                 return result;
             throw new FormatException(s);
         }
