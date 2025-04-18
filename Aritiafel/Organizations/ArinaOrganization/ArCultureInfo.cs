@@ -33,11 +33,11 @@ namespace Aritiafel.Organizations.ArinaOrganization
             DateTimeFormat.AbbreviatedDayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];            
             DateTimeFormat.ShortDatePattern = "M, d, g. yyyy";
             DateTimeFormat.LongDatePattern = "M, d, g. yyyy";
-            DateTimeFormat.ShortTimePattern = "H:m:s";
-            DateTimeFormat.LongTimePattern = "H:m:s.fff";
+            DateTimeFormat.ShortTimePattern = "H:mm:ss";
+            DateTimeFormat.LongTimePattern = "H:mm:ss.fff";
             DateTimeFormat.YearMonthPattern = "M, g. yyyy";
             DateTimeFormat.MonthDayPattern = "M, d";
-            DateTimeFormat.FullDateTimePattern = "M, d, g. yyyy H:m:s.fff";
+            DateTimeFormat.FullDateTimePattern = "M, d, g. yyyy H:mm:ss.fff";
         }        
     }
 }

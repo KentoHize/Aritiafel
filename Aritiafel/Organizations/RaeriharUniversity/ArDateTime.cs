@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 //private const long TicksPerMillisecond = 10000L;
 //private const long TicksPerSecond = 10000000L;
@@ -42,7 +43,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         }
         public long Ticks { get => _data; set => _data = value; }
         public ArDateTime(long ticks)
-            => _data = ticks;
+        {
+            if (ticks > MaxValue.Ticks || ticks < MinValue.Ticks)
+                throw new ArgumentOutOfRangeException(nameof(ticks));
+            _data = ticks;
+        }
 
         public ArDateTime(int year, int month, int day, bool isArDate = false)
             : this(year, month, day, 0, 0, 0, 0, 0, isArDate)
@@ -56,24 +61,21 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             if (isArDate)
                 year = GetCEYear(year);
-            ValidateDateTime(year, month, day, hour, minute, second, millisecond);
+            ValidateDateTime(year, month, day, hour, minute, second, millisecond, tick);
             _data = DateTimeToTicks(year, month, day, hour, minute, second, millisecond, tick);
         }
 
         public ArDateTime(DateTime dt)
-            => _data = dt.Ticks;
+            : this(dt.Ticks)
+        { }
         public static ArDateTime Now
             => new ArDateTime(DateTime.UtcNow);
-        //public static ArDateTime UtcNow
-        //    => new ArDateTime(DateTime.UtcNow);
         public static ArDateTime Today
             => Now.Date;
 
-        internal static void ValidateDateTime(int year, int month, int day = 1, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, bool isArDate = false)
+        internal static void ValidateDateTime(int year, int month, int day = 1, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, int tick = 0, bool isArDate = false)
         {
-            if (year == 0)
-                throw new ArgumentOutOfRangeException(nameof(year));
-            if (year < -9999 || year > 9999)
+            if (year == 0 || year < -9999 || year > 9999)
                 throw new ArgumentOutOfRangeException(nameof(year));
             if (month < 1 || month > 12)
                 throw new ArgumentOutOfRangeException(nameof(month));
@@ -85,13 +87,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 throw new ArgumentOutOfRangeException(nameof(second));
             if (millisecond < 0 || millisecond > 999)
                 throw new ArgumentOutOfRangeException(nameof(millisecond));
-            if (day < 1 || day > 31)
-                throw new ArgumentOutOfRangeException(nameof(day));
-            if (day == 31 && (month == 2 || month == 4 || month == 6 || month == 9 || month == 11))
-                throw new ArgumentOutOfRangeException(nameof(day));
-            if (day == 30 && month == 2)
-                throw new ArgumentOutOfRangeException(nameof(day));
-            if (day == 29 && !IsLeapYear(year, isArDate))
+            if (tick < 0 || tick > 9999)
+                throw new ArgumentOutOfRangeException(nameof(tick));
+            if (day < 1 || day > 31 ||
+                day > ConstDayInMonth[month - 1] + 1 ||
+                (day > ConstDayInMonth[month - 1] && (month != 2 || !IsLeapYear(year, isArDate))))
                 throw new ArgumentOutOfRangeException(nameof(day));
         }
 
@@ -112,7 +112,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             ValidateDateTime(year, month);
             if (IsLeapYear(year, isArDate) && month == 2)
-                return 29;
+                return ConstDayInMonth[month - 1] + 1;
             return ConstDayInMonth[month - 1];
         }
 
@@ -341,26 +341,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public int ArYear
             => GetARYear(Year);
         public int Year
-        {
-            get
-            {
-                return GetDatePart();
-            }
-        }
+            => GetDatePart();
         public int Month
-        {
-            get
-            {
-                return GetDatePart(DatePart.Month);
-            }
-        }
+            => GetDatePart(DatePart.Month);
         public int Day
-        {
-            get
-            {
-                return GetDatePart(DatePart.Day);
-            }
-        }
+            => GetDatePart(DatePart.Day);
         public int Hour
         {
             get
@@ -464,6 +449,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => new ArDateTime(_data + 1000L * milliseconds);
         public ArDateTime AddTicks(long ticks)
             => new ArDateTime(_data + ticks);
+        public ArDateTime ToTimeZoneTime(TimeZoneInfo tzi)
+            => new ArDateTime(_data += tzi.BaseUtcOffset.Ticks);
+        public ArDateTime ToLocalTimeZoneTime()
+            => ToTimeZoneTime(TimeZoneInfo.Local);
         public static ArDateTime ParseExact(string s, string format)
             => ArDateTimeFormat.ParseExact(s, format, null, ArDateTimeStyles.None);
         public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider)
@@ -472,14 +461,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => ArDateTimeFormat.ParseExact(s, format, null, dateTimeStyles);
         public static ArDateTime ParseExact(string s, string format, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles)
             => ArDateTimeFormat.ParseExact(s, format, formatProvider, dateTimeStyles);
-        public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
-            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, dateTimeStyles, out result);
+        public static bool TryParseExact(string s, string format, out ArDateTime result)
+            => ArDateTimeFormat.TryParseExact(s, format, null, ArDateTimeStyles.None, out result);
         public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, out ArDateTime result)
             => ArDateTimeFormat.TryParseExact(s, format, formatProvider, ArDateTimeStyles.None, out result);
         public static bool TryParseExact(string s, string format, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
-            => ArDateTimeFormat.TryParseExact(s, format, null, dateTimeStyles, out result);
-        public static bool TryParseExact(string s, string format, out ArDateTime result)
-            => ArDateTimeFormat.TryParseExact(s, format, null, ArDateTimeStyles.None, out result);
+            => ArDateTimeFormat.TryParseExact(s, format, null, dateTimeStyles, out result);        
+        public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
+            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, dateTimeStyles, out result);
         public static ArDateTime Parse(string s)
             => Parse(s, null, ArDateTimeStyles.AllowWhiteSpaces);
         public static ArDateTime Parse(string s, IFormatProvider formatProvider)
@@ -503,9 +492,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
             catch
             {
-                result = default;                
+                result = default;
             }
-            return false;        
+            return false;
         }
         public override int GetHashCode()
             => (int)(_data ^ nameof(ArDateTime).GetHashCode());

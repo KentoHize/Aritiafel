@@ -34,7 +34,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
                 else if (dtfi.Calendar is GregorianCalendar)
                     sb.Append(" CE");
                 else
-                    sb.Append("   ");                
+                    sb.Append("   ");
             }
 
             if (sb.Length > 0)

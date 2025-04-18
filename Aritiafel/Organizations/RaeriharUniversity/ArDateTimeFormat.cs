@@ -415,7 +415,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 s = s.TrimStart();
             if (dateTimeStyles.HasFlag(ArDateTimeStyles.AllowTrailingWhite))
                 s = s.TrimEnd();
-            if (s.Trim().Length < 4)
+            if (s.Length < 4)
                 throw new FormatException(s);
             if (provider == null)
                 provider = Mylar.ArinaCultureInfo;
@@ -492,8 +492,20 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
                 if (dsr > 0 && tsr > 0)
                 {
-                    if (tsr == 2)
+                    if(s.Length >= 6 && s[5] == '/' && dsr == 2)
                     {
+                        if(tsr == 2 && dot == 1)
+                            if (TryParseExact(s, "A", provider, dateTimeStyles, out result))
+                                return result;
+                        if(tsr == 2)
+                            if (TryParseExact(s, "a", provider, dateTimeStyles, out result))
+                                return result;
+                        if(tsr == 0)
+                            if (TryParseExact(s, "B", provider, dateTimeStyles, out result))
+                                return result;
+                    }
+                    if (tsr == 2)
+                    {   
                         if (TryParseExact(s, "G", provider, dateTimeStyles, out result))
                             return result;
                         if (TryParseExact(s, "F", provider, dateTimeStyles, out result))

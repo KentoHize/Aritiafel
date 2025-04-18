@@ -308,7 +308,9 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
-            Sophia.SeeThrough((-357).ToString("0000;-000"));
+            ArDateTime ad = ArDateTime.Parse("    00008/01/01 03:03:03.4466444");            
+            Sophia.SeeThrough(ad.ToLocalTimeZoneTime());
+            //Sophia.SeeThrough((-357).ToString("0000;-000"));
             //ArDateTime a = ArDateTime.Now;
             //Sophia.SeeThrough(DateTime.Now);
             //for(int i = 0; i < 100; i ++)
