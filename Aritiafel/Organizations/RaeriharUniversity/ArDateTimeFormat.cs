@@ -636,7 +636,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             sb.Append(year.ToString("00000;-0000"));
                             break;
                         case 16: // "yyyy"
-                            sb.Append(year.ToString("0000;-000"));
+                            if (dtf == Mylar.ArinaCultureInfo.DateTimeFormat)
+                                sb.Append(year);
+                            else
+                                sb.Append(year.ToString("0000;-000"));
                             break;
                         case 17: // "yyy"
                             sb.Append(year.ToString("000;-00"));
