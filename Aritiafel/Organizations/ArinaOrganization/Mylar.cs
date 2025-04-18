@@ -1,8 +1,4 @@
-﻿using Aritiafel.Organizations.RaeriharUniversity;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 
 namespace Aritiafel.Organizations.ArinaOrganization
@@ -26,7 +22,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
         public static string GetStandardDateTimePattern(DateTimeFormatInfo dtfi, ArStandardDateTimeType type = ArStandardDateTimeType.DateTime)
         {
             StringBuilder sb = new StringBuilder();
-            if(type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime ||
+            if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime ||
                 type == ArStandardDateTimeType.Date)
             {
                 if (dtfi.Calendar is ArCalendar)
@@ -46,8 +42,8 @@ namespace Aritiafel.Organizations.ArinaOrganization
 
             if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime)
                 sb.Append(" ");
-            
-            if(type == ArStandardDateTimeType.DateTime ||
+
+            if (type == ArStandardDateTimeType.DateTime ||
                 type == ArStandardDateTimeType.Time)
                 sb.Append(StandardTimePattern);
             else if (type == ArStandardDateTimeType.ShortDateTime ||

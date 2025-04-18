@@ -1,17 +1,11 @@
-﻿using Aritiafel.Artifacts;
-using Aritiafel.Characters.Heroes;
-using Aritiafel.Definitions;
+﻿using Aritiafel.Definitions;
 using Aritiafel.Items;
 using Aritiafel.Locations;
 using Aritiafel.Organizations.ArinaOrganization;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
-using static System.Windows.Forms.DataFormats;
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
@@ -26,8 +20,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             "tt", "t", "gg", "g", "K", "zzz", "zz", "z", "FFFFFFF", "FFFFFF",
             "FFFFF", "FFFF", "FFF", "FF", "F"
         };
-
-
         public static string GetFirstDateTimePattern(char format, DateTimeFormatInfo dtfi = null)
             => GetAllDateTimePatterns(format, dtfi)[0];
         public static string[] GetAllDateTimePatterns(char format, DateTimeFormatInfo dtfi = null)
@@ -428,7 +420,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             else
                 dtf = Mylar.ArinaCultureInfo.DateTimeFormat;
 
-            DisassembleShop ds = new DisassembleShop();            
+            DisassembleShop ds = new DisassembleShop();
             ArOutPartInfoList pi = ds.Disassemble(s, new ArDisassembleInfo([dtf.DateSeparator, dtf.TimeSeparator, ".", " ", "GMT", "Z", "T", "-"]));
             int dsr = 0, tsr = 0, dot = 0, sp = 0, gmt = 0, z = 0, t = 0, dash = 0;
             for (int i = 0; i < pi.Value.Count; i++)
@@ -492,20 +484,20 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
                 if (dsr > 0 && tsr > 0)
                 {
-                    if(s.Length >= 6 && s[5] == '/' && dsr == 2)
+                    if (s.Length >= 6 && s[5] == '/' && dsr == 2)
                     {
-                        if(tsr == 2 && dot == 1)
+                        if (tsr == 2 && dot == 1)
                             if (TryParseExact(s, "A", provider, dateTimeStyles, out result))
                                 return result;
-                        if(tsr == 2)
+                        if (tsr == 2)
                             if (TryParseExact(s, "a", provider, dateTimeStyles, out result))
                                 return result;
-                        if(tsr == 0)
+                        if (tsr == 0)
                             if (TryParseExact(s, "B", provider, dateTimeStyles, out result))
                                 return result;
                     }
                     if (tsr == 2)
-                    {   
+                    {
                         if (TryParseExact(s, "G", provider, dateTimeStyles, out result))
                             return result;
                         if (TryParseExact(s, "F", provider, dateTimeStyles, out result))
@@ -537,7 +529,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     return result;
             if (tsr == 1)
                 if (TryParseExact(s, "t", provider, dateTimeStyles, out result))
-                    return result;            
+                    return result;
             if (s.Length >= Mylar.StandardTimeLength && dot > 0)
                 if (TryParseExact(s, "C", provider, dateTimeStyles, out result))
                     return result;
@@ -558,11 +550,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     return result;
                 if (TryParseExact(s, "U", provider, dateTimeStyles, out result))
                     return result;
-            }   
+            }
             if (TryParseExact(s, "M", provider, dateTimeStyles, out result))
                 return result;
             if (TryParseExact(s, "Y", provider, dateTimeStyles, out result))
-                return result;            
+                return result;
             if (TryParseExact(s, "m", provider, dateTimeStyles, out result))
                 return result;
             if (TryParseExact(s, "y", provider, dateTimeStyles, out result))

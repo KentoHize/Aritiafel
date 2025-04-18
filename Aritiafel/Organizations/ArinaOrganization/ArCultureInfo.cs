@@ -1,8 +1,4 @@
-﻿using Aritiafel.Organizations.RaeriharUniversity;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+﻿using System.Globalization;
 
 namespace Aritiafel.Organizations.ArinaOrganization
 {
@@ -14,7 +10,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
 
         internal ArCultureInfo(string name, bool useUserOverride)
             : base(name, useUserOverride)
-        {   
+        {
             CreateDateTimeFormatInfo();
         }
 
@@ -30,7 +26,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
         {
             DateTimeFormat.Calendar = new ArCalendar();
             DateTimeFormat.DayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
-            DateTimeFormat.AbbreviatedDayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];            
+            DateTimeFormat.AbbreviatedDayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
             DateTimeFormat.ShortDatePattern = "M, d, g. yyyy";
             DateTimeFormat.LongDatePattern = "M, d, g. yyyy";
             DateTimeFormat.ShortTimePattern = "H:mm:ss";
@@ -38,6 +34,6 @@ namespace Aritiafel.Organizations.ArinaOrganization
             DateTimeFormat.YearMonthPattern = "M, g. yyyy";
             DateTimeFormat.MonthDayPattern = "M, d";
             DateTimeFormat.FullDateTimePattern = "M, d, g. yyyy H:mm:ss.fff";
-        }        
+        }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using Aritiafel.Definitions;
+using Aritiafel.Organizations.ArinaOrganization;
 using System;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 //private const long TicksPerMillisecond = 10000L;
 //private const long TicksPerSecond = 10000000L;
@@ -19,10 +18,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 //0:1年1月1日0時0分0秒
 //-1000:-1年12月31日23時59分59秒
 //可填負值與零的DateTime
-//ToString =>複雜
-
-// To Do：ParseExact format
-// To Do:負數年星期的問題
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
@@ -121,7 +116,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return ConstDayInMonth[month - 1] + 1;
             return ConstDayInMonth[month - 1];
         }
-        public static int GetDayOfWeek(int year, int month, int day, bool isArDate = false)        
+        public static int GetDayOfWeek(int year, int month, int day, bool isArDate = false)
             => new ArDateTime(year, month, day, isArDate).DayOfWeek;
         internal int GetDatePart(DatePart part = DatePart.Year)
         {
@@ -472,7 +467,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static bool TryParseExact(string s, string format, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
             => ArDateTimeFormat.TryParseExact(s, format, null, dateTimeStyles, out result);
         public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
-            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, dateTimeStyles, out result);
+            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, dateTimeStyles, out result);           
         public static ArDateTime Parse(string s)
             => Parse(s, null, ArDateTimeStyles.AllowWhiteSpaces);
         public static ArDateTime Parse(string s, IFormatProvider formatProvider)
@@ -488,7 +483,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static bool TryParse(string s, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
             => TryParse(s, null, dateTimeStyles, out result);
         public static bool TryParse(string s, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
-        {   
+        {
             try
             {
                 result = Parse(s, formatProvider, dateTimeStyles);
@@ -505,7 +500,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static ArDateTime operator +(ArDateTime t1, ArDateTime t2)
             => new ArDateTime(t1._data + t2._data);
         public static ArDateTime operator +(ArDateTime t1, TimeSpan ts)
-            => t1.AddTicks(ts.Ticks);            
+            => t1.AddTicks(ts.Ticks);
         public static TimeSpan operator -(ArDateTime t1, ArDateTime t2)
             => new TimeSpan(t1._data - t2._data);
         public static ArDateTime operator -(ArDateTime t1, TimeSpan ts)
