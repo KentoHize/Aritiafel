@@ -116,7 +116,7 @@ namespace AritiafelTest
             }
 
             public static TestDateTime Now
-                => new TestDateTime(DateTime.Now.Ticks, false);
+                => new TestDateTime(ArDateTime.Now.Ticks, false);
 
             public TestDateTime Reverse()
                 => Year != 0 ? new TestDateTime(Year * -1, Month, Day, Hour, Minute, Second, Millisecond) : new TestDateTime(Ticks * -1, false);
@@ -403,13 +403,13 @@ namespace AritiafelTest
                         string s = ArDateTimeFormat.FormatDateTimeFull(adt, AllStandardFormatCharWithABC[k].ToString(), ci);
                         //Console.Write()
                         //TestContext.Write($"{AllStandardFormatChar[k]}:{s}");
-                        Sophia.SeeThrough(s);
+                        //Sophia.SeeThrough(s);
                         if ((AllStandardFormatCharWithABC[k] == 'M' || AllStandardFormatCharWithABC[k] == 'm') &&
                             adt.Month == 2 && adt.Day == 29)
                             continue;
                         //adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
                         adt2 = ArDateTimeFormat.ParseExact(s, AllStandardFormatCharWithABC[k].ToString(), ci, ArDateTimeStyles.CurrentDateDefault);
-                        Sophia.SeeThrough(adt2);
+                        Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABC[k].ToString(), ci));
                         //TestContext.WriteLine($" {adt.ToString()}");
                     }                    
                     string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";

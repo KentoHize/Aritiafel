@@ -71,7 +71,7 @@ namespace Aritiafel.Locations
             => StringToPartInfoList(reserved).ToArray();
 
         //[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?
-        public static string CaptureNumberString(string s, ArNumberStringType numberStringType, int maxLength, out int length)
+        internal static string CaptureNumberString(string s, ArNumberStringType numberStringType, int maxLength, out int length)
         {
             length = 0;
             if (string.IsNullOrEmpty(s) || maxLength < 0)

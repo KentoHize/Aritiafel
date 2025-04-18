@@ -13,6 +13,13 @@ namespace Aritiafel.Organizations.ArinaOrganization
         public static ArCultureInfo ArinaCultureInfo
             => _ArinaCultureInfo ??= new ArCultureInfo();
 
+        public const int StandardDateTimeLength = 32;
+        public const int StandardShortDateTimeLength = 24;
+        public const int StandardDateLength = 15;
+        public const int StandardShortDateLength = 11;
+        public const int StandardTimeLength = 16;
+        public const int StandardShorTimeLength = 8;
+
         public const string StandardDatePattern = "yyyyy/MM/dd";
         public const string StandardTimePattern = "HH:mm:ss.fffffff";
         public const string StandardShortTimePattern = "HH:mm:ss";
