@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using Aritiafel.Characters.Heroes;
+using System;
+using System.Globalization;
 
 namespace Aritiafel.Organizations.ArinaOrganization
 {
@@ -22,9 +24,12 @@ namespace Aritiafel.Organizations.ArinaOrganization
 
         public const string SystemCalendarName = " AR"; //暫時
 
+        public override string ToString()
+            => Name;
+
         internal void CreateDateTimeFormatInfo()
-        {
-            DateTimeFormat.Calendar = new ArCalendar();
+        {   
+            //DateTimeFormat.Calendar = new ArCalendar();            
             DateTimeFormat.DayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
             DateTimeFormat.AbbreviatedDayNames = ["[7]", "[1]", "[2]", "[3]", "[4]", "[5]", "[6]"];
             DateTimeFormat.ShortDatePattern = "M, d, g. yyyy";

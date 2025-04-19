@@ -25,7 +25,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
             if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime ||
                 type == ArStandardDateTimeType.Date)
             {
-                if (dtfi.Calendar is ArCalendar)
+                if (dtfi == ArinaCultureInfo.DateTimeFormat)
                     sb.Append(ArCultureInfo.SystemCalendarName);
                 else if (dtfi.Calendar is GregorianCalendar)
                     sb.Append(" CE");

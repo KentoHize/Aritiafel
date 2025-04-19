@@ -17,6 +17,7 @@ using Aritiafel.Locations;
 using Aritiafel.Organizations.RaeriharUniversity;
 using System.Globalization;
 using System.Collections.Concurrent;
+using Aritiafel.Organizations.ArinaOrganization;
 
 namespace AritiafelTestForm
 {
@@ -172,8 +173,10 @@ namespace AritiafelTestForm
             //MessageBox.Show(TimeZoneInfo.Local.DaylightName);
             //TimeZoneInfo.Local.
             //ArDateTime ad = new 
-            DateTime dt = new DateTime(100, DateTimeKind.Utc);
-            DateTimeFormatInfo dfi;
+            CultureInfo ci = Mylar.ArinaCultureInfo;
+            RabbitCouriers.SentInformation(ci.DateTimeFormat.FullDateTimePattern);
+            //DateTime dt = new DateTime(100, DateTimeKind.Utc);
+            //DateTimeFormatInfo dfi;
             //ConcurrentDictionary cd;
             //DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
             //MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "{0:yyyy/MM/dd}", new DateTime(-2)));            

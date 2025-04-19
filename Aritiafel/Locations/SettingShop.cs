@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Security.Cryptography;
 using System.Globalization;
 using Aritiafel.Organizations.ArinaOrganization;
+using Aritiafel.Characters.Heroes;
 
 namespace Aritiafel.Locations
 {
@@ -45,6 +46,8 @@ namespace Aritiafel.Locations
             }   
             return arg;
         }
+        public static void ResetIniFile()
+            => Tina.DeleteFile(DefaultSettingFilePath);
 
         public static void SaveIniFile(object typeOrInstance, string file = null)
         {   

@@ -4,13 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using System.Text.Json.Serialization;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace Aritiafel.Artifacts
 {
