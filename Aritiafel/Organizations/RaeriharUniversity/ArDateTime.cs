@@ -385,6 +385,17 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 return (int)(l / 10000);
             }
         }
+
+        public int RemainTick
+        {
+            get
+            {
+                long l = _data % 10000;
+                if (_data < 0 && l != 0)
+                    l += 10000;
+                return (int)l;
+            }
+        }
         public int DayOfWeek
         {
             get

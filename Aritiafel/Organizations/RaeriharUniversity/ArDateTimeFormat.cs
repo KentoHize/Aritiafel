@@ -421,8 +421,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 dtf = Mylar.ArinaCultureInfo.DateTimeFormat;
 
             DisassembleShop ds = new DisassembleShop();
-            ArOutPartInfoList pi = ds.Disassemble(s, new ArDisassembleInfo([dtf.DateSeparator, dtf.TimeSeparator, ".", " ", "GMT", "Z", "T", "-"]));
-            int dsr = 0, tsr = 0, dot = 0, sp = 0, gmt = 0, z = 0, t = 0, dash = 0;
+            ArOutPartInfoList pi = ds.Disassemble(s, new ArDisassembleInfo([dtf.DateSeparator, dtf.TimeSeparator, ".", " ", "GMT", "Z", "T", "-", ":"]));
+            int dsr = 0, tsr = 0, dot = 0, sp = 0, gmt = 0, z = 0, t = 0, dash = 0, colon = 0;
             for (int i = 0; i < pi.Value.Count; i++)
             {
                 switch (((ArOutStringPartInfo)pi.Value[i]).Index)
@@ -451,11 +451,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     case 7:
                         dash++;
                         break;
+                    case 8:
+                        colon++;
+                        break;
                 }
             }
             ArDateTime result;
-            if ((char.IsLetter(s[0]) && char.IsLetter(s[1])) ||
-                ((char.IsLetter(s[0]) || char.IsWhiteSpace(s[0])) && char.IsLetter(s[1]) && char.IsLetter(s[2]))) //標準格式開頭
+            if ((char.IsLetter(s[0]) && char.IsLetter(s[1]) && (char.IsWhiteSpace(s[2]) || s[2] == '-')) ||
+                ((char.IsLetter(s[0]) || char.IsWhiteSpace(s[0])) && char.IsLetter(s[1]) && char.IsLetter(s[2]) && (char.IsWhiteSpace(s[3]) || s[3] == '-'))) //標準格式開頭
             {
                 if (s.Length >= Mylar.StandardDateTimeLength - 1)
                     if (TryParseExact(s, "A", provider, dateTimeStyles, out result))
@@ -530,10 +533,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (tsr == 1)
                 if (TryParseExact(s, "t", provider, dateTimeStyles, out result))
                     return result;
-            if (s.Length >= Mylar.StandardTimeLength && dot > 0)
+            if (s.Length >= Mylar.StandardTimeLength && dot > 0 && (tsr == 2 || colon == 2))
                 if (TryParseExact(s, "C", provider, dateTimeStyles, out result))
                     return result;
-            if (s.Length >= Mylar.StandardShorTimeLength)
+            if (s.Length >= Mylar.StandardShorTimeLength && (tsr == 2 || colon == 2))
                 if (TryParseExact(s, "c", provider, dateTimeStyles, out result))
                     return result;
             if (dsr == 2)

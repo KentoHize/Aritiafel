@@ -18,7 +18,7 @@ namespace Aritiafel
         public static ConcurrentDictionary<string, string> EnumStringDictionary { get; set; }
 
         public static object ParseArString(this string s, Type t)
-        {   
+        {
             if (t == typeof(bool))
                 return bool.Parse(s);
             else if (t == typeof(byte))
@@ -51,12 +51,15 @@ namespace Aritiafel
                     int.Parse(s.Substring(5, 2), NumberStyles.HexNumber));
             else if (t == typeof(DateTime))
                 return DateTime.Parse(s);
-            else if(t == typeof(ArDateTime))
+            else if (t == typeof(ArDateTime))
                 return ArDateTime.Parse(s);
             else if (t == typeof(TimeSpan))
                 return TimeSpan.Parse(s);
             else if (t == typeof(CultureInfo))
-                return CultureInfo.GetCultureInfo(s);
+                if (s == "zh-AO")
+                    return Mylar.ArinaCultureInfo;
+                else
+                    return CultureInfo.GetCultureInfo(s);
             else if (t.IsEnum)
                 return Enum.Parse(t, s);
             else
