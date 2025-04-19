@@ -11,7 +11,6 @@ using Aritiafel.Items;
 using System.Collections;
 using Aritiafel.Characters.Heroes;
 using Aritiafel.Definitions;
-using static AritiafelTest.StorageHouseTest;
 
 namespace AritiafelTest
 {

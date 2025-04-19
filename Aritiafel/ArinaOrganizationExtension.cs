@@ -6,18 +6,19 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Aritiafel
 {
     //Extension and others    
-    public static class ArinaOrganization
+    public static class ArinaOrganizationExtension
     {        
         public static ConcurrentDictionary<string, string> EnumStringDictionary { get; set; }
 
         public static object ParseArString(this string s, Type t)
-        {
+        {   
             if (t == typeof(bool))
                 return bool.Parse(s);
             else if (t == typeof(byte))
@@ -87,6 +88,13 @@ namespace Aritiafel
             else
                 foreach (KeyValuePair<string, string> kvp in mapTable)
                     EnumStringDictionary.AddOrUpdate(kvp.Key, kvp.Value, (key, oldValue) => kvp.Value);
+        }
+
+        public static string GetNestedTypeName(this Type type)
+        {
+            if (type.DeclaringType == null)
+                return type.Name;
+            return string.Concat(GetNestedTypeName(type.DeclaringType), "+", type.Name);
         }
     }
 }
