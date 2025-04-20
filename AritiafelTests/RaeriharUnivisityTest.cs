@@ -453,7 +453,7 @@ namespace AritiafelTest
                         //adt2 = ArDateTime.Parse(s, ci);
                         //if (s == "Saturday, January 1, 0400")
                         //    ;
-                        adt2 = ArDateTimeFormat.Parse(s, ci, ArDateTimeStyles.None);
+                        adt2 = ArDateTime.Parse(s, ci, ArDateTimeStyles.None);
                         Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABC[k].ToString(), ci));                        
                     }                    
                     string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";

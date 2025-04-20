@@ -26,7 +26,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
 
         public const string SystemCalendarEraName = " AR"; //暫時
         public override string ToString()
-            => $"zh-Hans-AA";
+            => Name;
 
         internal void CreateDateTimeFormatInfo()
         {

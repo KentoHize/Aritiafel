@@ -23,9 +23,12 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
-            Allseer.RegisterCustomSeeThroughFunction<int>(m => (m + 3).ToString());
-            Allseer.RemoveCustomSeeThroughFunction<int>();
-            Sophia.SeeThrough(5);
+            Sophia.SeeThrough(CultureInfo.GetCultureInfo("zh-TW").ToString());
+            Sophia.SeeThrough(CultureInfo.GetCultureInfo("zh-TW").Parent.ToString());
+
+            //Allseer.RegisterCustomSeeThroughFunction<int>(m => (m + 3).ToString());
+            //Allseer.RemoveCustomSeeThroughFunction<int>();
+            //Sophia.SeeThrough(5);
         }
     }
 }

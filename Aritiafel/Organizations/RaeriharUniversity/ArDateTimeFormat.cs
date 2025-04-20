@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
-    public static class ArDateTimeFormat
+    internal static class ArDateTimeFormat
     {
         internal const int MinimumCharForLongFormat = 16;
         internal const int MinimumCharForLongDate = 11;
