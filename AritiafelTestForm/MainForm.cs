@@ -165,7 +165,7 @@ namespace AritiafelTestForm
         }
 
         private void btnTestDateTime_Click(object sender, EventArgs e)
-        {
+        {   
             //MessageBox.Show(ArDateTime.MaxValue.Ticks.ToString());
             //MessageBox.Show(long.MaxValue.ToString());
             //MessageBox.Show(TimeZoneInfo.Local.DisplayName);

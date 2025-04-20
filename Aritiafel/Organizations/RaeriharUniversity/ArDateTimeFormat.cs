@@ -297,9 +297,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     year = ArDateTime.GetARYear(year);
             }
 
-            Parallel.For(0, ospi.Value.Count, (i, pls) => {
+            ospi.Value.ParallelForEach((m, pls, i) => {
                 switch (ospi.Value[i].Name)
-                {   
+                {
                     case "hh":
                     case "h":
                         hour = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value);
@@ -318,12 +318,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         break;
                     case "ss":
                     case "s":
-                        second = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value);                        
+                        second = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value);
                         break;
                     case "yyyyy":
                     case "yyyy":
                     case "yyy":
-                        if(i != 0 && ((ArOutStringPartInfo)ospi.Value[i - 1]).Name == "-")
+                        if (i != 0 && ((ArOutStringPartInfo)ospi.Value[i - 1]).Name == "-")
                             year = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value) * -1;
                         else
                             year = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value);
@@ -397,7 +397,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 result = default;
             }
             return false;
-        }        
+        }
+
+
 
         public static ArDateTime Parse2(string s, IFormatProvider provider, ArDateTimeStyles dateTimeStyles)
         {
@@ -460,9 +462,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
             DisassembleShop ds = new DisassembleShop();
             ArOutPartInfoList pi = ds.Disassemble(s, new ArDisassembleInfo([dtf.DateSeparator, dtf.TimeSeparator, ".", " ", "GMT", "Z", "T", "-", ":"]));
-            int dsr = 0, tsr = 0, dot = 0, sp = 0, gmt = 0, z = 0, t = 0, dash = 0, colon = 0;            
-            Parallel.For(0, pi.Value.Count, (i, pls) => {
-                switch (((ArOutStringPartInfo)pi.Value[i]).Index)
+            int dsr = 0, tsr = 0, dot = 0, sp = 0, gmt = 0, z = 0, t = 0, dash = 0, colon = 0;
+            pi.Value.ParallelForEach(m => {
+                switch (((ArOutStringPartInfo)m).Index)
                 {
                     case 0:
                         dsr++;
@@ -492,7 +494,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         colon++;
                         break;
                 }
-            });
+            });             
 
             ArDateTime result;
             if ((char.IsLetter(s[0]) && char.IsLetter(s[1]) && (char.IsWhiteSpace(s[2]) || s[2] == '-')) ||

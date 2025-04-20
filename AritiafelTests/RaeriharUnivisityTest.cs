@@ -307,6 +307,14 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
+            ArDateTime ad = ArDateTime.Now;
+            ArDateTime ad2;
+
+            string format = "yyyy yy yyy yy y / HH hh HH hh HH hh HH :mm:ss";
+            string s = ad.ToString(format);
+            ad2 = ArDateTime.ParseExact(s, format);
+            Sophia.SeeThrough(ad2);
+
             //ArDateTime ad = ArDateTime.Parse("2023/10/01");
             //CultureInfo[] cis = ArCultureInfo.GetCultures(CultureTypes.AllCultures);
             //CultureInfo[] cis = ArCultureInfo.GetCultures(CultureTypes.AllCultures);
@@ -318,15 +326,15 @@ namespace AritiafelTest
             //for (int i = 0; i < cis.Length; i++)
             //{
 
-            for (int j = 0; j < cultureInfoA.Length; j++)
-            {
-                CultureInfo ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
-                string[] allPattern = ArCultureInfo.GetAllDateTimePatterns(ci.DateTimeFormat);
-                //Sophia.SeeThrough(cultureInfoA[j]);
-                Sophia.QuickSeeThrough(ci.DisplayName);
-                Sophia.QuickSeeThrough(":");
-                Sophia.SeeThrough(allPattern);
-            }
+            //for (int j = 0; j < cultureInfoA.Length; j++)
+            //{
+            //    CultureInfo ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
+            //    string[] allPattern = ArCultureInfo.GetAllDateTimePatterns(ci.DateTimeFormat);
+            //    //Sophia.SeeThrough(cultureInfoA[j]);
+            //    Sophia.QuickSeeThrough(ci.DisplayName);
+            //    Sophia.QuickSeeThrough(":");
+            //    Sophia.SeeThrough(allPattern);
+            //}
 
             //}
             //for (int i = 0; i < AllStandardFormatCharWithABC.Length; i++)
@@ -443,7 +451,7 @@ namespace AritiafelTest
                             continue;
                         //adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
                         //adt2 = ArDateTime.Parse(s, ci);
-                        adt2 = ArDateTimeFormat.Parse2(s, ci, ArDateTimeStyles.None);
+                        adt2 = ArDateTimeFormat.Parse(s, ci, ArDateTimeStyles.None);
                         Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABC[k].ToString(), ci));                        
                     }                    
                     string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";

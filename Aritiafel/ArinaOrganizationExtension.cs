@@ -1,6 +1,8 @@
 ﻿using Aritiafel.Organizations.ArinaOrganization;
 using Aritiafel.Organizations.RaeriharUniversity;
+using Microsoft.VisualBasic;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -9,11 +11,12 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Aritiafel
 {
     //Extension and others    
-    public static class ArinaOrganizationExtension
+    public static partial class ArinaOrganizationExtension
     {        
         public static ConcurrentDictionary<string, string> EnumStringDictionary { get; set; }
 
@@ -96,5 +99,23 @@ namespace Aritiafel
                 return type.Name;
             return string.Concat(GetNestedTypeName(type.DeclaringType), "+", type.Name);
         }
+
+        /// <summary>
+        /// 字串A對字串B從Index開始比較是否相等
+        /// </summary>
+        /// <param name="s">字串A</param>
+        /// <param name="s2">字串B</param>
+        /// <param name="index">起始位置</param>
+        /// <returns>是否相等</returns>
+        public static bool MatchString(this string s, string s2, int index = 0)
+        {
+            if (s.Length > s2.Length - index)
+                return false;
+            for (int i = 0; i < s.Length; i++)
+                if (s[i] != s2[i + index])
+                    return false;
+            return true;
+        }
+
     }
 }
