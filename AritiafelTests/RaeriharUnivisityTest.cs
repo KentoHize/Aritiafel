@@ -318,20 +318,30 @@ namespace AritiafelTest
             //for (int i = 0; i < cis.Length; i++)
             //{
 
-            //}
-            for (int i = 0; i < AllStandardFormatCharWithABC.Length; i++)
+            for (int j = 0; j < cultureInfoA.Length; j++)
             {
-                Sophia.SeeThrough(AllStandardFormatCharWithABC[i]);
-                for (int j = 0; j < cultureInfoA.Length; j++)
-                {
-                    CultureInfo ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
-                    string[] allPattern = ArCultureInfo.GetAllDateTimePatterns(AllStandardFormatCharWithABC[i], ci.DateTimeFormat);
-                    //Sophia.SeeThrough(cultureInfoA[j]);
-                    Sophia.QuickSeeThrough(ci.DisplayName);
-                    Sophia.QuickSeeThrough(":");
-                    Sophia.SeeThrough(allPattern);                    
-                }   
+                CultureInfo ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
+                string[] allPattern = ArCultureInfo.GetAllDateTimePatterns(ci.DateTimeFormat);
+                //Sophia.SeeThrough(cultureInfoA[j]);
+                Sophia.QuickSeeThrough(ci.DisplayName);
+                Sophia.QuickSeeThrough(":");
+                Sophia.SeeThrough(allPattern);
             }
+
+            //}
+            //for (int i = 0; i < AllStandardFormatCharWithABC.Length; i++)
+            //{
+            //    Sophia.SeeThrough(AllStandardFormatCharWithABC[i]);
+            //    for (int j = 0; j < cultureInfoA.Length; j++)
+            //    {
+            //        CultureInfo ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
+            //        string[] allPattern = ArCultureInfo.GetAllDateTimePatterns(AllStandardFormatCharWithABC[i], ci.DateTimeFormat);
+            //        //Sophia.SeeThrough(cultureInfoA[j]);
+            //        Sophia.QuickSeeThrough(ci.DisplayName);
+            //        Sophia.QuickSeeThrough(":");
+            //        Sophia.SeeThrough(allPattern);                    
+            //    }   
+            //}
             //Sophia.SeeThrough(ad);
             //ArDateTime ad = ArDateTime.Parse("    00008/01/01 03:03:03.4466444");
             //ad = ad + new TimeSpan(300000);            
@@ -432,7 +442,8 @@ namespace AritiafelTest
                             adt.Month == 2 && adt.Day == 29)
                             continue;
                         //adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
-                        adt2 = ArDateTime.Parse(s, ci);
+                        //adt2 = ArDateTime.Parse(s, ci);
+                        adt2 = ArDateTimeFormat.Parse2(s, ci, ArDateTimeStyles.None);
                         Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABC[k].ToString(), ci));                        
                     }                    
                     string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";

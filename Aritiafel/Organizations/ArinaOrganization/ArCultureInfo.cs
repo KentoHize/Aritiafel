@@ -25,7 +25,6 @@ namespace Aritiafel.Organizations.ArinaOrganization
         public override int LCID => 0x7C04;
 
         public const string SystemCalendarEraName = " AR"; //暫時
-
         public override string ToString()
             => $"zh-Hans-AA";
 
@@ -77,7 +76,8 @@ namespace Aritiafel.Organizations.ArinaOrganization
             }   
             return cultures;
         }
-
+        public string[] GetAllDateTimePatterns()
+            => GetAllDateTimePatterns(DateTimeFormat);
         public static string[] GetAllDateTimePatterns(DateTimeFormatInfo dtfi = null)
         {
             if (dtfi == null)
@@ -87,8 +87,12 @@ namespace Aritiafel.Organizations.ArinaOrganization
             return result.Concat(result2).ToArray();
         }
 
+        public string GetFirstDateTimePattern(char format)
+            => GetFirstDateTimePattern(format, DateTimeFormat);
         public static string GetFirstDateTimePattern(char format, DateTimeFormatInfo dtfi = null)
             => GetAllDateTimePatterns(format, dtfi)[0];
+        public string[] GetAllDateTimePatterns(char format)
+            => GetAllDateTimePatterns(format, DateTimeFormat);
         public static string[] GetAllDateTimePatterns(char format, DateTimeFormatInfo dtfi = null)
         {
             if (dtfi == null)
