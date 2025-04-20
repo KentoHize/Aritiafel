@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Aritiafel.Definitions
-{
-    
+{   
     public enum ArNumberStringType
     {
         Undefined = 0,

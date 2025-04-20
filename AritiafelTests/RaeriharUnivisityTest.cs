@@ -451,6 +451,8 @@ namespace AritiafelTest
                             continue;
                         //adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
                         //adt2 = ArDateTime.Parse(s, ci);
+                        if (s == "Saturday, January 1, 0400")
+                            ;
                         adt2 = ArDateTimeFormat.Parse(s, ci, ArDateTimeStyles.None);
                         Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABC[k].ToString(), ci));                        
                     }                    

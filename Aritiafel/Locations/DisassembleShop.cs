@@ -2,9 +2,7 @@
 using Aritiafel.Items;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 //拆解字串，提供初步分析
@@ -30,7 +28,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 namespace Aritiafel.Locations
 {
     public class DisassembleShop
-    {   
+    {
         public bool RecordValueWithoutEscapeChar { get; set; }
         public bool ErrorOccurIfNoMatch { get; set; }
         public bool RemoveLimitedReservedStringIfNoMatch { get; set; }
@@ -50,11 +48,11 @@ namespace Aritiafel.Locations
             => DisassembleStringFull(s, new ArDisassembleInfo(StringToPartInfoArray(reserved), null));
         //public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved)
         //    => DisassembleStringFull(s, new ArDisassembleInfo(reserved, null));
-        public ArOutPartInfoList Disassemble(string s, ArPartInfo[] reserved)
+        public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved)
             => DisassembleStringFull(s, new ArDisassembleInfo(reserved, null));
-        public ArOutPartInfoList Disassemble(string s, ArPartInfo[] reserved, ArContainerPartInfo[] containers)
+        public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[] reserved, ArContainerPartInfo[] containers)
             => DisassembleStringFull(s, new ArDisassembleInfo(reserved, containers));
-        public ArOutPartInfoList Disassemble(string s, ArPartInfo[][] reserved, ArContainerPartInfo[] containers)
+        public ArOutPartInfoList Disassemble(string s, ArStringPartInfo[][] reserved, ArContainerPartInfo[] containers)
             => DisassembleStringFull(s, new ArDisassembleInfo(reserved, containers));
         public ArOutPartInfoList Disassemble(string s, ArDisassembleInfo dissambleInfo)
             => DisassembleStringFull(s, dissambleInfo);
@@ -163,7 +161,7 @@ namespace Aritiafel.Locations
             {
                 bool found = false;
                 for (i = 0; i < di.ContainerPartInfo.Length; i++)
-                {   
+                {
                     if (containerEndString != "" && containerEndString.MatchString(s, index))
                     {
                         target = containers.Pop();
@@ -184,7 +182,7 @@ namespace Aritiafel.Locations
                         target.Value.Add(newList);
                         containers.Push(target);
                         target = newList;
-                        index += di.ContainerPartInfo[i].StartString.Length;                        
+                        index += di.ContainerPartInfo[i].StartString.Length;
                         found = true;
                         break;
                     }
@@ -194,77 +192,60 @@ namespace Aritiafel.Locations
                 {
                     for (i = 0; i < di.ReservedStringInfo[reservedStringsIndex].Length; i++)
                     {
-                        if (di.ReservedStringInfo[reservedStringsIndex][i] is ArStringPartInfo spi)
-                        {
-                            if (spi.Times == 0)
-                                continue;
+                        ArStringPartInfo spi = di.ReservedStringInfo[reservedStringsIndex][i];
+                        if (spi.Times == 0)
+                            continue;
 
-                            if (!string.IsNullOrEmpty(spi.Value) && spi.Value.MatchString(s, index))
+                        if (spi.Type == ArStringPartType.UnsignedInteger ||
+                                spi.Type == ArStringPartType.Integer ||
+                                spi.Type == ArStringPartType.Decimal ||
+                                spi.Type == ArStringPartType.ScientificNotation)
+                        {
+                            s2 = CaptureNumberString(s.Substring(index), (ArNumberStringType)spi.Type, spi.MaxLength, out int k);
+                            if (k != 0)
                             {
-                                if (spi.Type == ArStringPartType.Escape1)
-                                {
-                                    if (s.Length - index < 2)
-                                        throw new FormatException(); //逃逸字元後面無字
-                                    if (RecordValueWithoutEscapeChar)
-                                        target.Value.Add(new ArOutStringPartInfo(i, spi.Name, s.Substring(index + 1, 1), ArStringPartType.Escape1));
-                                    else
-                                        target.Value.Add(new ArOutStringPartInfo(i, spi.Name, s.Substring(index, 2), ArStringPartType.Escape1));
-                                    index += spi.Value.Length + 1;
-                                }
-                                else if (spi.Type == ArStringPartType.Normal)
-                                {
-                                    target.Value.Add(new ArOutStringPartInfo(i, spi.Name, spi.Value));
-                                    index += spi.Value.Length;
-                                }
-                                else
-                                    throw new NotImplementedException();
+                                target.Value.Add(new ArOutStringPartInfo(i, spi.Name, s2, spi.Type));
+                                index += k;
                                 found = true;
                                 if (spi.Times > 0)
                                     spi.Times--;
                                 break;
                             }
-                            else if (spi.Type == ArStringPartType.UnsignedInteger ||
-                                spi.Type == ArStringPartType.Integer ||
-                                spi.Type == ArStringPartType.Decimal ||
-                                spi.Type == ArStringPartType.ScientificNotation)
+                        }
+                        else
+                        {
+                            for (int j = 0; j < di.ReservedStringInfo[reservedStringsIndex][i].Values.Length; j++)
                             {
-                                s2 = CaptureNumberString(s.Substring(index), (ArNumberStringType)spi.Type, spi.MaxLength, out int j);
-                                //可更改s.SubString
-                                if (j != 0)
+                                if (spi[j].MatchString(s, index))
                                 {
-                                    target.Value.Add(new ArOutStringPartInfo(i, spi.Name, s2, spi.Type));
-                                    index += j;                                    
+                                    if (spi.Type == ArStringPartType.Normal)
+                                    {
+                                        target.Value.Add(new ArOutStringPartInfo(i, spi.Name, spi[j], ArStringPartType.Normal, j));
+                                        index += spi[j].Length;
+                                    }
+                                    else if (spi.Type == ArStringPartType.Escape1)
+                                    {
+                                        if (s.Length - index < 2)
+                                            throw new FormatException(); //逃逸字元後面無字
+                                        if (RecordValueWithoutEscapeChar)
+                                            target.Value.Add(new ArOutStringPartInfo(i, spi.Name, s.Substring(index + 1, 1), ArStringPartType.Escape1, j));
+                                        else
+                                            target.Value.Add(new ArOutStringPartInfo(i, spi.Name, s.Substring(index, 2), ArStringPartType.Escape1, j));
+                                        index += spi[j].Length + 1;
+                                    }
+                                    else
+                                        throw new NotImplementedException();
                                     found = true;
                                     if (spi.Times > 0)
                                         spi.Times--;
                                     break;
                                 }
                             }
-                            //Not Found
-                            if (RemoveLimitedReservedStringIfNoMatch && spi.Times != -1)
-                                spi.Times = 0;
-                        }
-                        else if (di.ReservedStringInfo[reservedStringsIndex][i] is ArGroupStringPartInfo gspi)
-                        {
-                            if (gspi.Times == 0)
-                                continue;
-
-                            for (int j = 0; j < gspi.Value.Length; j++) //改用Paraell
-                            {
-                                if (gspi.Value[j].MatchString(s, index))
-                                {
-                                    target.Value.Add(new ArOutStringPartInfo(i, gspi.Name, gspi.Value[j], ArStringPartType.Normal, j));
-                                    found = true;
-                                    if (gspi.Times > 0)
-                                        gspi.Times--;
-                                    index += gspi.Value[j].Length;                                    
-                                    break;
-                                }
-                            }
-                            //Not Found
-                            if (RemoveLimitedReservedStringIfNoMatch && gspi.Times != -1)
-                                gspi.Times = 0;
-                        }
+                        }   
+                        if (found)
+                            break;
+                        if (RemoveLimitedReservedStringIfNoMatch && spi.Times != -1) //Not Fonud
+                            spi.Times = 0;
                     }
                 }
                 if (!found)
