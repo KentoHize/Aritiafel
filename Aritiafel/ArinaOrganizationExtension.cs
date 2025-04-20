@@ -56,10 +56,7 @@ namespace Aritiafel
             else if (t == typeof(TimeSpan))
                 return TimeSpan.Parse(s);
             else if (t == typeof(CultureInfo))
-                if (s == "zh-AO")
-                    return Mylar.ArinaCultureInfo;
-                else
-                    return CultureInfo.GetCultureInfo(s);
+                return ArCultureInfo.GetCultureInfo(s);
             else if (t.IsEnum)
                 return Enum.Parse(t, s);
             else

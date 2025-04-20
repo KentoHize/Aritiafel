@@ -48,7 +48,7 @@ namespace AritiafelTest
                 testDateTime.Hour, testDateTime.Minute,
                 testDateTime.Second, testDateTime.Millisecond);
 
-        string[] cultureInfoA = { "zh-TW", "ja-JP", "en-US", "zh-CN" };
+        string[] cultureInfoA = { "zh-TW", "zh-CN", "ja-JP", "en-US", "zh-AA" };
 
         public TestContext TestContext { get; set; }
 
@@ -307,10 +307,36 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
-            ArDateTime ad = ArDateTime.Parse("    00008/01/01 03:03:03.4466444");
-            ad = ad + new TimeSpan(300000);            
-            Sophia.SeeThrough(ad.ToLocalTimeZoneTime());
-            Sophia.SeeThrough((ad - ArDateTime.Parse("2:0:0")));
+            //ArDateTime ad = ArDateTime.Parse("2023/10/01");
+            //CultureInfo[] cis = ArCultureInfo.GetCultures(CultureTypes.AllCultures);
+            //CultureInfo[] cis = ArCultureInfo.GetCultures(CultureTypes.AllCultures);
+
+            //CultureInfo ci = ArCultureInfo.GetCultureInfo("zh-AA");
+
+            //Sophia.SeeThrough(ci);
+            //Sophia.SeeThrough(cis.First(m => m.Name == "zh-AO"));            
+            //for (int i = 0; i < cis.Length; i++)
+            //{
+
+            //}
+            for (int i = 0; i < AllStandardFormatCharWithABC.Length; i++)
+            {
+                Sophia.SeeThrough(AllStandardFormatCharWithABC[i]);
+                for (int j = 0; j < cultureInfoA.Length; j++)
+                {
+                    CultureInfo ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
+                    string[] allPattern = ArCultureInfo.GetAllDateTimePatterns(AllStandardFormatCharWithABC[i], ci.DateTimeFormat);
+                    //Sophia.SeeThrough(cultureInfoA[j]);
+                    Sophia.QuickSeeThrough(ci.DisplayName);
+                    Sophia.QuickSeeThrough(":");
+                    Sophia.SeeThrough(allPattern);                    
+                }   
+            }
+            //Sophia.SeeThrough(ad);
+            //ArDateTime ad = ArDateTime.Parse("    00008/01/01 03:03:03.4466444");
+            //ad = ad + new TimeSpan(300000);            
+            //Sophia.SeeThrough(ad.ToLocalTimeZoneTime());
+            //Sophia.SeeThrough((ad - ArDateTime.Parse("2:0:0")));
             //Sophia.SeeThrough((-357).ToString("0000;-000"));
             //ArDateTime a = ArDateTime.Now;
             //Sophia.SeeThrough(DateTime.Now);
@@ -390,13 +416,10 @@ namespace AritiafelTest
             {
                 ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
                 ArDateTime adt2 = ArDateTime.Now;
-                for (int j = 0; j < cultureInfoA.Length + 1; j++)
+                for (int j = 0; j < cultureInfoA.Length; j++)
                 {   
                     CultureInfo ci;
-                    if (j == cultureInfoA.Length)
-                        ci = Mylar.ArinaCultureInfo;
-                    else
-                        ci = CultureInfo.GetCultureInfo(cultureInfoA[j]);
+                    ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
                     Sophia.SeeThrough($"{ci.Name} {ci.DisplayName}");
                     for (int k = 0; k < AllStandardFormatCharWithABC.Length; k++)
                     {

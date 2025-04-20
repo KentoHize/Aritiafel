@@ -1,0 +1,150 @@
+﻿d
+中文（台灣）:[0]:yyyy/M/d [1]:yyyy年M月d日
+中文（中國）:[0]:yyyy/M/d [1]:yyyy年M月d日
+日文（日本）:[0]:yyyy/MM/dd [1]:yyyy/M/d
+英文（美國）:[0]:M/d/yyyy [1]:MMM d, yyyy [2]:M/d/yy
+中文（有奈）:[0]:M, d, g. yyyy [1]:yyyy/M/d [2]:yyyy年M月d日
+D
+中文（台灣）:[0]:yyyy年M月d日 dddd [1]:yyyy年M月d日
+中文（中國）:[0]:yyyy年M月d日dddd [1]:yyyy年M月d日
+日文（日本）:[0]:yyyy年M月d日dddd [1]:yyyy年M月d日
+英文（美國）:[0]:dddd, MMMM d, yyyy [1]:MMMM d, yyyy
+中文（有奈）:[0]:M, d, g. yyyy [1]:yyyy年M月d日 dddd [2]:yyyy年M月d日
+f
+中文（台灣）:[0]:yyyy年M月d日 dddd tth:mm [1]:yyyy年M月d日 tth:mm
+中文（中國）:[0]:yyyy年M月d日dddd tth:mm [1]:yyyy年M月d日 tth:mm
+日文（日本）:[0]:yyyy年M月d日dddd H:mm [1]:yyyy年M月d日 H:mm
+英文（美國）:[0]:dddd, MMMM d, yyyy h:mm tt [1]:MMMM d, yyyy h:mm tt
+中文（有奈）:[0]:M, d, g. yyyy H:mm:ss [1]:M, d, g. yyyy tth:mm [2]:yyyy年M月d日 dddd H:mm:ss [3]:yyyy年M月d日 dddd tth:mm [4]:yyyy年M月d日 H:mm:ss [5]:yyyy年M月d日 tth:mm
+F
+中文（台灣）:[0]:yyyy年M月d日 dddd tth:mm:ss [1]:yyyy年M月d日 tth:mm:ss
+中文（中國）:[0]:yyyy年M月d日dddd tth:mm:ss [1]:yyyy年M月d日 tth:mm:ss
+日文（日本）:[0]:yyyy年M月d日dddd H:mm:ss [1]:yyyy年M月d日 H:mm:ss
+英文（美國）:[0]:dddd, MMMM d, yyyy h:mm:ss tt [1]:MMMM d, yyyy h:mm:ss tt
+中文（有奈）:[0]:M, d, g. yyyy H:mm:ss.fff [1]:M, d, g. yyyy tth:mm:ss [2]:yyyy年M月d日 dddd H:mm:ss.fff [3]:yyyy年M月d日 dddd tth:mm:ss [4]:yyyy年M月d日 H:mm:ss.fff [5]:yyyy年M月d日 tth:mm:ss
+g
+中文（台灣）:[0]:yyyy/M/d tth:mm [1]:yyyy年M月d日 tth:mm
+中文（中國）:[0]:yyyy/M/d tth:mm [1]:yyyy年M月d日 tth:mm
+日文（日本）:[0]:yyyy/MM/dd H:mm [1]:yyyy/M/d H:mm
+英文（美國）:[0]:M/d/yyyy h:mm tt [1]:MMM d, yyyy h:mm tt [2]:M/d/yy h:mm tt
+中文（有奈）:[0]:M, d, g. yyyy H:mm:ss [1]:M, d, g. yyyy tth:mm [2]:yyyy/M/d H:mm:ss [3]:yyyy/M/d tth:mm [4]:yyyy年M月d日 H:mm:ss [5]:yyyy年M月d日 tth:mm
+G
+中文（台灣）:[0]:yyyy/M/d tth:mm:ss [1]:yyyy年M月d日 tth:mm:ss
+中文（中國）:[0]:yyyy/M/d tth:mm:ss [1]:yyyy年M月d日 tth:mm:ss
+日文（日本）:[0]:yyyy/MM/dd H:mm:ss [1]:yyyy/M/d H:mm:ss
+英文（美國）:[0]:M/d/yyyy h:mm:ss tt [1]:MMM d, yyyy h:mm:ss tt [2]:M/d/yy h:mm:ss tt
+中文（有奈）:[0]:M, d, g. yyyy H:mm:ss.fff [1]:M, d, g. yyyy tth:mm:ss [2]:yyyy/M/d H:mm:ss.fff [3]:yyyy/M/d tth:mm:ss [4]:yyyy年M月d日 H:mm:ss.fff [5]:yyyy年M月d日 tth:mm:ss
+m
+中文（台灣）:[0]:M月d日
+中文（中國）:[0]:M月d日
+日文（日本）:[0]:M月d日
+英文（美國）:[0]:MMMM d
+中文（有奈）:[0]:M, d
+M
+中文（台灣）:[0]:M月d日
+中文（中國）:[0]:M月d日
+日文（日本）:[0]:M月d日
+英文（美國）:[0]:MMMM d
+中文（有奈）:[0]:M, d
+o
+中文（台灣）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+中文（中國）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+日文（日本）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+英文（美國）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+中文（有奈）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+O
+中文（台灣）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+中文（中國）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+日文（日本）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+英文（美國）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+中文（有奈）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK
+r
+中文（台灣）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+中文（中國）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+日文（日本）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+英文（美國）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+中文（有奈）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+R
+中文（台灣）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+中文（中國）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+日文（日本）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+英文（美國）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+中文（有奈）:[0]:ddd, dd MMM yyyy HH':'mm':'ss 'GMT'
+s
+中文（台灣）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss
+中文（中國）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss
+日文（日本）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss
+英文（美國）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss
+中文（有奈）:[0]:yyyy'-'MM'-'dd'T'HH':'mm':'ss
+t
+中文（台灣）:[0]:tth:mm
+中文（中國）:[0]:tth:mm
+日文（日本）:[0]:H:mm
+英文（美國）:[0]:h:mm tt
+中文（有奈）:[0]:H:mm:ss [1]:tth:mm
+T
+中文（台灣）:[0]:tth:mm:ss
+中文（中國）:[0]:tth:mm:ss
+日文（日本）:[0]:H:mm:ss
+英文（美國）:[0]:h:mm:ss tt
+中文（有奈）:[0]:H:mm:ss.fff [1]:tth:mm:ss
+u
+中文（台灣）:[0]:yyyy'-'MM'-'dd HH':'mm':'ss'Z'
+中文（中國）:[0]:yyyy'-'MM'-'dd HH':'mm':'ss'Z'
+日文（日本）:[0]:yyyy'-'MM'-'dd HH':'mm':'ss'Z'
+英文（美國）:[0]:yyyy'-'MM'-'dd HH':'mm':'ss'Z'
+中文（有奈）:[0]:yyyy'-'MM'-'dd HH':'mm':'ss'Z'
+U
+中文（台灣）:[0]:yyyy年M月d日 dddd tth:mm:ss [1]:yyyy年M月d日 tth:mm:ss
+中文（中國）:[0]:yyyy年M月d日dddd tth:mm:ss [1]:yyyy年M月d日 tth:mm:ss
+日文（日本）:[0]:yyyy年M月d日dddd H:mm:ss [1]:yyyy年M月d日 H:mm:ss
+英文（美國）:[0]:dddd, MMMM d, yyyy h:mm:ss tt [1]:MMMM d, yyyy h:mm:ss tt
+中文（有奈）:[0]:M, d, g. yyyy H:mm:ss.fff [1]:M, d, g. yyyy tth:mm:ss [2]:yyyy年M月d日 dddd H:mm:ss.fff [3]:yyyy年M月d日 dddd tth:mm:ss [4]:yyyy年M月d日 H:mm:ss.fff [5]:yyyy年M月d日 tth:mm:ss
+y
+中文（台灣）:[0]:yyyy年M月
+中文（中國）:[0]:yyyy年M月
+日文（日本）:[0]:yyyy年M月
+英文（美國）:[0]:MMMM yyyy
+中文（有奈）:[0]:M, g. yyyy [1]:yyyy年M月
+Y
+中文（台灣）:[0]:yyyy年M月
+中文（中國）:[0]:yyyy年M月
+日文（日本）:[0]:yyyy年M月
+英文（美國）:[0]:MMMM yyyy
+中文（有奈）:[0]:M, g. yyyy [1]:yyyy年M月
+A
+中文（台灣）:[0]: CE yyyyy/MM/dd HH:mm:ss.fffffff
+中文（中國）:[0]: CE yyyyy/MM/dd HH:mm:ss.fffffff
+日文（日本）:[0]: CE yyyyy/MM/dd HH:mm:ss.fffffff
+英文（美國）:[0]: CE yyyyy/MM/dd HH:mm:ss.fffffff
+中文（有奈）:[0]: AR yyyyy/MM/dd HH:mm:ss.fffffff
+a
+中文（台灣）:[0]: CE yyyyy/MM/dd HH:mm:ss
+中文（中國）:[0]: CE yyyyy/MM/dd HH:mm:ss
+日文（日本）:[0]: CE yyyyy/MM/dd HH:mm:ss
+英文（美國）:[0]: CE yyyyy/MM/dd HH:mm:ss
+中文（有奈）:[0]: AR yyyyy/MM/dd HH:mm:ss
+B
+中文（台灣）:[0]: CE yyyyy/MM/dd
+中文（中國）:[0]: CE yyyyy/MM/dd
+日文（日本）:[0]: CE yyyyy/MM/dd
+英文（美國）:[0]: CE yyyyy/MM/dd
+中文（有奈）:[0]: AR yyyyy/MM/dd
+b
+中文（台灣）:[0]:yyyyy/MM/dd
+中文（中國）:[0]:yyyyy/MM/dd
+日文（日本）:[0]:yyyyy/MM/dd
+英文（美國）:[0]:yyyyy/MM/dd
+中文（有奈）:[0]:yyyyy/MM/dd
+C
+中文（台灣）:[0]:HH:mm:ss.fffffff
+中文（中國）:[0]:HH:mm:ss.fffffff
+日文（日本）:[0]:HH:mm:ss.fffffff
+英文（美國）:[0]:HH:mm:ss.fffffff
+中文（有奈）:[0]:HH:mm:ss.fffffff
+c
+中文（台灣）:[0]:HH:mm:ss
+中文（中國）:[0]:HH:mm:ss
+日文（日本）:[0]:HH:mm:ss
+英文（美國）:[0]:HH:mm:ss
+中文（有奈）:[0]:HH:mm:ss

@@ -1,4 +1,7 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace Aritiafel.Organizations.ArinaOrganization
@@ -19,19 +22,37 @@ namespace Aritiafel.Organizations.ArinaOrganization
         public const string StandardDatePattern = "yyyyy/MM/dd";
         public const string StandardTimePattern = "HH:mm:ss.fffffff";
         public const string StandardShortTimePattern = "HH:mm:ss";
+
+        public static string GetStandardCalendarEraName(DateTimeFormatInfo dtfi)
+        {
+            //增加 判斷正確的紀年三字
+            if (dtfi == null)
+                return "   ";
+            else if (dtfi == ArinaCultureInfo.DateTimeFormat)
+                return ArCultureInfo.SystemCalendarEraName;
+            else if (dtfi.Calendar is GregorianCalendar)
+                return " CE";
+            return "   ";
+        }        
+        public static string[] GetAllStandardDateTimePatterns(DateTimeFormatInfo dtfi)
+        {
+            Array allStandardDateTimeTypes = Enum.GetValues(typeof(ArStandardDateTimeType));
+            string[] result = new string[allStandardDateTimeTypes.Length];
+            int i = 0;
+            foreach (ArStandardDateTimeType item in allStandardDateTimeTypes)
+            {
+                result[i] = GetStandardDateTimePattern(dtfi, item);
+                i++;
+            }
+            return result;
+        }
+
         public static string GetStandardDateTimePattern(DateTimeFormatInfo dtfi, ArStandardDateTimeType type = ArStandardDateTimeType.DateTime)
         {
             StringBuilder sb = new StringBuilder();
             if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime ||
                 type == ArStandardDateTimeType.Date)
-            {
-                if (dtfi == ArinaCultureInfo.DateTimeFormat)
-                    sb.Append(ArCultureInfo.SystemCalendarName);
-                else if (dtfi.Calendar is GregorianCalendar)
-                    sb.Append(" CE");
-                else
-                    sb.Append("   ");
-            }
+                sb.Append(GetStandardCalendarEraName(dtfi));
 
             if (sb.Length > 0)
                 sb.Append(" ");

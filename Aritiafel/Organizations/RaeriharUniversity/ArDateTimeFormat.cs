@@ -9,34 +9,17 @@ using System.Text;
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
-    internal static class ArDateTimeFormat
+    public static class ArDateTimeFormat
     {
         internal static readonly string[] SortedAllCustomFormatString =
-{
+        {
             ":", "/", "hh", "HH", "mm", "ss", "h", "H", "m", "s",
             "dddd", "ddd", "dd", "yyyyy", "yyyy", "yyy", "yy",
             "MMMM", "MMM", "MM", "y", "M", "d",
             "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
             "tt", "t", "gg", "g", "K", "zzz", "zz", "z", "FFFFFFF", "FFFFFF",
             "FFFFF", "FFFF", "FFF", "FF", "F"
-        };
-        public static string GetFirstDateTimePattern(char format, DateTimeFormatInfo dtfi = null)
-            => GetAllDateTimePatterns(format, dtfi)[0];
-        public static string[] GetAllDateTimePatterns(char format, DateTimeFormatInfo dtfi = null)
-        {
-            if (dtfi == null)
-                dtfi = Mylar.ArinaCultureInfo.DateTimeFormat;
-            return format switch
-            {
-                'A' => [Mylar.GetStandardDateTimePattern(dtfi)],
-                'a' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.ShortDateTime)],
-                'B' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.Date)],
-                'b' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.ShortDate)],
-                'C' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.Time)],
-                'c' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.ShortTime)],
-                _ => dtfi.GetAllDateTimePatterns(format)
-            };
-        }
+        };        
 
         static internal ArDisassembleInfo CreateFormatDisassembleInfo(ArStringPartInfo[] dateTimeReservedString = null)
             => new ArDisassembleInfo([dateTimeReservedString ?? CreateDateTimeReservedStringPartInfo(), CreateTextReservedStringPartInfo()],
@@ -282,14 +265,24 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
             ArStringPartInfo[] reservedString = CreateDateTimeReservedStringPartInfo();
             DisassembleShop ds = new DisassembleShop();
-
+            ArDateTime result;
             if (format.Length == 1)
-                format = GetFirstDateTimePattern(format[0], dtfi); //需要改成AllDateTimePattern
+            {
+                string[] allPatterns =  ArCultureInfo.GetAllDateTimePatterns(format[0], dtfi);
+                for (int i = 0; i < allPatterns.Length; i++) 
+                {
+                    if (allPatterns[i].Length == 1)
+                        throw new FormatException(allPatterns[i]);
+                    if(TryParseExact(s, allPatterns[i], provider, dateTimeStyles, out result))
+                        return result;
+                }
+                throw new FormatException();
+            }                
 
             ArOutPartInfoList ospi = ds.Disassemble(format, CreateFormatDisassembleInfo(reservedString));
             ds.ErrorOccurIfNoMatch = ds.RemoveLimitedReservedStringIfNoMatch = true;
             ospi = ds.Disassemble(s, CreateScanDisassembleInfo(ospi, dtfi, dateTimeStyles.HasFlag(ArDateTimeStyles.AllowInnerWhite)));
-
+            
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalPart = 0, tt = -1,
                 zHour = 0, zMinute = 0;
             string era = "";
@@ -381,7 +374,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         break;
                 }
             }
-            ArDateTime result = new ArDateTime(year, month, day, hour + (tt == 1 ? 12 : 0), minute, second, 0, provider == Mylar.ArinaCultureInfo).AddTicks(decimalPart);
+            result = new ArDateTime(year, month, day, hour + (tt == 1 ? 12 : 0), minute, second, 0, provider == Mylar.ArinaCultureInfo).AddTicks(decimalPart);
             result = result.AddHours(zHour).AddMinutes(zMinute);
             return result;
         }
@@ -398,6 +391,29 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 result = default;
             }
             return false;
+        }
+
+        public static ArDateTime Parse2(string s, IFormatProvider provider, ArDateTimeStyles dateTimeStyles)
+        {
+            DateTimeFormatInfo dtf = null;
+            if (dateTimeStyles.HasFlag(ArDateTimeStyles.AllowLeadingWhite))
+                s = s.TrimStart();
+            if (dateTimeStyles.HasFlag(ArDateTimeStyles.AllowTrailingWhite))
+                s = s.TrimEnd();
+            if (s.Length < 4)
+                throw new FormatException(s);
+            if (provider == null)
+                provider = Mylar.ArinaCultureInfo;
+            if (provider is CultureInfo ci)
+                dtf = ci.DateTimeFormat;
+            else if (provider is DateTimeFormatInfo dtfi)
+                dtf = dtfi;
+            else if (provider is ICustomFormatter cf)
+                return ArDateTime.ParseExact(s, null, provider, dateTimeStyles);
+            else
+                dtf = Mylar.ArinaCultureInfo.DateTimeFormat;
+            return default(ArDateTime);
+            //GetAllDateTimePatterns( dtf.GetAllDateTimePatterns();
         }
 
         public static ArDateTime Parse(string s, IFormatProvider provider, ArDateTimeStyles dateTimeStyles)
@@ -765,7 +781,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (string.IsNullOrEmpty(format))
                 format = "G";
             if (format.Length == 1)
-                format = GetFirstDateTimePattern(format[0], dtf);
+                format = ArCultureInfo.GetFirstDateTimePattern(format[0], dtf);
 
             ArStringPartInfo[] reservedString = CreateDateTimeReservedStringPartInfo();
             DisassembleShop ds = new DisassembleShop();
