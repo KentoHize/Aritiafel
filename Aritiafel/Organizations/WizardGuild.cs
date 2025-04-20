@@ -33,7 +33,7 @@ namespace Aritiafel.Organizations
                 if (xd.Name == "data")
                     foreach (XmlNode xd2 in xd.ChildNodes)
                         if (xd2.Name == "value")
-                            xd.InnerText = TranslateTextFromTraditionalChineseToSimplifiedChinese(xd.InnerText);
+                            xd2.InnerText = TranslateTextFromTraditionalChineseToSimplifiedChinese(xd2.InnerText);
 
             string outputFileName = $"{Path.GetDirectoryName(traditionalChineseFileName)}\\{Path.GetFileName(traditionalChineseFileName).Split('.')[0]}.zh-CN.resx";
             using (TextWriter sw = new StreamWriter(outputFileName, false, Encoding.UTF8)) {

@@ -191,24 +191,23 @@ namespace Aritiafel.Locations
                 if (reservedStringsIndex != -1 && !found) //-1指完全不核對
                 {
                     for (i = 0; i < di.ReservedStringInfo[reservedStringsIndex].Length; i++)
-                    {
-                        ArStringPartInfo spi = di.ReservedStringInfo[reservedStringsIndex][i];
-                        if (spi.Times == 0)
+                    {   
+                        if (di.ReservedStringInfo[reservedStringsIndex][i].Times == 0)
                             continue;
 
-                        if (spi.Type == ArStringPartType.UnsignedInteger ||
-                                spi.Type == ArStringPartType.Integer ||
-                                spi.Type == ArStringPartType.Decimal ||
-                                spi.Type == ArStringPartType.ScientificNotation)
+                        if (di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.UnsignedInteger ||
+                                di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Integer ||
+                                di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Decimal ||
+                                di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.ScientificNotation)
                         {
-                            s2 = CaptureNumberString(s.Substring(index), (ArNumberStringType)spi.Type, spi.MaxLength, out int k);
+                            s2 = CaptureNumberString(s.Substring(index), (ArNumberStringType)di.ReservedStringInfo[reservedStringsIndex][i].Type, di.ReservedStringInfo[reservedStringsIndex][i].MaxLength, out int k);
                             if (k != 0)
                             {
-                                target.Value.Add(new ArOutStringPartInfo(i, spi.Name, s2, spi.Type));
+                                target.Value.Add(new ArOutStringPartInfo(i, di.ReservedStringInfo[reservedStringsIndex][i].Name, s2, di.ReservedStringInfo[reservedStringsIndex][i].Type));
                                 index += k;
                                 found = true;
-                                if (spi.Times > 0)
-                                    spi.Times--;
+                                if (di.ReservedStringInfo[reservedStringsIndex][i].Times > 0)
+                                    di.ReservedStringInfo[reservedStringsIndex][i].Times--;
                                 break;
                             }
                         }
@@ -216,36 +215,36 @@ namespace Aritiafel.Locations
                         {
                             for (int j = 0; j < di.ReservedStringInfo[reservedStringsIndex][i].Values.Length; j++)
                             {
-                                if (spi[j].MatchString(s, index))
+                                if (di.ReservedStringInfo[reservedStringsIndex][i][j].MatchString(s, index))
                                 {
-                                    if (spi.Type == ArStringPartType.Normal)
+                                    if (di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Normal)
                                     {
-                                        target.Value.Add(new ArOutStringPartInfo(i, spi.Name, spi[j], ArStringPartType.Normal, j));
-                                        index += spi[j].Length;
+                                        target.Value.Add(new ArOutStringPartInfo(i, di.ReservedStringInfo[reservedStringsIndex][i].Name, di.ReservedStringInfo[reservedStringsIndex][i][j], ArStringPartType.Normal, j));
+                                        index += di.ReservedStringInfo[reservedStringsIndex][i][j].Length;
                                     }
-                                    else if (spi.Type == ArStringPartType.Escape1)
+                                    else if (di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Escape1)
                                     {
                                         if (s.Length - index < 2)
                                             throw new FormatException(); //逃逸字元後面無字
                                         if (RecordValueWithoutEscapeChar)
-                                            target.Value.Add(new ArOutStringPartInfo(i, spi.Name, s.Substring(index + 1, 1), ArStringPartType.Escape1, j));
+                                            target.Value.Add(new ArOutStringPartInfo(i, di.ReservedStringInfo[reservedStringsIndex][i].Name, s.Substring(index + 1, 1), ArStringPartType.Escape1, j));
                                         else
-                                            target.Value.Add(new ArOutStringPartInfo(i, spi.Name, s.Substring(index, 2), ArStringPartType.Escape1, j));
-                                        index += spi[j].Length + 1;
+                                            target.Value.Add(new ArOutStringPartInfo(i, di.ReservedStringInfo[reservedStringsIndex][i].Name, s.Substring(index, 2), ArStringPartType.Escape1, j));
+                                        index += di.ReservedStringInfo[reservedStringsIndex][i][j].Length + 1;
                                     }
                                     else
                                         throw new NotImplementedException();
                                     found = true;
-                                    if (spi.Times > 0)
-                                        spi.Times--;
+                                    if (di.ReservedStringInfo[reservedStringsIndex][i].Times > 0)
+                                        di.ReservedStringInfo[reservedStringsIndex][i].Times--;
                                     break;
                                 }
                             }
                         }   
                         if (found)
                             break;
-                        if (RemoveLimitedReservedStringIfNoMatch && spi.Times != -1) //Not Fonud
-                            spi.Times = 0;
+                        if (RemoveLimitedReservedStringIfNoMatch && di.ReservedStringInfo[reservedStringsIndex][i].Times != -1) //Not Fonud
+                            di.ReservedStringInfo[reservedStringsIndex][i].Times = 0;
                     }
                 }
                 if (!found)

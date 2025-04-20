@@ -165,18 +165,19 @@ namespace AritiafelTestForm
         }
 
         private void btnTestDateTime_Click(object sender, EventArgs e)
-        {   
+        {
             //MessageBox.Show(ArDateTime.MaxValue.Ticks.ToString());
             //MessageBox.Show(long.MaxValue.ToString());
             //MessageBox.Show(TimeZoneInfo.Local.DisplayName);
             //MessageBox.Show(TimeZoneInfo.Local.BaseUtcOffset.ToString());
             //MessageBox.Show(TimeZoneInfo.Local.DaylightName);
             //TimeZoneInfo.Local.
-            //ArDateTime ad = new 
+            //ArDateTime ad = new
+            DateTime dt;
             CultureInfo ci = Mylar.ArinaCultureInfo;
             RabbitCouriers.SentInformation(ci.DateTimeFormat.FullDateTimePattern);
             //DateTime dt = new DateTime(100, DateTimeKind.Utc);
-            //DateTimeFormatInfo dfi;
+            DateTimeFormatInfo dfi;
             //ConcurrentDictionary cd;
             //DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
             //MessageBox.Show(string.Format(CultureInfo.CurrentCulture, "{0:yyyy/MM/dd}", new DateTime(-2)));            
