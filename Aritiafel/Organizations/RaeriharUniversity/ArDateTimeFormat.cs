@@ -290,7 +290,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
 
             ArOutPartInfoList ospi = ds.Disassemble(format, CreateFormatDisassembleInfo(reservedString));
-            ds.ErrorOccurIfNoMatch = ds.RemoveLimitedReservedStringIfNoMatch = true;
+            ds.ErrorOccurIfNoMatch = ds.IgnoreLimitedReservedStringIfNoMatch = 
+                ds.WhenReservedStringNoMatchTimesIgnorePreviousReservedString = true;
             ospi = ds.Disassemble(s, CreateScanDisassembleInfo(ospi, dtfi, dateTimeStyles.HasFlag(ArDateTimeStyles.AllowInnerWhite)));
 
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalPart = 0, tt = -1,

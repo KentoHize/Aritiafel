@@ -32,7 +32,8 @@ namespace Aritiafel.Locations
     {
         public bool RecordValueWithoutEscapeChar { get; set; }
         public bool ErrorOccurIfNoMatch { get; set; }
-        public bool RemoveLimitedReservedStringIfNoMatch { get; set; }
+        public bool IgnoreLimitedReservedStringIfNoMatch { get; set; }
+        public bool WhenReservedStringNoMatchTimesIgnorePreviousReservedString { get; set; }
 
         public DisassembleShop()
             : this(new DisassembleShopSetting())
@@ -42,7 +43,8 @@ namespace Aritiafel.Locations
         {
             RecordValueWithoutEscapeChar = setting.RecordValueWithoutEscapeChar;
             ErrorOccurIfNoMatch = setting.ErrorOccurIfNoMatch;
-            RemoveLimitedReservedStringIfNoMatch = setting.RemoveLimitedReservedStringIfNoMatch;
+            IgnoreLimitedReservedStringIfNoMatch = setting.IgnoreLimitedReservedStringIfNoMatch;
+            WhenReservedStringNoMatchTimesIgnorePreviousReservedString = setting.WhenReservedStringNoMatchTimesIgnorePreviousReservedString;
         }
 
         public ArOutPartInfoList Disassemble(string s, string[] reserved)
@@ -153,6 +155,7 @@ namespace Aritiafel.Locations
             string s2, containerEndString = "";
             int index = 0;
             int i, reservedStringsIndex = 0; //-1 = No Reserved
+            int[] startIndex = new int[di.ReservedStringInfo.Length];
             if (string.IsNullOrEmpty(s))
                 throw new ArgumentException(nameof(s));
 
@@ -192,10 +195,14 @@ namespace Aritiafel.Locations
 
                 if (reservedStringsIndex != -1 && !found) //-1指完全不核對
                 {
-                    for (i = 0; i < di.ReservedStringInfo[reservedStringsIndex].Length; i++)
+                    for (i = startIndex[reservedStringsIndex]; i < di.ReservedStringInfo[reservedStringsIndex].Length; i++)
                     {   
                         if (di.ReservedStringInfo[reservedStringsIndex][i].Times == 0)
+                        {
+                            if (WhenReservedStringNoMatchTimesIgnorePreviousReservedString)
+                                startIndex[reservedStringsIndex] = i + 1;
                             continue;
+                        }   
 
                         if (di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.UnsignedInteger ||
                                 di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Integer ||
@@ -245,7 +252,7 @@ namespace Aritiafel.Locations
                         }   
                         if (found)
                             break;
-                        if (RemoveLimitedReservedStringIfNoMatch && di.ReservedStringInfo[reservedStringsIndex][i].Times != -1) //Not Fonud
+                        if (IgnoreLimitedReservedStringIfNoMatch && di.ReservedStringInfo[reservedStringsIndex][i].Times != -1) //Not Fonud
                             di.ReservedStringInfo[reservedStringsIndex][i].Times = 0;
                     }
                 }
