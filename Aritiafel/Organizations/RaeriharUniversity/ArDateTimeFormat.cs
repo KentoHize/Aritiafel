@@ -163,9 +163,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     case 10:
                     case 11:
                     case 14:
-                    case 18:
+                    case 18://yy
                     case 21:
-                    case 22:
+                    case 22: //y
                     case 23:
                     case 24:
                     case 30:
@@ -178,7 +178,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         type = ArStringPartType.Integer;
                         maxLength = 1;
                         break;
-                    case 17:
+                    case 17: //yyy
+                        type = ArStringPartType.Integer;
+                        break;
                     case 29:
                     case 38:
                     case 39:
@@ -187,12 +189,16 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         maxLength = 3;
                         break;
                     case 16: //yyyy
+                        type = ArStringPartType.Integer;
+                        break;
                     case 28:
                     case 43:
                         type = ArStringPartType.Integer;
                         maxLength = 4;
                         break;
                     case 15: //yyyyy
+                        type = ArStringPartType.Integer;
+                        break;
                     case 42:
                         type = ArStringPartType.Integer;
                         maxLength = 5;
@@ -217,7 +223,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     result.Add(new ArStringPartInfo(ospi.Name, [""], type, maxLength, 1));
                 else if (type == ArStringPartType.Integer)
                 {
-                    if (ospi.Index >= 15 && ospi.Index <= 19) //yyyy屬特例
+                    if (ospi.Index >= 15 && ospi.Index <= 18 || ospi.Index == 22) //yyyy屬特例
                     {
                         result.Add(new ArStringPartInfo("-", "-", ArStringPartType.Normal, 0, 1));
                         result.Add(new ArStringPartInfo(ospi.Name, "", type, maxLength, 1));
@@ -382,7 +388,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 }
             });
 
-            result = new ArDateTime(year, month, day, hour + (tt == 1 ? 12 : 0), minute, second, 0, provider == Mylar.ArinaCultureInfo).AddTicks(decimalPart);
+            result = new ArDateTime(year, month, day, hour + (tt == 1 ? 12 : 0), minute, second, 0, provider != Mylar.ArinaCultureInfo).AddTicks(decimalPart);
             result = result.AddHours(zHour).AddMinutes(zMinute);
             return result;
         }
@@ -600,7 +606,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 if (TryParseExact(s, "f", provider, dateTimeStyles, out result))
                     return result;
             }
-            if (TryParseExact(s, "D", provider, dateTimeStyles, out result))
+            if (s.Length >= MinimumCharForLongDate)
+                if (TryParseExact(s, "D", provider, dateTimeStyles, out result))
                 return result;
             if (TryParseExact(s, "T", provider, dateTimeStyles, out result))
                 return result;
@@ -619,7 +626,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static string FormatDateTimeLoop(ArOutPartInfoList opil, ArStringPartInfo[] reservedString, DateTimeFormatInfo dtf, int year, int month, int day, int hour, int minute, int second, string decimalPart, int dow, bool isArDate, bool isText = false)
         {
             StringBuilder sb = new StringBuilder();
-            string s;
+            string s;            
             foreach (ArOutPartInfo opi in opil.Value)
             {
                 if (isText)
@@ -691,8 +698,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             sb.Append(year.ToString("000;-00"));
                             break;
                         case 18: // "yy"
-                            sb.Append((year % 100).ToString("00;-0"));
-                            break;
+                            if (year > -100 && year < 100)
+                                sb.Append(year.ToString("00;-0"));
+                            else
+                                sb.Append(Math.Abs(year % 100).ToString("00;-0"));                                
+                                break;
                         case 19: // "MMMM"
                             sb.Append(dtf.GetMonthName(month));
                             break;
@@ -703,7 +713,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             sb.Append(month.ToString("00"));
                             break;
                         case 22: // "y"
-                            sb.Append(year % 100);
+                            if (year > -100 && year < 100)
+                                sb.Append(year);
+                            else
+                                sb.Append(Math.Abs(year % 100));
                             break;
                         case 23: // "M"
                             sb.Append(month);
@@ -827,7 +840,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 timeTicks += 864000000000L;
             ArDateTime.TimeTicksToTime(timeTicks, out int hour, out int minute, out int second, out int millisecond, out int tick);
             string decimalPart = (millisecond * 10000 + tick).ToString().PadLeft(7, '0');
-            int dow = ArDateTime.GetDayOfWeek(year, month, day);
+            int dow = ArDateTime.GetDayOfWeek(year, month, day, true);
             dow = dow == 7 ? 0 : dow;
             if (provider == Mylar.ArinaCultureInfo)
                 year = ArDateTime.GetARYear(year);

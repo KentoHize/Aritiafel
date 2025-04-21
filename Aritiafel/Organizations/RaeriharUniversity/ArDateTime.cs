@@ -50,19 +50,19 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             _data = ticks;
         }
 
-        public ArDateTime(int year, int month, int day, bool isArDate = false)
-            : this(year, month, day, 0, 0, 0, 0, 0, isArDate)
+        public ArDateTime(int year, int month, int day, bool isCEDate = false)
+            : this(year, month, day, 0, 0, 0, 0, 0, isCEDate)
         { }
 
-        public ArDateTime(int year, int month, int day, int hour, int minute, int second = 0, int millisecond = 0, bool isArDate = false)
-            : this(year, month, day, hour, minute, second, millisecond, 0, isArDate)
+        public ArDateTime(int year, int month, int day, int hour, int minute, int second = 0, int millisecond = 0, bool isCEDate = false)
+            : this(year, month, day, hour, minute, second, millisecond, 0, isCEDate)
         { }
 
-        public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int tick, bool isArDate = false)
-        {
-            if (isArDate)
+        public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int tick, bool isCEDate = false)
+        {   
+            if (!isCEDate)
                 year = GetCEYear(year);
-            ValidateDateTime(year, month, day, hour, minute, second, millisecond, tick);
+            ValidateDateTime(year, month, day, hour, minute, second, millisecond, tick, true);
             _data = DateTimeToTicks(year, month, day, hour, minute, second, millisecond, tick);
         }
 
@@ -74,8 +74,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static ArDateTime Today
             => Now.Date;
 
-        internal static void ValidateDateTime(int year, int month, int day = 1, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, int tick = 0, bool isArDate = false)
+        internal static void ValidateDateTime(int year, int month, int day = 1, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, int tick = 0, bool isCEDate = false)
         {
+            if(isCEDate)
+                year = GetARYear(year);
             if (year == 0 || year < -9999 || year > 9999)
                 throw new ArgumentOutOfRangeException(nameof(year));
             if (month < 1 || month > 12)
@@ -92,15 +94,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 throw new ArgumentOutOfRangeException(nameof(tick));
             if (day < 1 || day > 31 ||
                 day > ConstDayInMonth[month - 1] + 1 ||
-                (day > ConstDayInMonth[month - 1] && (month != 2 || !IsLeapYear(year, isArDate))))
+                (day > ConstDayInMonth[month - 1] && (month != 2 || !IsLeapYear(year))))
                 throw new ArgumentOutOfRangeException(nameof(day));
         }
 
-        public static bool IsLeapYear(int year, bool isArDate = false)
+        public static bool IsLeapYear(int year, bool isCEDate = false)
         {
             if (year == 0)
                 throw new ArgumentException(nameof(year));
-            if (isArDate)
+            if (!isCEDate)
                 year = GetCEYear(year);
             if (year < 0)
                 year = year % 400 + 401;
@@ -109,15 +111,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return false;
         }
 
-        public static int DaysInMonth(int year, int month, bool isArDate = false)
+        public static int DaysInMonth(int year, int month, bool isCEDate = false)
         {
             ValidateDateTime(year, month);
-            if (IsLeapYear(year, isArDate) && month == 2)
+            if (IsLeapYear(year, isCEDate) && month == 2)
                 return ConstDayInMonth[month - 1] + 1;
             return ConstDayInMonth[month - 1];
         }
-        public static int GetDayOfWeek(int year, int month, int day, bool isArDate = false)
-            => new ArDateTime(year, month, day, isArDate).DayOfWeek;
+        public static int GetDayOfWeek(int year, int month, int day, bool isCEDate = false)
+            => new ArDateTime(year, month, day, isCEDate).DayOfWeek;
         internal int GetDatePart(DatePart part = DatePart.Year)
         {
             int result;
@@ -337,10 +339,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             => arYear > 0 || arYear < -2017 ? arYear + 2017 : arYear + 2018;
         internal static int GetARYear(int year)
             => year > 2017 || year < 0 ? year - 2017 : year - 2018;
-        public int ArYear
-            => GetARYear(Year);
-        public int Year
+
+        public int CEYear
             => GetDatePart();
+        public int Year
+            => GetARYear(GetDatePart());
         public int Month
             => GetDatePart(DatePart.Month);
         public int Day

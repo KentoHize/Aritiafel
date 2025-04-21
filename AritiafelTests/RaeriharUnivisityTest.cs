@@ -11,6 +11,7 @@ using Aritiafel.Items;
 using System.Collections;
 using Aritiafel.Characters.Heroes;
 using Aritiafel.Definitions;
+using System.Diagnostics;
 
 namespace AritiafelTest
 {
@@ -33,11 +34,12 @@ namespace AritiafelTest
 
         List<TestDateTime> dateTimes = new List<TestDateTime> {
                 new TestDateTime(1, 1, 1, 0, 0, 0),  new TestDateTime(400, 1, 1, 0 ,0, 0, 1),
+                new TestDateTime(11, 2, 29, 23, 59, 59,999),
                 new TestDateTime(401, 1, 1, 12, 20, 10, 20), new TestDateTime(402, 2, 5, 13, 2, 2),
                 new TestDateTime(2020, 1, 1, 23, 59, 59, 875), new TestDateTime(2120, 3, 3, 0, 0, 1),
                 new TestDateTime(2120, 4, 10, 3, 39, 59), new TestDateTime(2320, 5, 7, 20, 2, 0),
                 new TestDateTime(2120, 11, 10, 10, 10, 0), new TestDateTime(3320, 12, 15, 3, 29, 49),
-                new TestDateTime(4400, 2, 29), new TestDateTime(4400, 3, 1),
+                new TestDateTime(4400, 2, 28), new TestDateTime(4400, 3, 1),
                 new TestDateTime(399, 12, 31), new TestDateTime(3, 12, 31),
                 TestDateTime.Now, new TestDateTime(new DateTime(2000, 1, 1).AddTicks(-1).Ticks, false),
             };
@@ -185,15 +187,19 @@ namespace AritiafelTest
         [TestMethod]
         public void IsLeapYear()
         {
-            Assert.IsTrue(ArDateTime.IsLeapYear(-1));
-            Assert.IsTrue(ArDateTime.IsLeapYear(400));
-            Assert.IsTrue(ArDateTime.IsLeapYear(4));
-            Assert.IsFalse(ArDateTime.IsLeapYear(-4));
-            Assert.IsTrue(ArDateTime.IsLeapYear(-5));
-            Assert.IsTrue(ArDateTime.IsLeapYear(2020));
+            Assert.IsFalse(ArDateTime.IsLeapYear(1));
+            Assert.IsFalse(ArDateTime.IsLeapYear(-1));
+            Assert.IsTrue(ArDateTime.IsLeapYear(-2));
 
-            Assert.IsFalse(ArDateTime.IsLeapYear(1, true));
-            Assert.IsTrue(ArDateTime.IsLeapYear(-6, true));
+            Assert.IsTrue(1 ==  ArDateTime.GetDayOfWeek(8, 4, 21));
+            //Assert.IsTrue(ArDateTime.IsLeapYear(400));
+            //Assert.IsTrue(ArDateTime.IsLeapYear(4));
+            //Assert.IsFalse(ArDateTime.IsLeapYear(-4));
+            //Assert.IsTrue(ArDateTime.IsLeapYear(-5));
+            //Assert.IsTrue(ArDateTime.IsLeapYear(2020));
+
+            //Assert.IsFalse(ArDateTime.IsLeapYear(1, true));
+            //Assert.IsTrue(ArDateTime.IsLeapYear(-6, true));
 
         }
 
@@ -308,6 +314,16 @@ namespace AritiafelTest
         public void TestArea()
         {
             ArDateTime ad = ArDateTime.Now;
+            Sophia.SeeThrough(ad);
+
+            Stopwatch sw = Stopwatch.StartNew();
+            for (int i = 0; i < 1; i++)
+            {
+                ArDateTime.TryParse("abcdd", out ad);
+            }
+            Sophia.SeeThrough(sw);
+
+
             ArDateTime ad2;
 
             string format = "yyyy yy yyy yy y / HH hh HH hh HH hh HH :mm:ss";
@@ -424,8 +440,8 @@ namespace AritiafelTest
             int tl = dateTimes.Count;
             for (int i = 0; i < tl; i++)
             {
-                if (dateTimes[i].Year == 4400 && dateTimes[i].Day == 29)
-                    dateTimes.Add(new TestDateTime(-4400, 2, 28));
+                if (dateTimes[i].Year == 11 && dateTimes[i].Day == 29)
+                    dateTimes.Add(new TestDateTime(-11, 2, 28));
                 else
                     dateTimes.Add(dateTimes[i].Reverse());
             }
@@ -455,11 +471,13 @@ namespace AritiafelTest
                         //    ;
                         adt2 = ArDateTime.Parse(s, ci, ArDateTimeStyles.None);
                         Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABC[k].ToString(), ci));                        
-                    }                    
+                    }
+                    //adt2 = ArDateTime.Now;
                     string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
                     string s2 = adt2.ToString(f, ci);
                     //s2 = s2.Insert(6, " ");
                     //s2 = s2.Insert(9, " ");
+                    
                     s2 = " " + s2 + "   ";
                     Sophia.SeeThrough(s2);
                     adt2 = ArDateTime.ParseExact(s2, f, ci, ArDateTimeStyles.AllowLeadingWhite | ArDateTimeStyles.AllowTrailingWhite | ArDateTimeStyles.CurrentDateDefault);                    

@@ -40,7 +40,7 @@ namespace Aritiafel.Artifacts
             else if (o is string s)
                 return s;
             else if (o is Stopwatch sw)
-                return sw.ElapsedTicks.ToString();
+                return sw.ToString();
             else if (o is ArOutPartInfo opi)
                 return SeeThrough(opi);
             else if (o is ArStringPartInfo spi)

@@ -19,9 +19,9 @@ namespace Aritiafel.Organizations.ArinaOrganization
         public const int StandardTimeLength = 16;
         public const int StandardShorTimeLength = 8;
 
-        public const string StandardDatePattern = "yyyyy/MM/dd";
-        public const string StandardTimePattern = "HH:mm:ss.fffffff";
-        public const string StandardShortTimePattern = "HH:mm:ss";
+        public const string StandardDatePattern = "yyyyy'/'MM'/'dd";
+        public const string StandardTimePattern = "HH':'mm':'ss'.'fffffff";
+        public const string StandardShortTimePattern = "HH':'mm':'ss";
 
         public static string GetStandardCalendarEraName(DateTimeFormatInfo dtfi)
         {

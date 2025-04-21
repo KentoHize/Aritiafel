@@ -1,4 +1,5 @@
-﻿using Aritiafel.Definitions;
+﻿using Aritiafel.Characters.Heroes;
+using Aritiafel.Definitions;
 using Aritiafel.Items;
 using System;
 using System.Collections.Generic;
@@ -148,6 +149,7 @@ namespace Aritiafel.Locations
 
         internal ArOutPartInfoList DisassembleStringFull(string s, ArDisassembleInfo di)
         {
+            //Sophia.SeeThrough(di.ReservedStringInfo);
             string s2, containerEndString = "";
             int index = 0;
             int i, reservedStringsIndex = 0; //-1 = No Reserved

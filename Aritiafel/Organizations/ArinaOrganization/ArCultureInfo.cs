@@ -40,6 +40,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
             DateTimeFormat.YearMonthPattern = "M, g. yyyy";
             DateTimeFormat.MonthDayPattern = "M, d";
             DateTimeFormat.FullDateTimePattern = "M, d, g. yyyy H:mm:ss.fff";
+            DateTimeFormat.DateSeparator = ",";
         }
         public new static CultureInfo GetCultureInfo(int culture)
         { 
