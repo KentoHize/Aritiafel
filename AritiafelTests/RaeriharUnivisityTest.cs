@@ -277,7 +277,7 @@ namespace AritiafelTest
             {
                 byte[] s = cb.DrawOutBytes(20, true);
                 char[] c = Encoding.Unicode.GetChars(s);                
-                string ss = new string(c);
+                string ss = new string(c);                
                 ArDateTime.TryParse(ss, out ArDateTime result);
             }
             Sophia.SeeThrough(sw);
@@ -333,8 +333,8 @@ namespace AritiafelTest
                             continue;
                         //adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
                         //adt2 = ArDateTime.Parse(s, ci);
-                        //if (s == "Saturday, January 1, 0400")
-                        //    ;                        
+                        //if (ci.Name == "en-US" && AllStandardFormatCharWithABCZX[k] == 'D')
+                        //    ;
                         adt2 = ArDateTime.Parse(s, ci, ArDateTimeStyles.None);
                         sb.AppendLine(adt2.ToString(AllStandardFormatCharWithABCZX[k].ToString(), ci));
                         //Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABCZX[k].ToString(), ci));                        

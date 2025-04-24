@@ -285,10 +285,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
             ArOutPartInfoList ospi = ds.Disassemble(format, CreateFormatDisassembleInfo(reservedString));
             ds.ErrorOccurIfNoMatch = ds.WhenReservedStringNoMatchTimesIgnorePreviousReservedString = true;
-            if (ospi.Value.Find(m => m.Name == "K") != null)
-                ds.ReservedStringMatchPolicy = StringMatchPolicy.IgnoreLimitedReservedStringIfNoMatch;
+            if (dateTimeStyles.HasFlag(ArDateTimeStyles.AllowInnerWhite) || ospi.Value.Find(m => m.Name == "K") != null)
+                ds.ReservedStringMatchPolicy = StringMatchPolicy.IgnoreLimitedReservedStringIfNoMatch; //忽略模式，對K較為棘手
             else
-                ds.ReservedStringMatchPolicy = StringMatchPolicy.SkipAllReservedStringIfFirstNoMatch;
+                ds.ReservedStringMatchPolicy = StringMatchPolicy.SkipAllReservedStringIfFirstNoMatch; //嚴格模式
             ospi = ds.Disassemble(s, CreateScanDisassembleInfo(ospi, dtfi, dateTimeStyles.HasFlag(ArDateTimeStyles.AllowInnerWhite)));
 
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalPart = 0, tt = -1,
@@ -660,7 +660,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         return result;
                 if (TryParseExact(s, "d", provider, dateTimeStyles, out result))
                     return result;
-            }            
+            }
+            if(s.Length >= MinimumCharForLongDate)
+                if (TryParseExact(s, "D", provider, dateTimeStyles, out result))
+                    return result;            
+            if (TryParseExact(s, "d", provider, dateTimeStyles, out result))
+                return result;
             if (TryParseExact(s, "M", provider, dateTimeStyles, out result))
                 return result;
             if (TryParseExact(s, "Y", provider, dateTimeStyles, out result))
@@ -669,23 +674,18 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             //非常態情況            
             if (sp != 0 && s.Length >= MinimumCharForLongFormat)
             {
-                if (TryParseExact(s, "G", provider, dateTimeStyles, out result))
-                    return result;
                 if (TryParseExact(s, "F", provider, dateTimeStyles, out result))
                     return result;
-                if (TryParseExact(s, "g", provider, dateTimeStyles, out result))
+                if (TryParseExact(s, "G", provider, dateTimeStyles, out result))
                     return result;
                 if (TryParseExact(s, "f", provider, dateTimeStyles, out result))
                     return result;
+                if (TryParseExact(s, "g", provider, dateTimeStyles, out result))
+                    return result;                
             }
-            if (s.Length >= MinimumCharForLongDate)
-                if (TryParseExact(s, "D", provider, dateTimeStyles, out result))
-                    return result;
             if (TryParseExact(s, "T", provider, dateTimeStyles, out result))
                 return result;
             if (TryParseExact(s, "t", provider, dateTimeStyles, out result))
-                return result;            
-            if (TryParseExact(s, "d", provider, dateTimeStyles, out result))
                 return result;
             if (sp == 0 && s.Length >= MinimumCharForLongFormat)
                 if (TryParseExact(s, "F", provider, dateTimeStyles, out result))
@@ -827,17 +827,12 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             sb.Append(hour < 12 ? dtf.AMDesignator[0] : dtf.PMDesignator[0]);
                             break;
                         case 35: // "ggg"
-                            if (!isCEDate)
-                                sb.Append(" AR");
-                            else if (dtf.Calendar is GregorianCalendar)
-                                sb.Append(" CE");
-                            else
-                                sb.Append("ZZZ");
+                            sb.Append(Mylar.GetStandardCalendarEraName(dtf));
                             break;
                         case 36: // "gg"
                         case 37: // "g"
                             if (!isCEDate)
-                                s = pi.Index == 36 ? "有奈" : "Ar";
+                                s = pi.Index == 36 ? ArCultureInfo.EraName : ArCultureInfo.AbbreviatedEraName;
                             else if (pi.Index == 36)
                                 s = dtf.GetEraName(0);
                             else
