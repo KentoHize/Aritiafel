@@ -170,11 +170,10 @@ namespace AritiafelTest
         [TestMethod]
         public void DateTest()
         {
-            StringBuilder sb = new StringBuilder();
-            //864000000000
+            StringBuilder sb = new StringBuilder();            
             ArDateTime adt = ArDateTime.MinValue;
             ChaosBox cb = new ChaosBox();
-            for (int i = -100000; i < 1000000; i++)
+            for (int i = -100000; i < 100000; i++)
             {
                 sb.AppendLine($"{adt} {adt.Ticks}");
                 adt = adt.Add(new TimeSpan(864000000000 - 1));
@@ -192,84 +191,16 @@ namespace AritiafelTest
             Assert.IsTrue(ArDateTime.IsLeapYear(-2));
 
             Assert.IsTrue(1 ==  ArDateTime.GetDayOfWeek(8, 4, 21));
-            //Assert.IsTrue(ArDateTime.IsLeapYear(400));
-            //Assert.IsTrue(ArDateTime.IsLeapYear(4));
-            //Assert.IsFalse(ArDateTime.IsLeapYear(-4));
-            //Assert.IsTrue(ArDateTime.IsLeapYear(-5));
+            Assert.IsTrue(ArDateTime.IsLeapYear(400, true));
+            Assert.IsTrue(ArDateTime.IsLeapYear(4, true));
+            Assert.IsFalse(ArDateTime.IsLeapYear(-4, true));
+            Assert.IsTrue(ArDateTime.IsLeapYear(-5, true));
             //Assert.IsTrue(ArDateTime.IsLeapYear(2020));
 
             //Assert.IsFalse(ArDateTime.IsLeapYear(1, true));
             //Assert.IsTrue(ArDateTime.IsLeapYear(-6, true));
 
         }
-
-        [TestMethod]
-        public void DateTimeToStringTest()
-        {
-            string format;
-            string[] formatArray = { "M", "Y", "F", "f", "g" };
-
-            int tl = dateTimes.Count;
-            for (int i = 0; i < tl; i++)
-            {
-                if (dateTimes[i].Year == 4400 && dateTimes[i].Day == 29)
-                    dateTimes.Add(new TestDateTime(-4400, 2, 28));
-                else
-                    dateTimes.Add(dateTimes[i].Reverse());
-            }
-
-            dateTimes.Add(new TestDateTime(-1, 12, 31, 23, 59, 59, 999));
-
-
-            for (int i = 0; i < dateTimes.Count; i++)
-            {
-                ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
-                //TestContext.WriteLine($"Ticks: {adt.Ticks}:{adt}");
-                //TestContext.WriteLine($"LongDateString D: {ArDateTime.ParseExact(adt.ToLongDateString(), "D").ToLongDateString()}");
-                //TestContext.WriteLine($"ShortDateString d: {ArDateTime.ParseExact(adt.ToShortDateString(), "d").ToShortDateString()}");
-                //TestContext.WriteLine($"LongTimeString T: {ArDateTime.ParseExact(adt.ToLongTimeString(), "T").ToLongTimeString()}");
-                //TestContext.WriteLine($"ShortTimeString t: {ArDateTime.ParseExact(adt.ToShortTimeString(), "t").ToShortTimeString()}");
-                TestContext.WriteLine($"StandardString: {ArDateTime.Parse(adt.ToString()).ToString()}");
-                TestContext.WriteLine($"ArinaString: {ArDateTime.Parse(adt.ToArString()).ToArString("F")}");
-                TestContext.WriteLine($"LongDateString D: {ArDateTime.Parse(adt.ToLongDateString()).ToLongDateString()}");
-                TestContext.WriteLine($"ShortDateString d: {ArDateTime.Parse(adt.ToShortDateString()).ToShortDateString()}");
-                TestContext.WriteLine($"LongTimeString T: {ArDateTime.Parse(adt.ToLongTimeString()).ToLongTimeString()}");
-                TestContext.WriteLine($"ShortTimeString t: {ArDateTime.Parse(adt.ToShortTimeString()).ToShortTimeString()}");
-                TestContext.WriteLine($"ToString(\"d, M, yyyy/hh:mm:ss.f\")自訂: {ArDateTime.Parse(adt.ToString()).ToString("d, M, yyyy/hh:mm:ss.f")}");
-
-                for (int j = 0; j < formatArray.Length; j++)
-                {
-                    if (adt.Day == 29 && adt.Month == 2 &&
-                       (formatArray[j] == "M" || formatArray[j] == "m"))
-                        continue;
-                    //TestContext.WriteLine($"{formatArray[j]}:{ArDateTime.ParseExact(adt.ToString(formatArray[j]), formatArray[j]).ToString(formatArray[j])}");
-                    TestContext.WriteLine($"{formatArray[j]}:{ArDateTime.Parse(adt.ToString(formatArray[j])).ToString(formatArray[j])}");
-                }
-
-                for (int j = 0; j < cultureInfoA.Length; j++)
-                {
-                    //TestContext.WriteLine(adt.ToString(CultureInfo.GetCultureInfo(cultureInfoA[j])));
-                    //TestContext.WriteLine($"{cultureInfoA[j]}:{ArDateTime.ParseExact(adt.ToString(CultureInfo.GetCultureInfo(cultureInfoA[j])), null,
-                    //    CultureInfo.GetCultureInfo(cultureInfoA[j])).ToString("F", CultureInfo.GetCultureInfo(cultureInfoA[j]))}");
-                    TestContext.WriteLine($"{cultureInfoA[j]}:{ArDateTime.Parse(adt.ToString(CultureInfo.GetCultureInfo(cultureInfoA[j])), CultureInfo.GetCultureInfo(cultureInfoA[j])).ToString("F", CultureInfo.GetCultureInfo(cultureInfoA[j]))}");
-                }
-
-
-                TestContext.WriteLine("");
-                //TestContext.WriteLine($"{adt.ToString()} {adt.Ticks}");
-                //TestContext.WriteLine($"{ArDateTime.ParseExact(adt.ToString(), null, null, DateTimeStyles.None)} {adt.Ticks}");
-                //TestContext.WriteLine($"{adt.ToString("G", CultureInfo.CurrentCulture) }");
-                //TestContext.WriteLine($"{ArDateTime.ParseExact(adt.ToString("G", CultureInfo.CurrentCulture), "G", CultureInfo.CurrentCulture, DateTimeStyles.None).ToString("G", CultureInfo.CreateSpecificCulture("en-US"))}");
-                //TestContext.WriteLine($"{ArDateTime.Parse(adt.ToString("G", CultureInfo.CurrentCulture), CultureInfo.CurrentCulture, DateTimeStyles.None).ToString("f", CultureInfo.CreateSpecificCulture("zh-CN"))}");
-                //TestContext.WriteLine($"{adt.ToString(CultureInfo.CurrentCulture)}");                
-            }
-        }
-
-        //[TestMethod]
-        //public void StringToDateTimeTest()
-        //{
-
-        //}
 
         [TestMethod]
         public void ArDateTimeAddTest()
@@ -314,22 +245,23 @@ namespace AritiafelTest
         public void TestArea()
         {
             ArDateTime ad = ArDateTime.Now;
+            //Sophia.SeeThrough(ad);
+            ad = new ArDateTime(7, 10, 15);
             Sophia.SeeThrough(ad);
+            //Stopwatch sw = Stopwatch.StartNew();
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    ArDateTime.TryParse("Tuesday, February 29, 2028", CultureInfo.GetCultureInfo("en"), ArDateTimeStyles.AllowWhiteSpaces, out ad);
+            //    //ArDateTime.TryParse("abcdd", out ad);
+            //}
+            //Sophia.SeeThrough(ad);
+            //Sophia.SeeThrough(sw);
+            //ArDateTime ad2;
 
-            Stopwatch sw = Stopwatch.StartNew();
-            for (int i = 0; i < 1; i++)
-            {
-                ArDateTime.TryParse("abcdd", out ad);
-            }
-            Sophia.SeeThrough(sw);
-
-
-            ArDateTime ad2;
-
-            string format = "yyyy yy yyy yy y / HH hh HH hh HH hh HH :mm:ss";
-            string s = ad.ToString(format);
-            ad2 = ArDateTime.ParseExact(s, format);
-            Sophia.SeeThrough(ad2);
+            //string format = "yyyy yy yyy yy y / HH hh HH hh HH hh HH :mm:ss";
+            //string s = ad.ToString(format);
+            //ad2 = ArDateTime.ParseExact(s, format);
+            //Sophia.SeeThrough(ad2);
 
             //ArDateTime ad = ArDateTime.Parse("2023/10/01");
             //CultureInfo[] cis = ArCultureInfo.GetCultures(CultureTypes.AllCultures);

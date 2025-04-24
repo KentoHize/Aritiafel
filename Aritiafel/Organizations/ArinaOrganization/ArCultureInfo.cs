@@ -44,24 +44,24 @@ namespace Aritiafel.Organizations.ArinaOrganization
         }
         public new static CultureInfo GetCultureInfo(int culture)
         { 
-            if (culture == Mylar.ArinaCultureInfo.LCID)
-                return Mylar.ArinaCultureInfo;
+            if (culture == Mylar.ArinaCulture.LCID)
+                return Mylar.ArinaCulture;
             else
                 return CultureInfo.GetCultureInfo(culture);
         }
 
         public new static CultureInfo GetCultureInfo(string name)
         {
-            if (name == Mylar.ArinaCultureInfo.Name)
-                return Mylar.ArinaCultureInfo;
+            if (name == Mylar.ArinaCulture.Name)
+                return Mylar.ArinaCulture;
             else
                 return CultureInfo.GetCultureInfo(name);
         }
         
         public new static CultureInfo GetCultureInfo(string name, string altname)
         {
-            if (name == Mylar.ArinaCultureInfo.Name)
-                return Mylar.ArinaCultureInfo;
+            if (name == Mylar.ArinaCulture.Name)
+                return Mylar.ArinaCulture;
             else
                 return CultureInfo.GetCultureInfo(name, altname);
         }
@@ -73,7 +73,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
                 types.HasFlag(CultureTypes.AllCultures))
             {
                 Array.Resize(ref cultures, cultures.Length + 1);
-                cultures[cultures.Length - 1] = Mylar.ArinaCultureInfo;                
+                cultures[cultures.Length - 1] = Mylar.ArinaCulture;                
             }   
             return cultures;
         }
@@ -82,7 +82,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
         public static string[] GetAllDateTimePatterns(DateTimeFormatInfo dtfi = null)
         {
             if (dtfi == null)
-                dtfi = Mylar.ArinaCultureInfo.DateTimeFormat;
+                dtfi = Mylar.ArinaCulture.DateTimeFormat;
             string[] result = dtfi.GetAllDateTimePatterns();
             string[] result2 = Mylar.GetAllStandardDateTimePatterns(dtfi);
             return result.Concat(result2).ToArray();
@@ -97,7 +97,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
         public static string[] GetAllDateTimePatterns(char format, DateTimeFormatInfo dtfi = null)
         {
             if (dtfi == null)
-                dtfi = Mylar.ArinaCultureInfo.DateTimeFormat;
+                dtfi = Mylar.ArinaCulture.DateTimeFormat;
             return format switch
             {
                 'A' => [Mylar.GetStandardDateTimePattern(dtfi)],

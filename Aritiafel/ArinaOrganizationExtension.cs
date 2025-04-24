@@ -79,7 +79,7 @@ namespace Aritiafel
             }
             else if (o is IFormattable r1)
             {
-                return r1.ToString(format, Mylar.ArinaCultureInfo);
+                return r1.ToString(format, Mylar.ArinaCulture);
             }   
             return o.ToString();
         }

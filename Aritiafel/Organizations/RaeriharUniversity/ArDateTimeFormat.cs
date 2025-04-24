@@ -17,10 +17,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         internal static readonly string[] SortedAllCustomFormatString =
         {
             ":", "/", "hh", "HH", "mm", "ss", "h", "H", "m", "s",
-            "dddd", "ddd", "dd", "yyyyy", "yyyy", "yyy", "yy",
+            "dddd", "ddd", "dd", "yyyyyy", "yyyyy", "yyyy", "yyy", "yy",
             "MMMM", "MMM", "MM", "y", "M", "d",
             "fffffff", "ffffff", "fffff", "ffff", "fff", "ff", "f",
-            "tt", "t", "gg", "g", "K", "zzz", "zz", "z", "FFFFFFF", "FFFFFF",
+            "tt", "t", "ggg", "gg", "g", "K", "zzz", "zz", "z", "FFFFFFF", "FFFFFF",
             "FFFFF", "FFFF", "FFF", "FF", "F"
         };
 
@@ -80,8 +80,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         case "t":
                             result[i].Values = [dtfi.AMDesignator[0].ToString(), dtfi.PMDesignator[0].ToString()];
                             break;
+                        case "ggg":
+                            result[i].Value = Mylar.GetStandardCalendarEraName(dtfi);
+                            break;
                         case "gg":
-                            if (dtfi == Mylar.ArinaCultureInfo.DateTimeFormat) // ArCulture
+                            if (dtfi == Mylar.ArinaCulture.DateTimeFormat) // ArCulture
                                 result[i].Value = "有奈";
                             else
                             {
@@ -92,7 +95,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             }
                             break;
                         case "g":
-                            if (dtfi == Mylar.ArinaCultureInfo.DateTimeFormat) // ArCulture
+                            if (dtfi == Mylar.ArinaCulture.DateTimeFormat) // ArCulture
                                 result[i].Value = "Ar";
                             else
                             {
@@ -137,20 +140,21 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         value = dtfi.DateSeparator;
                         break;
                     case 12:
-                    case 13:
-                    case 19:
+                    case 13:                    
                     case 20:
-                    case 32:
-                    case 33:
-                    case 34:
-                    case 35:
+                    case 21:
+                    case 33: //tt
+                    case 34: //t
+                    case 35: //ggg
+                    case 36: //gg
+                    case 37: //g
                         type = ArStringPartType.Special; //多選
                         break;
-                    case 36: //K
+                    case 38: //K
                         type = ArStringPartType.Escape1;
                         K = true;
                         break;
-                    case 37: //zzz
+                    case 39: //zzz
                         type = ArStringPartType.Escape1;
                         zzz = true;
                         break;
@@ -163,53 +167,53 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     case 10:
                     case 11:
                     case 14:
-                    case 18://yy
-                    case 21:
-                    case 22: //y
-                    case 23:
-                    case 24:
-                    case 30:
-                    case 45:
+                    case 19: //yy
+                    case 22:
+                    case 23: //y                    
+                    case 24: //m
+                    case 25: //d
+                    case 31: //ff
+                    case 47:                    
                         type = ArStringPartType.Integer;
                         maxLength = 2;
                         break;
-                    case 31:
-                    case 46:
+                    case 32: //f                    
+                    case 48:
                         type = ArStringPartType.Integer;
                         maxLength = 1;
                         break;
-                    case 17: //yyy
+                    case 16: //yyyyy
+                    case 17: //yyyy
+                    case 18: //yyy
                         type = ArStringPartType.Integer;
                         break;
-                    case 29:
-                    case 38:
-                    case 39:
-                    case 44:
+                    case 30:
+                    case 40: //zz
+                    case 41: //z
+                    case 46:
                         type = ArStringPartType.Integer;
                         maxLength = 3;
                         break;
-                    case 16: //yyyy
-                        type = ArStringPartType.Integer;
-                        break;
-                    case 28:
-                    case 43:
+                    case 29:
+                    case 45:
                         type = ArStringPartType.Integer;
                         maxLength = 4;
                         break;
-                    case 15: //yyyyy
+                    case 15: //yyyyyy
                         type = ArStringPartType.Integer;
                         break;
-                    case 42:
+                    case 28:
+                    case 44:
                         type = ArStringPartType.Integer;
                         maxLength = 5;
                         break;
-                    case 26:
-                    case 41:
+                    case 27:
+                    case 43:
                         type = ArStringPartType.Integer;
                         maxLength = 6;
                         break;
-                    case 25:
-                    case 40:
+                    case 26: //fffffff
+                    case 42: //FFFFFFF
                         type = ArStringPartType.Integer;
                         maxLength = 7;
                         break;
@@ -257,7 +261,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             DateTimeFormatInfo dtfi = null;
             if (provider == null)
-                provider = Mylar.ArinaCultureInfo;
+                provider = Mylar.ArinaCulture;
             if (provider is CultureInfo ci)
                 dtfi = ci.DateTimeFormat;
             else if (provider is DateTimeFormatInfo di)
@@ -265,7 +269,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             else if (provider is ICustomFormatter icf)
                 return ArDateTime.Parse(icf.Format(format, s, provider));
             else
-                dtfi = Mylar.ArinaCultureInfo.DateTimeFormat;
+                dtfi = Mylar.ArinaCulture.DateTimeFormat;
             if (string.IsNullOrEmpty(format))
                 format = "G";
             if (dateTimeStyles.HasFlag(ArDateTimeStyles.AllowLeadingWhite))
@@ -290,18 +294,18 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
 
             ArOutPartInfoList ospi = ds.Disassemble(format, CreateFormatDisassembleInfo(reservedString));
-            ds.ErrorOccurIfNoMatch = ds.IgnoreLimitedReservedStringIfNoMatch = 
+            ds.ErrorOccurIfNoMatch = ds.IgnoreLimitedReservedStringIfNoMatch =
                 ds.WhenReservedStringNoMatchTimesIgnorePreviousReservedString = true;
             ospi = ds.Disassemble(s, CreateScanDisassembleInfo(ospi, dtfi, dateTimeStyles.HasFlag(ArDateTimeStyles.AllowInnerWhite)));
 
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalPart = 0, tt = -1,
                 zHour = 0, zMinute = 0;
             string era = "";
-            bool negative = false, getYear = false;
+            bool negative = false, getYear = false, useCEDate = false;
             if (dateTimeStyles.HasFlag(ArDateTimeStyles.CurrentDateDefault))
             {
                 ArDateTime.TicksToDateTime(ArDateTime.Today.Ticks, out year, out month, out day, out _);
-                if (provider == Mylar.ArinaCultureInfo)
+                if (provider == Mylar.ArinaCulture)
                     year = ArDateTime.GetARYear(year);
             }
 
@@ -329,6 +333,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     case "s":
                         second = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value);
                         break;
+                    case "yyyyyy":
                     case "yyyyy":
                     case "yyyy":
                     case "yyy":
@@ -372,6 +377,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         break;
                     case "g":
                     case "gg":
+                    case "ggg":
                         era = ((ArOutStringPartInfo)ospi.Value[i]).Value;
                         break;
                     case "zzz1":
@@ -389,7 +395,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 }
             });
 
-            result = new ArDateTime(year, month, day, hour + (tt == 1 ? 12 : 0), minute, second, 0, provider != Mylar.ArinaCultureInfo).AddTicks(decimalPart);
+            //先寫死 => 待修改
+            if (era != "" && era != " AR" && era != "有奈" && era != "Ar")
+                useCEDate = true;
+
+            result = new ArDateTime(year, month, day, hour + (tt == 1 ? 12 : 0), minute, second, 0, useCEDate).AddTicks(decimalPart);
             result = result.AddHours(zHour).AddMinutes(zMinute);
             return result;
         }
@@ -419,7 +429,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (s.Length < 4)
                 throw new FormatException(s);
             if (provider == null)
-                provider = Mylar.ArinaCultureInfo;
+                provider = Mylar.ArinaCulture;
             if (provider is CultureInfo ci)
                 dtf = ci.DateTimeFormat;
             else if (provider is DateTimeFormatInfo dtfi)
@@ -427,7 +437,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             else if (provider is ICustomFormatter cf)
                 return ArDateTime.ParseExact(s, null, provider, dateTimeStyles);
             else
-                dtf = Mylar.ArinaCultureInfo.DateTimeFormat;
+                dtf = Mylar.ArinaCulture.DateTimeFormat;
 
             DisassembleShop ds = new DisassembleShop();
             List<string> discernStringList = new List<string> { "/", ":", ".", " ", "GMT", "Z", "T", "-" };
@@ -512,7 +522,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 if (dot > 0)
                 {
                     if (TryParseExact(s, "O", provider, dateTimeStyles, out result))
-                        return result;                    
+                        return result;
                 }
                 else
                 {
@@ -540,7 +550,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 if (gmt > 0)
                 {
                     if (TryParseExact(s, "R", provider, dateTimeStyles, out result))
-                        return result;                    
+                        return result;
                 }
 
                 if (z > 0 && dash >= 2 && colon >= 2)
@@ -609,7 +619,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
             if (s.Length >= MinimumCharForLongDate)
                 if (TryParseExact(s, "D", provider, dateTimeStyles, out result))
-                return result;
+                    return result;
             if (TryParseExact(s, "T", provider, dateTimeStyles, out result))
                 return result;
             if (TryParseExact(s, "t", provider, dateTimeStyles, out result))
@@ -624,16 +634,16 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             //M = m, Y = y, F = U, R = r, O = o
         }
 
-        public static string FormatDateTimeLoop(ArOutPartInfoList opil, ArStringPartInfo[] reservedString, DateTimeFormatInfo dtf, int year, int month, int day, int hour, int minute, int second, string decimalPart, int dow, bool isArDate, bool isText = false)
+        public static string FormatDateTimeLoop(ArOutPartInfoList opil, ArStringPartInfo[] reservedString, DateTimeFormatInfo dtf, int year, int month, int day, int hour, int minute, int second, string decimalPart, int dow, bool isCEDate, bool isText = false)
         {
             StringBuilder sb = new StringBuilder();
-            string s;            
+            string s;
             foreach (ArOutPartInfo opi in opil.Value)
             {
                 if (isText)
                     sb.Append(((ArOutStringPartInfo)opi).Value);
                 else if (opi is ArOutPartInfoList pl)
-                    sb.Append(FormatDateTimeLoop(pl, reservedString, dtf, year, month, day, hour, minute, second, decimalPart, dow, isArDate, true));
+                    sb.Append(FormatDateTimeLoop(pl, reservedString, dtf, year, month, day, hour, minute, second, decimalPart, dow, isCEDate, true));
                 else if (opi is ArOutStringPartInfo pi)
                 {
                     if (pi.Index == 1)
@@ -686,86 +696,95 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         case 14: // "dd"
                             sb.Append(day.ToString("00"));
                             break;
-                        case 15: // "yyyyy"
+                        case 15: // "yyyyyy"
+                            sb.Append(year.ToString("000000;-00000"));
+                            break;
+                        case 16: // "yyyyy"
                             sb.Append(year.ToString("00000;-0000"));
                             break;
-                        case 16: // "yyyy"
-                            if (dtf == Mylar.ArinaCultureInfo.DateTimeFormat)
+                        case 17: // "yyyy"
+                            if (dtf == Mylar.ArinaCulture.DateTimeFormat)
                                 sb.Append(year);
                             else
                                 sb.Append(year.ToString("0000;-000"));
                             break;
-                        case 17: // "yyy"
+                        case 18: // "yyy"
                             sb.Append(year.ToString("000;-00"));
                             break;
-                        case 18: // "yy"
+                        case 19: // "yy"
                             if (year > -100 && year < 100)
                                 sb.Append(year.ToString("00;-0"));
                             else
-                                sb.Append(Math.Abs(year % 100).ToString("00;-0"));                                
-                                break;
-                        case 19: // "MMMM"
+                                sb.Append(Math.Abs(year % 100).ToString("00;-0"));
+                            break;
+                        case 20: // "MMMM"
                             sb.Append(dtf.GetMonthName(month));
                             break;
-                        case 20: // "MMM"
+                        case 21: // "MMM"
                             sb.Append(dtf.GetAbbreviatedMonthName(month));
                             break;
-                        case 21: // "MM"
+                        case 22: // "MM"
                             sb.Append(month.ToString("00"));
                             break;
-                        case 22: // "y"
+                        case 23: // "y"
                             if (year > -100 && year < 100)
                                 sb.Append(year);
                             else
                                 sb.Append(Math.Abs(year % 100));
                             break;
-                        case 23: // "M"
+                        case 24: // "M"
                             sb.Append(month);
                             break;
-                        case 24: // "d"
+                        case 25: // "d"
                             sb.Append(day);
                             break;
-                        case 25: // "fffffff"
+                        case 26: // "fffffff"
                             sb.Append(decimalPart.Substring(0, 7));
                             break;
-                        case 26: // "ffffff"
+                        case 27: // "ffffff"
                             sb.Append(decimalPart.Substring(0, 6));
                             break;
-                        case 27: // "fffff"
+                        case 28: // "fffff"
                             sb.Append(decimalPart.Substring(0, 5));
                             break;
-                        case 28: // "ffff"
+                        case 29: // "ffff"
                             sb.Append(decimalPart.Substring(0, 4));
                             break;
-                        case 29: // "fff"
+                        case 30: // "fff"
                             sb.Append(decimalPart.Substring(0, 3));
                             break;
-                        case 30: // "ff"
+                        case 31: // "ff"
                             sb.Append(decimalPart.Substring(0, 2));
                             break;
-                        case 31: // "f"
+                        case 32: // "f"
                             sb.Append(decimalPart[0]);
                             break;
-                        case 32: // "tt"                        
+                        case 33: // "tt"                        
                             sb.Append(hour < 12 ? dtf.AMDesignator : dtf.PMDesignator);
                             break;
-                        case 33: // "t"
+                        case 34: // "t"
                             sb.Append(hour < 12 ? dtf.AMDesignator[0] : dtf.PMDesignator[0]);
                             break;
-                        case 34: // "gg"
-                        case 35: // "g"
-                            if (isArDate)
-                                s = pi.Index == 34 ? "有奈" : "Ar";
-                            else if (pi.Index == 34)
+                        case 35: // "ggg"
+                            if (!isCEDate)
+                                sb.Append(" AR");
+                            else if (dtf.Calendar is GregorianCalendar)
+                                sb.Append(" CE");
+                            else
+                                sb.Append("ZZZ");
+                            break;
+                        case 36: // "gg"
+                        case 37: // "g"
+                            if (!isCEDate)
+                                s = pi.Index == 36 ? "有奈" : "Ar";
+                            else if (pi.Index == 36)
                                 s = dtf.GetEraName(0);
                             else
                                 s = dtf.GetAbbreviatedEraName(0);
-                            //if (s == "AD")
-                            //    s = "CE";
                             sb.Append(s);
                             break;
-                        case 36: // "K"
-                        case 37: // "zzz"
+                        case 38: // "K"
+                        case 39: // "zzz"
                             if (pi.Index == 36 && TimeZoneInfo.Local.BaseUtcOffset.Ticks == 0)
                                 sb.Append("Z");
                             else if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
@@ -773,37 +792,37 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             else
                                 sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString("\\-hh\\:mm"));
                             break;
-                        case 38: // "zz"
+                        case 40: // "zz"
                             if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
                                 sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours.ToString("\\+00"));
                             else
                                 sb.Append(TimeZoneInfo.Local.BaseUtcOffset.Hours.ToString("\\-00"));
                             break;
-                        case 39: // "z"                        
+                        case 41: // "z"                        
                             if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
                                 sb.Append($"+{TimeZoneInfo.Local.BaseUtcOffset.Hours}");
                             else
                                 sb.Append($"-{TimeZoneInfo.Local.BaseUtcOffset.Hours}");
                             break;
-                        case 40: // "FFFFFFF"
+                        case 42: // "FFFFFFF"
                             sb.Append(decimalPart.Substring(0, 7).TrimEnd('0'));
                             break;
-                        case 41: // "FFFFFF"
+                        case 43: // "FFFFFF"
                             sb.Append(decimalPart.Substring(0, 6).TrimEnd('0'));
                             break;
-                        case 42: // "FFFFF"
+                        case 44: // "FFFFF"
                             sb.Append(decimalPart.Substring(0, 5).TrimEnd('0'));
                             break;
-                        case 43: // "FFFF"
+                        case 45: // "FFFF"
                             sb.Append(decimalPart.Substring(0, 4).TrimEnd('0'));
                             break;
-                        case 44: // "FFF"
+                        case 46: // "FFF"
                             sb.Append(decimalPart.Substring(0, 3).TrimEnd('0'));
                             break;
-                        case 45: // "FF"
+                        case 47: // "FF"
                             sb.Append(decimalPart.Substring(0, 2).TrimEnd('0'));
                             break;
-                        case 46: // "F"
+                        case 48: // "F"
                             sb.Append(decimalPart.Substring(0, 1).TrimEnd('0'));
                             break;
                         default:
@@ -818,7 +837,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         {
             DateTimeFormatInfo dtf = null;
             if (provider == null)
-                provider = Mylar.ArinaCultureInfo;
+                provider = Mylar.ArinaCulture;
             if (provider is CultureInfo ci)
                 dtf = ci.DateTimeFormat;
             else if (provider is DateTimeFormatInfo di)
@@ -826,7 +845,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             else if (provider is ICustomFormatter cf)
                 return cf.Format(format, adt, provider);
             else
-                dtf = Mylar.ArinaCultureInfo.DateTimeFormat;
+                dtf = Mylar.ArinaCulture.DateTimeFormat;
             if (string.IsNullOrEmpty(format))
                 format = "G";
             if (format.Length == 1)
@@ -843,9 +862,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             string decimalPart = (millisecond * 10000 + tick).ToString().PadLeft(7, '0');
             int dow = ArDateTime.GetDayOfWeek(year, month, day, true);
             dow = dow == 7 ? 0 : dow;
-            if (provider == Mylar.ArinaCultureInfo)
+            if (provider == Mylar.ArinaCulture)
                 year = ArDateTime.GetARYear(year);
-            return FormatDateTimeLoop(opil, reservedString, dtf, year, month, day, hour, minute, second, decimalPart, dow, provider == Mylar.ArinaCultureInfo);
+            return FormatDateTimeLoop(opil, reservedString, dtf, year, month, day, hour, minute, second, decimalPart, dow, provider != Mylar.ArinaCulture);
         }
     }
 }

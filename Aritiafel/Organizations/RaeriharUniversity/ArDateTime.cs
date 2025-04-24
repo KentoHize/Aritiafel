@@ -148,7 +148,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             for (int i = 0; i < month - 1; i++)
             {
                 d += ConstDayInMonth[i];
-                if (i == 1 && IsLeapYear(year))
+                if (i == 1 && IsLeapYear(year, true))
                     d += 1;
             }
             if (year < 0)

@@ -1,4 +1,5 @@
 ﻿using Aritiafel.Items;
+using Aritiafel.Organizations.RaeriharUniversity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace Aritiafel.Artifacts
             else if (o is string s)
                 return s;
             else if (o is Stopwatch sw)
-                return sw.ToString();
+                return sw.Elapsed.ToString();
             else if (o is ArOutPartInfo opi)
                 return SeeThrough(opi);
             else if (o is ArStringPartInfo spi)

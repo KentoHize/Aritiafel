@@ -8,9 +8,9 @@ namespace Aritiafel.Organizations.ArinaOrganization
 {
     public static class Mylar // Emerald Shrine
     {
-        static ArCultureInfo _ArinaCultureInfo;
-        public static ArCultureInfo ArinaCultureInfo
-            => _ArinaCultureInfo ??= new ArCultureInfo();
+        static ArCultureInfo _ArinaCulture;
+        public static ArCultureInfo ArinaCulture
+            => _ArinaCulture ??= new ArCultureInfo();
 
         public const int StandardDateTimeLength = 32;
         public const int StandardShortDateTimeLength = 24;
@@ -28,11 +28,12 @@ namespace Aritiafel.Organizations.ArinaOrganization
             //增加 判斷正確的紀年三字
             if (dtfi == null)
                 return "   ";
-            else if (dtfi == ArinaCultureInfo.DateTimeFormat)
+            else if (dtfi == ArinaCulture.DateTimeFormat)
                 return ArCultureInfo.SystemCalendarEraName;
             else if (dtfi.Calendar is GregorianCalendar)
                 return " CE";
-            return "   ";
+            else 
+                return "ZZZ";
         }        
         public static string[] GetAllStandardDateTimePatterns(DateTimeFormatInfo dtfi)
         {

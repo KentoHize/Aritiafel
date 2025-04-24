@@ -174,7 +174,7 @@ namespace AritiafelTestForm
             //TimeZoneInfo.Local.
             //ArDateTime ad = new
             DateTime dt;
-            CultureInfo ci = Mylar.ArinaCultureInfo;
+            CultureInfo ci = Mylar.ArinaCulture;
             RabbitCouriers.SentInformation(ci.DateTimeFormat.FullDateTimePattern);
             //DateTime dt = new DateTime(100, DateTimeKind.Utc);
             DateTimeFormatInfo dfi;
