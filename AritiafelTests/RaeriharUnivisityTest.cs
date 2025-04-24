@@ -266,96 +266,25 @@ namespace AritiafelTest
             //ad2 = ArDateTime.ParseExact(s, format);
             //Sophia.SeeThrough(ad2);
 
-            //ArDateTime ad = ArDateTime.Parse("2023/10/01");
-            //CultureInfo[] cis = ArCultureInfo.GetCultures(CultureTypes.AllCultures);
-            //CultureInfo[] cis = ArCultureInfo.GetCultures(CultureTypes.AllCultures);
-
-            //CultureInfo ci = ArCultureInfo.GetCultureInfo("zh-AA");
-
-            //Sophia.SeeThrough(ci);
-            //Sophia.SeeThrough(cis.First(m => m.Name == "zh-AO"));            
-            //for (int i = 0; i < cis.Length; i++)
-            //{
-
-            //for (int j = 0; j < cultureInfoA.Length; j++)
-            //{
-            //    CultureInfo ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
-            //    string[] allPattern = ArCultureInfo.GetAllDateTimePatterns(ci.DateTimeFormat);
-            //    //Sophia.SeeThrough(cultureInfoA[j]);
-            //    Sophia.QuickSeeThrough(ci.DisplayName);
-            //    Sophia.QuickSeeThrough(":");
-            //    Sophia.SeeThrough(allPattern);
-            //}
-
-            //}
-            //for (int i = 0; i < AllStandardFormatCharWithABC.Length; i++)
-            //{
-            //    Sophia.SeeThrough(AllStandardFormatCharWithABC[i]);
-            //    for (int j = 0; j < cultureInfoA.Length; j++)
-            //    {
-            //        CultureInfo ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
-            //        string[] allPattern = ArCultureInfo.GetAllDateTimePatterns(AllStandardFormatCharWithABC[i], ci.DateTimeFormat);
-            //        //Sophia.SeeThrough(cultureInfoA[j]);
-            //        Sophia.QuickSeeThrough(ci.DisplayName);
-            //        Sophia.QuickSeeThrough(":");
-            //        Sophia.SeeThrough(allPattern);                    
-            //    }   
-            //}
-            //Sophia.SeeThrough(ad);
-            //ArDateTime ad = ArDateTime.Parse("    00008/01/01 03:03:03.4466444");
-            //ad = ad + new TimeSpan(300000);            
-            //Sophia.SeeThrough(ad.ToLocalTimeZoneTime());
-            //Sophia.SeeThrough((ad - ArDateTime.Parse("2:0:0")));
-            //Sophia.SeeThrough((-357).ToString("0000;-000"));
-            //ArDateTime a = ArDateTime.Now;
-            //Sophia.SeeThrough(DateTime.Now);
-            //for(int i = 0; i < 100; i ++)
-            //{
-            //    a = a.AddYears(-2);
-            //    Sophia.SeeThrough(a.ToStandardString(ArStandardDateTimeType.DateTime));
-            //    Sophia.SeeThrough(a.ToStandardString(ArStandardDateTimeType.ShortDateTime));
-            //    Sophia.SeeThrough(a.ToStandardString(ArStandardDateTimeType.Date));
-            //    Sophia.SeeThrough(a.ToStandardString(ArStandardDateTimeType.ShortDate));
-            //    Sophia.SeeThrough(a.ToStandardString(ArStandardDateTimeType.Time));
-            //    Sophia.SeeThrough(a.ToStandardString(ArStandardDateTimeType.ShortTime));
-            //}
         }
 
         [TestMethod]
-        public void GetStandardNumberStringTest()
+        public void TestNotDateTimeSpeed()
         {
-            //string result;
             ChaosBox cb = new ChaosBox();
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    double d = cb.DrawOutDiversityDouble();
-            //    if (string.IsNullOrEmpty(Mathematics.GetStandardNumberString(d.ToString())))
-            //        TestContext.WriteLine(d.ToString());
-            //}
-
-            //result = Mathematics.GetStandardNumberString(testString);
-            //TestContext.WriteLine($"{testString}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString2);
-            //TestContext.WriteLine($"{testString2}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString3);
-            //TestContext.WriteLine($"{testString3}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString4);
-            //TestContext.WriteLine($"{testString4}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString5);
-            //TestContext.WriteLine($"{testString5}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString6);
-            //TestContext.WriteLine($"{testString6}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString7);
-            //TestContext.WriteLine($"{testString7}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString8);
-            //TestContext.WriteLine($"{testString8}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString9);
-            //TestContext.WriteLine($"{testString9}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString10);
-            //TestContext.WriteLine($"{testString10}:{result}");
-            //result = Mathematics.GetStandardNumberString(testString11);
-            //TestContext.WriteLine($"{testString11}:{result}");
+            Stopwatch sw = Stopwatch.StartNew();
+            for(int i = 0; i < 10000; i++)
+            {
+                byte[] s = cb.DrawOutBytes(20, true);
+                char[] c = Encoding.Unicode.GetChars(s);                
+                string ss = new string(c);
+                ArDateTime.TryParse(ss, out ArDateTime result);
+            }
+            Sophia.SeeThrough(sw);
+            sw.Stop();
         }
+        
+        
 
         [TestMethod]
         public void TestRoundToDigit()
@@ -380,16 +309,18 @@ namespace AritiafelTest
                 else
                     dateTimes.Add(dateTimes[i].Reverse());
             }
-            
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < dateTimes.Count; i++)
             {
                 ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
                 ArDateTime adt2 = ArDateTime.Now;
+
                 for (int j = 0; j < cultureInfoA.Length; j++)
                 {   
                     CultureInfo ci;
                     ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
-                    Sophia.SeeThrough($"{ci.Name} {ci.DisplayName}");
+                    sb.AppendLine($"{ci.Name} {ci.DisplayName}");
+                    //Sophia.SeeThrough($"{ci.Name} {ci.DisplayName}");
                     for (int k = 0; k < AllStandardFormatCharWithABCZX.Length; k++)
                     {
                         //if (AllStandardFormatChar[k] != 'r')
@@ -400,15 +331,13 @@ namespace AritiafelTest
                         if ((AllStandardFormatCharWithABCZX[k] == 'M' || AllStandardFormatCharWithABCZX[k] == 'm') &&
                             adt.Month == 2 && adt.Day == 29)
                             continue;
-
-                        if (AllStandardFormatCharWithABCZX[k] == 'X')
-                            ;
                         //adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
                         //adt2 = ArDateTime.Parse(s, ci);
                         //if (s == "Saturday, January 1, 0400")
-                        //    ;
+                        //    ;                        
                         adt2 = ArDateTime.Parse(s, ci, ArDateTimeStyles.None);
-                        Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABCZX[k].ToString(), ci));                        
+                        sb.AppendLine(adt2.ToString(AllStandardFormatCharWithABCZX[k].ToString(), ci));
+                        //Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABCZX[k].ToString(), ci));                        
                     }
                     //adt2 = ArDateTime.Now;
                     string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";
@@ -417,75 +346,35 @@ namespace AritiafelTest
                     //s2 = s2.Insert(9, " ");
                     
                     s2 = " " + s2 + "   ";
-                    Sophia.SeeThrough(s2);
-                    adt2 = ArDateTime.ParseExact(s2, f, ci, ArDateTimeStyles.AllowLeadingWhite | ArDateTimeStyles.AllowTrailingWhite | ArDateTimeStyles.CurrentDateDefault);                    
-                    Sophia.SeeThrough(adt2);                    
+                    //Sophia.SeeThrough(s2);
+                    adt2 = ArDateTime.ParseExact(s2, f, ci, ArDateTimeStyles.AllowLeadingWhite | ArDateTimeStyles.AllowTrailingWhite | ArDateTimeStyles.CurrentDateDefault);
+                    //Sophia.SeeThrough(adt2);                    
+                    sb.AppendLine(adt2.ToString());
 
                     f = "K g yyyyy/MM/dd tt 'aaa\\d' hh:mm:ss.FFFFF zz \"ff\"";
                     s2 = adt2.ToString(f, ci);
                     s2 = " " + s2 + "   ";
-                    Sophia.SeeThrough(s2);
+                    //Sophia.SeeThrough(s2);
                     adt2 = ArDateTime.ParseExact(s2, f, ci, ArDateTimeStyles.AllowLeadingWhite | ArDateTimeStyles.AllowTrailingWhite | ArDateTimeStyles.CurrentDateDefault);
-                    Sophia.SeeThrough(adt2);
+                    //Sophia.SeeThrough(adt2);
+                    sb.AppendLine(adt2.ToString());
                 }
-            }            
-
-            ChaosBox cb = new ChaosBox();
-            for (int i = 0; i < dateTimes.Count; i++)
-            {
-             //   ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
-                
-                //FormatDateTimeFull()
             }
+
+            Sophia.SeeThrough(sb);
+            
         }
 
 
         [TestMethod]
-        public void StandFormat()
+        public void ChaosTest()
         {
-            int tl = dateTimes.Count;
-            for (int i = 0; i < tl; i++)
-            {
-                if (dateTimes[i].Year == 4400 && dateTimes[i].Day == 29)
-                    dateTimes.Add(new TestDateTime(-4400, 2, 28));
-                else
-                    dateTimes.Add(dateTimes[i].Reverse());
-            }
-
             ChaosBox cb = new ChaosBox();
-
-            for (int i = 0; i < dateTimes.Count; i++)
+            for (int i = 0; i < 10000; i++)
             {
-                ArDateTime adt = GetArDateTimeFromTestDateTime(dateTimes[i]);
-
-                //string s = ArDateTimeFormat.GetDateTimeFormatFromSingleCharFormat('D', 6, null);
-                //TestContext.WriteLine(s);
-                //for (int j = 0; j < cultureInfoA[j].Length; j++)
-                //{
-                //    s = ArDateTimeFormat.GetDateTimeFormatFromSingleCharFormat('D', 6, CultureInfo.GetCultureInfo(cultureInfoA[j]));
-                //    TestContext.WriteLine(s);
-                //}
-                //ArDateTimeFormat.FormatDateTimeFull(adt, "");
-                //string s = adt.ToStandardString(ArDateTimeType.DateTime, 7);
-                //TestContext.WriteLine(s);
-                //int d = cb.DrawOutByte(7);
-                //TestContext.WriteLine(s);
-                //TestContext.WriteLine($"{d}:{ArDateTime.Parse(s).ToStandardString(ArDateTimeType.DateTime, d)}");
-
-                //s = adt.ToStandardString(ArDateTimeType.Date);                
-                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.Date));
-
-                //s = adt.ToStandardString(ArDateTimeType.Time);                
-                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.Time));
-
-                //s = adt.ToStandardString(ArDateTimeType.ShortTime);                
-                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.ShortTime));
-
-                //s = adt.ToStandardString(ArDateTimeType.LongDate);                
-                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.LongDate));
-
-                //s = adt.ToStandardString(ArDateTimeType.System);
-                //TestContext.WriteLine(ArDateTime.Parse(s).ToStandardString(ArDateTimeType.System));
+                long l = cb.DrawOutLong(long.MinValue / 10, long.MaxValue / 10);
+                ArDateTime adt = new ArDateTime(l);
+                Sophia.SeeThrough(adt);
             }
         }
 

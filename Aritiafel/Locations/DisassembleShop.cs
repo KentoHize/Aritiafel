@@ -32,7 +32,7 @@ namespace Aritiafel.Locations
     {
         public bool RecordValueWithoutEscapeChar { get; set; }
         public bool ErrorOccurIfNoMatch { get; set; }
-        public bool IgnoreLimitedReservedStringIfNoMatch { get; set; }
+        public StringMatchPolicy ReservedStringMatchPolicy { get; set; }        
         public bool WhenReservedStringNoMatchTimesIgnorePreviousReservedString { get; set; }
 
         public DisassembleShop()
@@ -43,7 +43,7 @@ namespace Aritiafel.Locations
         {
             RecordValueWithoutEscapeChar = setting.RecordValueWithoutEscapeChar;
             ErrorOccurIfNoMatch = setting.ErrorOccurIfNoMatch;
-            IgnoreLimitedReservedStringIfNoMatch = setting.IgnoreLimitedReservedStringIfNoMatch;
+            ReservedStringMatchPolicy = setting.ReservedStringMatchPolicy;
             WhenReservedStringNoMatchTimesIgnorePreviousReservedString = setting.WhenReservedStringNoMatchTimesIgnorePreviousReservedString;
         }
 
@@ -252,7 +252,10 @@ namespace Aritiafel.Locations
                         }   
                         if (found)
                             break;
-                        if (IgnoreLimitedReservedStringIfNoMatch && di.ReservedStringInfo[reservedStringsIndex][i].Times != -1) //Not Fonud
+                        //Not Fonud
+                        if (ReservedStringMatchPolicy == StringMatchPolicy.SkipAllReservedStringIfFirstNoMatch)
+                            break;
+                        else if (ReservedStringMatchPolicy == StringMatchPolicy.IgnoreLimitedReservedStringIfNoMatch && di.ReservedStringInfo[reservedStringsIndex][i].Times != -1)
                             di.ReservedStringInfo[reservedStringsIndex][i].Times = 0;
                     }
                 }

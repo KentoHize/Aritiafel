@@ -284,8 +284,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             }
 
             ArOutPartInfoList ospi = ds.Disassemble(format, CreateFormatDisassembleInfo(reservedString));
-            ds.ErrorOccurIfNoMatch = ds.IgnoreLimitedReservedStringIfNoMatch =
-                ds.WhenReservedStringNoMatchTimesIgnorePreviousReservedString = true;
+            ds.ErrorOccurIfNoMatch = ds.WhenReservedStringNoMatchTimesIgnorePreviousReservedString = true;
+            if (ospi.Value.Find(m => m.Name == "K") != null)
+                ds.ReservedStringMatchPolicy = StringMatchPolicy.IgnoreLimitedReservedStringIfNoMatch;
+            else
+                ds.ReservedStringMatchPolicy = StringMatchPolicy.SkipAllReservedStringIfFirstNoMatch;
             ospi = ds.Disassemble(s, CreateScanDisassembleInfo(ospi, dtfi, dateTimeStyles.HasFlag(ArDateTimeStyles.AllowInnerWhite)));
 
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalPart = 0, tt = -1,
@@ -843,7 +846,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             break;
                         case 38: // "K"
                         case 39: // "zzz"
-                            if (pi.Index == 36 && TimeZoneInfo.Local.BaseUtcOffset.Ticks == 0)
+                            if (pi.Index == 38 && TimeZoneInfo.Local.BaseUtcOffset.Ticks == 0)
                                 sb.Append("Z");
                             else if (TimeZoneInfo.Local.BaseUtcOffset.Ticks >= 0)
                                 sb.Append(TimeZoneInfo.Local.BaseUtcOffset.ToString("\\+hh\\:mm"));
