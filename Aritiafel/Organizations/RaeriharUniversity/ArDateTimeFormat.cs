@@ -4,7 +4,6 @@ using Aritiafel.Locations;
 using Aritiafel.Organizations.ArinaOrganization;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Globalization;
 using System.Text;
 
@@ -183,6 +182,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         type = ArStringPartType.Integer;
                         maxLength = 1;
                         break;
+                    case 15: //yyyyyy
                     case 16: //yyyyy
                     case 17: //yyyy
                     case 18: //yyy
@@ -199,9 +199,6 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     case 45:
                         type = ArStringPartType.Integer;
                         maxLength = 4;
-                        break;
-                    case 15: //yyyyyy
-                        type = ArStringPartType.Integer;
                         break;
                     case 28:
                     case 44:
@@ -226,16 +223,8 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     result.Add(new ArStringPartInfo(ospi.Name, [value], type, maxLength, 1));
                 else if (type == ArStringPartType.Special)
                     result.Add(new ArStringPartInfo(ospi.Name, [""], type, maxLength, 1));
-                else if (type == ArStringPartType.Integer)
-                {
-                    if (ospi.Index >= 15 && ospi.Index <= 18 || ospi.Index == 22) //yyyy屬特例
-                    {
-                        result.Add(new ArStringPartInfo("-", "-", ArStringPartType.Normal, 0, 1));
-                        result.Add(new ArStringPartInfo(ospi.Name, "", type, maxLength, 1));
-                    }
-                    else
-                        result.Add(new ArStringPartInfo(ospi.Name, "", type, maxLength, 1));
-                }
+                else if (type == ArStringPartType.Integer)                        
+                    result.Add(new ArStringPartInfo(ospi.Name, "", type, maxLength, 1));
                 else
                 {
                     if (K || zzz)
@@ -338,19 +327,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     case "yyyyy":
                     case "yyyy":
                     case "yyy":
-                        if (i != 0 && ((ArOutStringPartInfo)ospi.Value[i - 1]).Name == "-")
-                            year = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value) * -1;
-                        else
-                            year = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value);
+                        year = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value);
                         getYear = true;
                         break;
                     case "yy":
                     case "y":
                         if (!getYear)
-                            if (i != 0 && ((ArOutStringPartInfo)ospi.Value[i - 1]).Name == "-")
-                                year = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value) * -1;
-                            else
-                                year = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value);
+                            year = int.Parse(((ArOutStringPartInfo)ospi.Value[i]).Value);
                         break;
                     case "dd":
                     case "d":

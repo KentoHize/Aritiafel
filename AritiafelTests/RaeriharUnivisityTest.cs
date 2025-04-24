@@ -25,11 +25,11 @@ namespace AritiafelTest
             'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y'
         };
 
-        internal static readonly char[] AllStandardFormatCharWithABC =
+        internal static readonly char[] AllStandardFormatCharWithABCZX =
         {
             'd', 'D', 'f', 'F', 'g', 'G', 'm', 'M', 'o', 'O',
             'r', 'R', 's', 't', 'T', 'u', 'U', 'y', 'Y', 'A',
-            'a', 'B', 'b', 'C', 'c'
+            'a', 'B', 'b', 'C', 'c', 'Z', 'z', 'X', 'x'
         };
 
         List<TestDateTime> dateTimes = new List<TestDateTime> {
@@ -244,9 +244,12 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
+            Sophia.SeeThrough(Mylar.GetStandardDateTimePattern(Mylar.ArinaCulture.DateTimeFormat, ArStandardDateTimeType.DateExtension));
+            return;
             ArDateTime ad = ArDateTime.Now;
             //Sophia.SeeThrough(ad);
             ad = new ArDateTime(7, 10, 15);
+            
             Sophia.SeeThrough(ad);
             //Stopwatch sw = Stopwatch.StartNew();
             //for (int i = 0; i < 100; i++)
@@ -387,22 +390,25 @@ namespace AritiafelTest
                     CultureInfo ci;
                     ci = ArCultureInfo.GetCultureInfo(cultureInfoA[j]);
                     Sophia.SeeThrough($"{ci.Name} {ci.DisplayName}");
-                    for (int k = 0; k < AllStandardFormatCharWithABC.Length; k++)
+                    for (int k = 0; k < AllStandardFormatCharWithABCZX.Length; k++)
                     {
                         //if (AllStandardFormatChar[k] != 'r')
                         //    continue;
                         //Sophia.SeeThrough(adt.Ticks);
-                        string s = adt.ToString(AllStandardFormatCharWithABC[k].ToString(), ci);                        
+                        string s = adt.ToString(AllStandardFormatCharWithABCZX[k].ToString(), ci);                        
                         //Sophia.SeeThrough(s);
-                        if ((AllStandardFormatCharWithABC[k] == 'M' || AllStandardFormatCharWithABC[k] == 'm') &&
+                        if ((AllStandardFormatCharWithABCZX[k] == 'M' || AllStandardFormatCharWithABCZX[k] == 'm') &&
                             adt.Month == 2 && adt.Day == 29)
                             continue;
+
+                        if (AllStandardFormatCharWithABCZX[k] == 'X')
+                            ;
                         //adt = ArDateTimeFormat.ParseExactFull(s, AllStandardFormatChar[k].ToString(), ci, DateTimeStyles.None);
                         //adt2 = ArDateTime.Parse(s, ci);
                         //if (s == "Saturday, January 1, 0400")
                         //    ;
                         adt2 = ArDateTime.Parse(s, ci, ArDateTimeStyles.None);
-                        Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABC[k].ToString(), ci));                        
+                        Sophia.SeeThrough(adt2.ToString(AllStandardFormatCharWithABCZX[k].ToString(), ci));                        
                     }
                     //adt2 = ArDateTime.Now;
                     string f = "K g yyyyy/MM/dd tt hh:mm:ss.FFFFF zz";

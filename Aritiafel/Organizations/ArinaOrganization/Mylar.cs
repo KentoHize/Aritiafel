@@ -64,8 +64,8 @@ namespace Aritiafel.Organizations.ArinaOrganization
                 type == ArStandardDateTimeType.ShortDateTimeExtension || type == ArStandardDateTimeType.DateExtension)
                 sb.Append(StandardCalendarEraPattern);
 
-            if (sb.Length > 0 && type != ArStandardDateTimeType.DateTimeExtension &&
-                type != ArStandardDateTimeType.ShortDateTimeExtension && type != ArStandardDateTimeType.ShortDateExtension)
+            if (sb.Length > 0 && type != ArStandardDateTimeType.DateTimeExtension && type != ArStandardDateTimeType.ShortDateTimeExtension &&
+                type != ArStandardDateTimeType.DateExtension && type != ArStandardDateTimeType.ShortDateExtension)
                 sb.Append(" ");
 
             if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime ||
@@ -79,9 +79,11 @@ namespace Aritiafel.Organizations.ArinaOrganization
                 type == ArStandardDateTimeType.DateTimeExtension || type == ArStandardDateTimeType.ShortDateTimeExtension)
                 sb.Append(" ");
 
-            if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.Time)
+            if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.Time ||
+                type == ArStandardDateTimeType.DateTimeExtension)
                 sb.Append(StandardTimePattern);
-            else if (type == ArStandardDateTimeType.ShortDateTime || type == ArStandardDateTimeType.ShortTime)
+            else if (type == ArStandardDateTimeType.ShortDateTime || type == ArStandardDateTimeType.ShortTime ||
+                type == ArStandardDateTimeType.ShortDateTimeExtension)
                 sb.Append(StandardShortTimePattern);
             return sb.ToString();
         }
