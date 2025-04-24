@@ -286,6 +286,10 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 ArStandardDateTimeType.ShortDate => ArDateTimeFormat.Format(this, "b", formatProvider),
                 ArStandardDateTimeType.Time => ArDateTimeFormat.Format(this, "C", formatProvider),
                 ArStandardDateTimeType.ShortTime => ArDateTimeFormat.Format(this, "c", formatProvider),
+                ArStandardDateTimeType.DateTimeExtension => ArDateTimeFormat.Format(this, "Z", formatProvider),
+                ArStandardDateTimeType.ShortDateTimeExtension => ArDateTimeFormat.Format(this, "z", formatProvider),
+                ArStandardDateTimeType.DateExtension => ArDateTimeFormat.Format(this, "X", formatProvider),
+                ArStandardDateTimeType.ShortDateExtension => ArDateTimeFormat.Format(this, "x", formatProvider),
                 _ => throw new NotSupportedException()
             };
 

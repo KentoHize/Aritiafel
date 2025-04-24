@@ -4,6 +4,7 @@ using Aritiafel.Locations;
 using Aritiafel.Organizations.ArinaOrganization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Globalization;
 using System.Text;
 
@@ -85,7 +86,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             break;
                         case "gg":
                             if (dtfi == Mylar.ArinaCulture.DateTimeFormat) // ArCulture
-                                result[i].Value = "有奈";
+                                result[i].Value = ArCultureInfo.EraName;
                             else
                             {
                                 List<string> ls = [];
@@ -96,7 +97,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             break;
                         case "g":
                             if (dtfi == Mylar.ArinaCulture.DateTimeFormat) // ArCulture
-                                result[i].Value = "Ar";
+                                result[i].Value = ArCultureInfo.AbbreviatedEraName;
                             else
                             {
                                 List<string> ls = [];
@@ -395,8 +396,11 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 }
             });
 
+            //AR -> era != "" 也!= "AR"
+            //Other => != "Ar"
             //先寫死 => 待修改
-            if (era != "" && era != " AR" && era != "有奈" && era != "Ar")
+            if (era != Mylar.GetStandardCalendarEraName() && era != ArCultureInfo.EraName && era != ArCultureInfo.AbbreviatedEraName &&
+                (dtfi != Mylar.ArinaCulture.DateTimeFormat || era != ""))
                 useCEDate = true;
 
             result = new ArDateTime(year, month, day, hour + (tt == 1 ? 12 : 0), minute, second, 0, useCEDate).AddTicks(decimalPart);
@@ -426,7 +430,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 s = s.TrimStart();
             if (dateTimeStyles.HasFlag(ArDateTimeStyles.AllowTrailingWhite))
                 s = s.TrimEnd();
-            if (s.Length < 4)
+            if (s.Length < 3)
                 throw new FormatException(s);
             if (provider == null)
                 provider = Mylar.ArinaCulture;
@@ -502,20 +506,79 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             });
 
             ArDateTime result;
-            //標準格式開頭
-            if ((char.IsLetter(s[0]) && char.IsLetter(s[1]) && (char.IsWhiteSpace(s[2]) || s[2] == '-')) ||
-                ((char.IsLetter(s[0]) || char.IsWhiteSpace(s[0])) && char.IsLetter(s[1]) && char.IsLetter(s[2]) && (char.IsWhiteSpace(s[3]) || s[3] == '-')))
+            //偵測標準格式的ggg開頭
+            if(s.Length >= Mylar.StandardDateLength - 1 && (s[9] == '/' || s[8] == '/'))
             {
-                if (s.Length >= Mylar.StandardDateTimeLength - 1)
-                    if (TryParseExact(s, "A", provider, dateTimeStyles, out result))
-                        return result;
-                if (s.Length >= Mylar.StandardShortDateTimeLength - 1)
-                    if (TryParseExact(s, "a", provider, dateTimeStyles, out result))
-                        return result;
-                if (s.Length >= Mylar.StandardDateLength - 1)
-                    if (TryParseExact(s, "B", provider, dateTimeStyles, out result))
-                        return result;
+                if (char.IsLetter(s[0]) && char.IsLetter(s[1]))
+                {
+                    if (s.Length >= Mylar.StandardDateTimeLength - 1)
+                    {
+                        if (s[2] == ' ')
+                            if (TryParseExact(s, "A", provider, dateTimeStyles, out result))
+                                return result;
+                        if (s[2] == '-' || char.IsDigit(s[2]))
+                            if (TryParseExact(s, "Z", provider, dateTimeStyles, out result))
+                                return result;
+                    }
+                    else if (s.Length >= Mylar.StandardShortDateTimeLength - 1)
+                    {
+                        if (s[2] == ' ')
+                            if (TryParseExact(s, "a", provider, dateTimeStyles, out result))
+                                return result;
+                        if (s[2] == '-' || char.IsDigit(s[2]))
+                            if (TryParseExact(s, "z", provider, dateTimeStyles, out result))
+                                return result;
+                    }
+                    else if (s.Length >= Mylar.StandardDateLength - 1)
+                    {
+                        if (s[2] == ' ')
+                            if (TryParseExact(s, "B", provider, dateTimeStyles, out result))
+                                return result;
+                        if (s[2] == '-' || char.IsDigit(s[2]))
+                            if (TryParseExact(s, "X", provider, dateTimeStyles, out result))
+                                return result;
+                    }
+                }
+                else if((char.IsLetter(s[0]) || char.IsWhiteSpace(s[0])) && char.IsLetter(s[1]) && char.IsLetter(s[2]))
+                {
+                    if (s.Length >= Mylar.StandardDateTimeLength)
+                    {
+                        if (s[3] == ' ')
+                            if (TryParseExact(s, "A", provider, dateTimeStyles, out result))
+                                return result;
+                        if (s[3] == '-' || char.IsDigit(s[3]))
+                            if (TryParseExact(s, "Z", provider, dateTimeStyles, out result))
+                                return result;
+                    }
+                    else if (s.Length >= Mylar.StandardShortDateTimeLength)
+                    {
+                        if (s[3] == ' ')
+                            if (TryParseExact(s, "a", provider, dateTimeStyles, out result))
+                                return result;
+                        if (s[3] == '-' || char.IsDigit(s[3]))
+                            if (TryParseExact(s, "z", provider, dateTimeStyles, out result))
+                                return result;
+                    }
+                    else if (s.Length >= Mylar.StandardDateLength)
+                    {
+                        if (s[3] == ' ')
+                            if (TryParseExact(s, "B", provider, dateTimeStyles, out result))
+                                return result;
+                        if (s[3] == '-' || char.IsDigit(s[3]))
+                            if (TryParseExact(s, "X", provider, dateTimeStyles, out result))
+                                return result;
+                    }
+                }
             }
+
+            //偵測標準格式去除歷紀年開頭
+            if (s.Length >= Mylar.StandardShortDateLength && s[5] == '/' && slash == 2)
+                if (TryParseExact(s, "b", provider, dateTimeStyles, out result))
+                    return result;
+
+            if (s.Length >= Mylar.StandardShortDateExtensionLength && s[6] == '/' && slash == 2)
+                if (TryParseExact(s, "x", provider, dateTimeStyles, out result))
+                    return result;
 
             if (t > 0 && dash >= 2 && colon >= 2)
             {
@@ -533,18 +596,33 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
             if (sp != 0)
             {
-                //標準格式去除歷紀年開頭
+                //偵測標準格式去除歷紀年開頭
                 if (s.Length >= Mylar.StandardShortDateLength && s[5] == '/' && slash == 2)
                 {
                     if (dot == 1)
+                    {
                         if (TryParseExact(s, "A", provider, dateTimeStyles, out result))
                             return result;
-                    if (colon == 2)
+                    }
+                    else if (colon == 2)
+                    {
                         if (TryParseExact(s, "a", provider, dateTimeStyles, out result))
                             return result;
-                    if (colon == 0)
-                        if (TryParseExact(s, "b", provider, dateTimeStyles, out result))
+                    }
+                }
+
+                if (s.Length >= Mylar.StandardShortDateExtensionLength && s[6] == '/' && slash == 2)
+                {   
+                    if(dot == 1)
+                    {
+                        if (TryParseExact(s, "Z", provider, dateTimeStyles, out result))
                             return result;
+                    }       
+                    else if(colon == 2)
+                    {
+                        if (TryParseExact(s, "z", provider, dateTimeStyles, out result))
+                            return result;
+                    }
                 }
 
                 if (gmt > 0)
@@ -576,10 +654,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     }
                 }
             }
-
-            if (s.Length >= Mylar.StandardShortDateLength && s[5] == '/' && slash == 2 && colon == 0)
-                if (TryParseExact(s, "b", provider, dateTimeStyles, out result))
-                    return result;
+            
             if (s.Length >= Mylar.StandardTimeLength && dot == 1 && colon == 2)
                 if (TryParseExact(s, "C", provider, dateTimeStyles, out result))
                     return result;
@@ -599,7 +674,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         return result;
                 if (TryParseExact(s, "d", provider, dateTimeStyles, out result))
                     return result;
-            }
+            }            
             if (TryParseExact(s, "M", provider, dateTimeStyles, out result))
                 return result;
             if (TryParseExact(s, "Y", provider, dateTimeStyles, out result))
@@ -623,7 +698,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             if (TryParseExact(s, "T", provider, dateTimeStyles, out result))
                 return result;
             if (TryParseExact(s, "t", provider, dateTimeStyles, out result))
-                return result;
+                return result;            
             if (TryParseExact(s, "d", provider, dateTimeStyles, out result))
                 return result;
             if (sp == 0 && s.Length >= MinimumCharForLongFormat)

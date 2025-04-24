@@ -25,6 +25,8 @@ namespace Aritiafel.Organizations.ArinaOrganization
         public override int LCID => 0x7C04;
 
         public const string SystemCalendarEraName = " AR"; //暫時
+        public const string EraName = "有奈";
+        public const string AbbreviatedEraName = "Ar";
         public override string ToString()
             => Name;
 
@@ -106,6 +108,10 @@ namespace Aritiafel.Organizations.ArinaOrganization
                 'b' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.ShortDate)],
                 'C' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.Time)],
                 'c' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.ShortTime)],
+                'Z' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.DateTimeExtension)],
+                'z' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.ShortDateTimeExtension)],
+                'X' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.DateExtension)],
+                'x' => [Mylar.GetStandardDateTimePattern(dtfi, ArStandardDateTimeType.ShortDateExtension)],
                 _ => dtfi.GetAllDateTimePatterns(format)
             };
         }

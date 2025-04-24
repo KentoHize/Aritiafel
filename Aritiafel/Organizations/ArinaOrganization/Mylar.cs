@@ -13,16 +13,24 @@ namespace Aritiafel.Organizations.ArinaOrganization
             => _ArinaCulture ??= new ArCultureInfo();
 
         public const int StandardDateTimeLength = 32;
+        public const int StandardDateTimeExtensionLength = 32;
         public const int StandardShortDateTimeLength = 24;
+        public const int StandardShortDateTimeExtensionLength = 24;
         public const int StandardDateLength = 15;
+        public const int StandardDateExtensionLength = 15;
         public const int StandardShortDateLength = 11;
+        public const int StandardShortDateExtensionLength = 12;
         public const int StandardTimeLength = 16;
         public const int StandardShorTimeLength = 8;
 
+        public const string StandardCalendarEraPattern = "ggg";
+        public const string StandardDateExtensionPattern = "yyyyyy'/'MM'/'dd";
         public const string StandardDatePattern = "yyyyy'/'MM'/'dd";
         public const string StandardTimePattern = "HH':'mm':'ss'.'fffffff";
         public const string StandardShortTimePattern = "HH':'mm':'ss";
 
+        public static string GetStandardCalendarEraName()
+            => GetStandardCalendarEraName(ArinaCulture.DateTimeFormat);
         public static string GetStandardCalendarEraName(DateTimeFormatInfo dtfi)
         {
             //增加 判斷正確的紀年三字
@@ -52,24 +60,28 @@ namespace Aritiafel.Organizations.ArinaOrganization
         {
             StringBuilder sb = new StringBuilder();
             if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime ||
-                type == ArStandardDateTimeType.Date)
-                sb.Append(GetStandardCalendarEraName(dtfi));
+                type == ArStandardDateTimeType.Date || type == ArStandardDateTimeType.DateTimeExtension ||
+                type == ArStandardDateTimeType.ShortDateTimeExtension || type == ArStandardDateTimeType.DateExtension)
+                sb.Append(StandardCalendarEraPattern);
 
-            if (sb.Length > 0)
+            if (sb.Length > 0 && type != ArStandardDateTimeType.DateTimeExtension &&
+                type != ArStandardDateTimeType.ShortDateTimeExtension && type != ArStandardDateTimeType.ShortDateExtension)
                 sb.Append(" ");
 
             if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime ||
                 type == ArStandardDateTimeType.Date || type == ArStandardDateTimeType.ShortDate)
                 sb.Append(StandardDatePattern);
+            else if (type == ArStandardDateTimeType.DateTimeExtension || type == ArStandardDateTimeType.ShortDateTimeExtension ||
+                type == ArStandardDateTimeType.DateExtension || type == ArStandardDateTimeType.ShortDateExtension)
+                sb.Append(StandardDateExtensionPattern);
 
-            if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime)
+            if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.ShortDateTime ||
+                type == ArStandardDateTimeType.DateTimeExtension || type == ArStandardDateTimeType.ShortDateTimeExtension)
                 sb.Append(" ");
 
-            if (type == ArStandardDateTimeType.DateTime ||
-                type == ArStandardDateTimeType.Time)
+            if (type == ArStandardDateTimeType.DateTime || type == ArStandardDateTimeType.Time)
                 sb.Append(StandardTimePattern);
-            else if (type == ArStandardDateTimeType.ShortDateTime ||
-                type == ArStandardDateTimeType.ShortTime)
+            else if (type == ArStandardDateTimeType.ShortDateTime || type == ArStandardDateTimeType.ShortTime)
                 sb.Append(StandardShortTimePattern);
             return sb.ToString();
         }
