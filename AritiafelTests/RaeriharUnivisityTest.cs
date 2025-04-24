@@ -275,7 +275,7 @@ namespace AritiafelTest
             Stopwatch sw = Stopwatch.StartNew();
             for(int i = 0; i < 10000; i++)
             {
-                byte[] s = cb.DrawOutBytes(20, true);
+                byte[] s = cb.DrawOutBytes(200, true);
                 char[] c = Encoding.Unicode.GetChars(s);                
                 string ss = new string(c);                
                 ArDateTime.TryParse(ss, out ArDateTime result);
