@@ -1,15 +1,15 @@
-﻿using Aritiafel.Items;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Resources;
-using System.Windows.Forms;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Text.Json;
-using System.Collections.Generic;
-using System.IO;
-using System.ComponentModel.Design;
-using System;
+using System.Text.Json.Serialization;
+using System.Windows.Forms;
+using Aritiafel.Items;
 
 namespace Aritiafel.Organizations
 {
@@ -27,7 +27,7 @@ namespace Aritiafel.Organizations
         public static void RegisterRMAndCI(ResourceManager rm, CultureInfo ci)
         {
             languagePairs = null;
-            ResourceManager = rm;            
+            ResourceManager = rm;
             CultureInfo = ci;
         }
 
@@ -43,23 +43,23 @@ namespace Aritiafel.Organizations
                 throw new CultureNotFoundException(ci.Name);
 
             using (StreamReader sr = new StreamReader(file))
-            {   
+            {
                 List<KeyValuePair<string, string>> lkv = JsonSerializer.Deserialize<List<KeyValuePair<string, string>>>(sr.ReadToEnd());
                 languagePairs = new Dictionary<string, string>();
-                foreach(KeyValuePair<string, string> kvp in lkv)
+                foreach (KeyValuePair<string, string> kvp in lkv)
                     languagePairs.Add(kvp.Key.ToUpper(), kvp.Value);
             }
-        }        
+        }
 
         public static string GetMessage(string resourceKey, params object[] args)
-        {   
+        {
             if (languagePairs != null)
                 return string.Format(languagePairs[resourceKey], args);
             else if (ResourceManager != null)
                 return string.Format(ResourceManager.GetString(resourceKey, CultureInfo), args);
             else
                 throw new NullReferenceException("Register a resource manager or a language folder first.");
-        }        
+        }
 
         public static DialogResult SentInformationByResource(string key, string title, params object[] args)
             => AdventurerAssociation.ShowNewMessageOrSetResult(new ArMessage(GetMessage(key, args), title, key, ChoiceOptions.OK, LevelOfEergency.Information));

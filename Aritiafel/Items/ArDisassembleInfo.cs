@@ -11,8 +11,8 @@ namespace Aritiafel.Items
 
         public ArDisassembleInfo(string[] reserverdStringInfo)
         {
-            ArStringPartInfo[] pi = new ArStringPartInfo[reserverdStringInfo.Length];            
-            for(int i = 0; i < pi.Length; i++)
+            ArStringPartInfo[] pi = new ArStringPartInfo[reserverdStringInfo.Length];
+            for (int i = 0; i < pi.Length; i++)
                 pi[i] = new ArStringPartInfo(reserverdStringInfo[i]);
             ReservedStringInfo = [pi];
             ContainerPartInfo = [];
@@ -29,6 +29,6 @@ namespace Aritiafel.Items
             ReservedStringInfo = reservedStringInfo ?? [];
             ContainerPartInfo = containerPartInfo ?? [];
         }
-        
+
     }
 }

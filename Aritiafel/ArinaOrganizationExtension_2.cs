@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
 
 namespace Aritiafel
 {
@@ -17,7 +17,7 @@ namespace Aritiafel
 
         public static void ParallelForEach<TSource, TLocal>(this Partitioner<TSource> p, ParallelOptions options, Func<TLocal> initFunction, Func<TSource, ParallelLoopState, TLocal, TLocal> bodyFunction, Action<TLocal> finalFunction)
         {
-            Parallel.ForEach(p, options, initFunction, bodyFunction, finalFunction);            
+            Parallel.ForEach(p, options, initFunction, bodyFunction, finalFunction);
         }
 
         public static void ParallelForEach<T>(this IEnumerable<T> e, ParallelOptions options, Action<T> action)
@@ -28,10 +28,10 @@ namespace Aritiafel
         public static void ParallelForEach<T>(this IEnumerable<T> e, ParallelOptions options, Action<T, ParallelLoopState> action)
         {
             Parallel.ForEach(e, options, action);
-        }   
+        }
 
-        public static void ParallelForEach<T>(this IEnumerable<T> e, ParallelOptions options, Action<T, ParallelLoopState, long> action )
-        {   
+        public static void ParallelForEach<T>(this IEnumerable<T> e, ParallelOptions options, Action<T, ParallelLoopState, long> action)
+        {
             Parallel.ForEach(e, options, action);
         }
 
@@ -58,7 +58,7 @@ namespace Aritiafel
             => e.ParallelForEach(new ParallelOptions(), action);
         public static void ParallelForEach<T>(this IEnumerable<T> e, Action<T> action)
             => e.ParallelForEach(new ParallelOptions(), action);
-        
+
 
         public static void ParallelFor(this IEnumerable e, long startIndex, long endIndex, ParallelOptions options, Action<long, ParallelLoopState> action)
         {

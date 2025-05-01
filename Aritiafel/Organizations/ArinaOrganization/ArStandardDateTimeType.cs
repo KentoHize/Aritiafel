@@ -13,7 +13,7 @@
         ShortDateTimeExtension, //z
         DateExtension, //X
         ShortDateExtension //x
-            
+
     }
 
     // AR 00001/01/01 00:00:00.0000000      A 標準時間日期(可比) 32位

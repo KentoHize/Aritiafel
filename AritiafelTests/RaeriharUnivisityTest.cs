@@ -186,6 +186,7 @@ namespace AritiafelTest
         [TestMethod]
         public void IsLeapYear()
         {
+            Sophia.SeeThrough(ArDateTime.IsLeapYear(-2019));
             Assert.IsFalse(ArDateTime.IsLeapYear(1));
             Assert.IsFalse(ArDateTime.IsLeapYear(-1));
             Assert.IsTrue(ArDateTime.IsLeapYear(-2));

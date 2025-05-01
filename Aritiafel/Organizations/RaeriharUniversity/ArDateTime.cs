@@ -1,8 +1,8 @@
-﻿using Aritiafel.Definitions;
-using Aritiafel.Organizations.ArinaOrganization;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using Aritiafel.Definitions;
+using Aritiafel.Organizations.ArinaOrganization;
 
 //private const long TicksPerMillisecond = 10000L;
 //private const long TicksPerSecond = 10000000L;
@@ -59,7 +59,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         { }
 
         public ArDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, int tick, bool isCEDate = false)
-        {   
+        {
             if (!isCEDate)
                 year = GetCEYear(year);
             ValidateDateTime(year, month, day, hour, minute, second, millisecond, tick, true);
@@ -76,7 +76,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
         internal static void ValidateDateTime(int year, int month, int day = 1, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, int tick = 0, bool isCEDate = false)
         {
-            if(isCEDate)
+            if (isCEDate)
                 year = GetARYear(year);
             if (year == 0 || year < -9999 || year > 9999)
                 throw new ArgumentOutOfRangeException(nameof(year));
@@ -485,7 +485,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
         public static bool TryParseExact(string s, string format, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
             => ArDateTimeFormat.TryParseExact(s, format, null, dateTimeStyles, out result);
         public static bool TryParseExact(string s, string format, IFormatProvider formatProvider, ArDateTimeStyles dateTimeStyles, out ArDateTime result)
-            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, dateTimeStyles, out result);           
+            => ArDateTimeFormat.TryParseExact(s, format, formatProvider, dateTimeStyles, out result);
         public static ArDateTime Parse(string s)
             => Parse(s, null, ArDateTimeStyles.AllowWhiteSpaces);
         public static ArDateTime Parse(string s, IFormatProvider formatProvider)

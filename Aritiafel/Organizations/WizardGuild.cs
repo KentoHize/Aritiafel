@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using Microsoft.VisualBasic;
-using System.Xml;
-using System.Text.Json;
-using Aritiafel.Locations.StorageHouse;
-using Aritiafel.Artifacts;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Xml;
+using Aritiafel.Artifacts;
+using Aritiafel.Locations.StorageHouse;
+using Microsoft.VisualBasic;
 
 namespace Aritiafel.Organizations
 {
@@ -17,7 +17,7 @@ namespace Aritiafel.Organizations
     public static class WizardGuild
     {
         public static string TranslateTextFromTraditionalChineseToSimplifiedChinese(string text)
-        {
+        {   
             return Strings.StrConv(text, VbStrConv.SimplifiedChinese, 2052);
         }
 
@@ -36,7 +36,8 @@ namespace Aritiafel.Organizations
                             xd2.InnerText = TranslateTextFromTraditionalChineseToSimplifiedChinese(xd2.InnerText);
 
             string outputFileName = $"{Path.GetDirectoryName(traditionalChineseFileName)}\\{Path.GetFileName(traditionalChineseFileName).Split('.')[0]}.zh-CN.resx";
-            using (TextWriter sw = new StreamWriter(outputFileName, false, Encoding.UTF8)) {
+            using (TextWriter sw = new StreamWriter(outputFileName, false, Encoding.UTF8))
+            {
                 xmlD.Save(sw);
             }
         }
@@ -83,12 +84,12 @@ namespace Aritiafel.Organizations
             string name = "";
 
             var query = (from n in NameWords
-                        where n.Gender == "f" || n.Gender == "n"
-                        select n).ToList();
-            name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
-            query =     (from n in NameWords
-                         where n.Gender == "f"
+                         where n.Gender == "f" || n.Gender == "n"
                          select n).ToList();
+            name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
+            query = (from n in NameWords
+                     where n.Gender == "f"
+                     select n).ToList();
             name += query[cb.DrawOutInteger(0, query.Count - 1)].Word;
             return string.Concat(surname, name);
         }

@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
-using System.Linq;
 
 namespace Aritiafel.Locations.StorageHouse
 {
@@ -38,10 +38,11 @@ namespace Aritiafel.Locations.StorageHouse
         }
 
         private string _ReferenceTypeString = "__ReferenceType";
-        public string SpecialCharPrefix 
-        { 
-            get => _SpecialCharPrefix; 
-            set {
+        public string SpecialCharPrefix
+        {
+            get => _SpecialCharPrefix;
+            set
+            {
                 if (value == null)
                     throw new ArgumentNullException(nameof(SpecialCharPrefix));
                 _SpecialCharPrefix = value;
@@ -86,7 +87,7 @@ namespace Aritiafel.Locations.StorageHouse
                 : this(ReferenceTypeReadAndWritePolicy.TypeFullName, SpecialCharHandlingPolicy.Change, "__ReferenceType", "AR")
             { }
             public DefaultJsonConverter(ReferenceTypeReadAndWritePolicy referenceTypeReadAndWritePolicy,
-                SpecialCharHandlingPolicy specialCharHandlingPolicy, 
+                SpecialCharHandlingPolicy specialCharHandlingPolicy,
                 string referenceTypeString, string specialCharPrefix)
             {
                 ReferenceTypeReadAndWritePolicy = referenceTypeReadAndWritePolicy;
@@ -196,10 +197,10 @@ namespace Aritiafel.Locations.StorageHouse
                                 buffer.AppendFormat("{0},", numberString);
                             else if (resultType.GetProperty(propertyName).CanWrite)
                             {
-                                Type pType = resultType.GetProperty(propertyName).PropertyType;                                
+                                Type pType = resultType.GetProperty(propertyName).PropertyType;
                                 if (pType.IsEnum)
                                     SetPropertyValue(propertyName, result, Convert.ToInt32(numberString));
-                                else if(Nullable.GetUnderlyingType(pType) != null)
+                                else if (Nullable.GetUnderlyingType(pType) != null)
                                     SetPropertyValue(propertyName, result, Convert.ChangeType(numberString, Nullable.GetUnderlyingType(pType)));
                                 else
                                     SetPropertyValue(propertyName, result, Convert.ChangeType(numberString, pType));
@@ -227,9 +228,9 @@ namespace Aritiafel.Locations.StorageHouse
                                         SetPropertyValue(propertyName, result, reader.GetString()[0]);
                                 else
                                     if (SpecialCharHandlingPolicy == SpecialCharHandlingPolicy.Change)
-                                        SetPropertyValue(propertyName, result, RecoverSpecialChar(reader.GetString()));
-                                    else
-                                        SetPropertyValue(propertyName, result, reader.GetString());
+                                    SetPropertyValue(propertyName, result, RecoverSpecialChar(reader.GetString()));
+                                else
+                                    SetPropertyValue(propertyName, result, reader.GetString());
                             break;
                         default:
                             throw new JsonException("Default");
@@ -250,7 +251,7 @@ namespace Aritiafel.Locations.StorageHouse
                 {
                     writer.WriteStringValue(ReplaceSpecialChar(value.ToString()));
                     return;
-                }   
+                }
 
                 PropertyInfo[] pis = valueType.GetProperties();
                 writer.WriteStartObject();
@@ -269,13 +270,13 @@ namespace Aritiafel.Locations.StorageHouse
                     object p_value = GetPropertyValueAndWrite(pi.Name, value);
 
                     if (p_value == null)
-                        writer.WriteNull(pi.Name);                    
+                        writer.WriteNull(pi.Name);
                     else if (p_value == skipObject)
                         continue;
                     else
                     {
                         if (SpecialCharHandlingPolicy == SpecialCharHandlingPolicy.Change && (p_value is string || p_value is char))
-                            p_value = ReplaceSpecialChar(p_value.ToString());                        
+                            p_value = ReplaceSpecialChar(p_value.ToString());
                         JsonConverter jc = options.GetConverter(p_value.GetType());
                         writer.WritePropertyName(pi.Name);
                         jc.GetType().GetMethod("Write").Invoke(jc, new object[] { writer, p_value, options });
@@ -302,7 +303,7 @@ namespace Aritiafel.Locations.StorageHouse
                 return result;
             }
             private string ReplaceSpecialChar(char c)
-            {   
+            {
                 if ((c >= 0 && c <= 31) || c == '\"' || c == '\\')
                     return string.Format("[{0}:{1:X4}]", SpecialCharPrefix, (int)c);
                 return c.ToString();

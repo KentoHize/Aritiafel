@@ -37,7 +37,7 @@ namespace Aritiafel.Artifacts
         private const string MinGreaterThanMaxMessage = "Min value greater than max Value.";
 
         public ChaosBox_V1()
-        {   
+        {
             _Random = new Random((int)(DateTime.Now.Ticks ^ 5621387647545697893));
             _Random2 = new Random((int)(DateTime.Now.Ticks ^ _Random.Next(int.MinValue, int.MaxValue)));
         }

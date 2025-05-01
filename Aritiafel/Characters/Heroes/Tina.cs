@@ -1,8 +1,8 @@
-﻿using Aritiafel.Locations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Aritiafel.Locations;
 
 namespace Aritiafel.Characters.Heroes
 {
@@ -74,7 +74,7 @@ namespace Aritiafel.Characters.Heroes
         public static void SaveProjectData(string subFolderName, string projectName, string dataFolderName = "Data", string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\Backup");
-            if(string.IsNullOrEmpty(subFolderName))
+            if (string.IsNullOrEmpty(subFolderName))
                 rs.SaveVSSolutionData($@"C:\Programs\{projectName}\{dataFolderName}");
             else
                 rs.SaveVSSolutionData($@"C:\Programs\{subFolderName}\{projectName}\{dataFolderName}");
@@ -83,7 +83,7 @@ namespace Aritiafel.Characters.Heroes
         public static void SaveTextFile(string folderName, string fileName, string content)
         {
             Residence rs = new Residence(folderName);
-            rs.SaveLocalTextFile(fileName, content);            
+            rs.SaveLocalTextFile(fileName, content);
         }
 
         public static void SaveTextFile(string path, string content)

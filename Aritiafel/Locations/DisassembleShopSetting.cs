@@ -1,7 +1,7 @@
-﻿using Aritiafel.Definitions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Aritiafel.Definitions;
 
 namespace Aritiafel.Locations
 {
@@ -22,8 +22,8 @@ namespace Aritiafel.Locations
         {
             RecordValueWithoutEscapeChar = true;
             ErrorOccurIfNoMatch = false;
-            ReservedStringMatchPolicy = StringMatchPolicy.Normal;            
-            WhenReservedStringNoMatchTimesIgnorePreviousReservedString = false;            
+            ReservedStringMatchPolicy = StringMatchPolicy.Normal;
+            WhenReservedStringNoMatchTimesIgnorePreviousReservedString = false;
         }
     }
 }

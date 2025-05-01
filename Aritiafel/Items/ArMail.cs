@@ -6,6 +6,6 @@ namespace Aritiafel.Items
 {
     public class ArMail
     {
-        
+
     }
 }

@@ -1,7 +1,4 @@
-﻿using Aritiafel.Organizations.ArinaOrganization;
-using Aritiafel.Organizations.RaeriharUniversity;
-using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,12 +9,15 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Aritiafel.Organizations.ArinaOrganization;
+using Aritiafel.Organizations.RaeriharUniversity;
+using Microsoft.VisualBasic;
 
 namespace Aritiafel
 {
     //Extension and others    
     public static partial class ArinaOrganizationExtension
-    {        
+    {
         public static ConcurrentDictionary<string, string> EnumStringDictionary { get; set; }
 
         public static object ParseArString(this string s, Type t)
@@ -66,7 +66,7 @@ namespace Aritiafel
                 return s;
         }
         public static string ToArString(this object o, string format = null)
-        {   
+        {
             Type type = o.GetType();
             if (type == typeof(Color))
                 return "#" + ((Color)o).R.ToString("X2") + ((Color)o).G.ToString("X2") + ((Color)o).B.ToString("X2");
@@ -80,7 +80,7 @@ namespace Aritiafel
             else if (o is IFormattable r1)
             {
                 return r1.ToString(format, Mylar.ArinaCulture);
-            }   
+            }
             return o.ToString();
         }
 

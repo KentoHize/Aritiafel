@@ -19,7 +19,7 @@ namespace Aritiafel.Characters.Heroes
         //    { ProjectChoice.Aritiafel, @"C:\Programs\Standard\Aritiafel" }
         //}
 
-        public static long BackupGameSave (string rootFolder, string subFolder, string backupDrive = DefaultBackupDrive)
+        public static long BackupGameSave(string rootFolder, string subFolder, string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\GameSave");
             return rs.BackupGameData(rootFolder, subFolder);

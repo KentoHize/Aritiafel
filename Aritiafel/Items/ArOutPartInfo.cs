@@ -4,7 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace Aritiafel.Items
-{    
+{
     public abstract class ArOutPartInfo
     {
         public string Name { get; set; }

@@ -1,10 +1,10 @@
-﻿using Aritiafel.Items;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using Aritiafel.Items;
 
 namespace Aritiafel.Organizations
 {
@@ -28,29 +28,29 @@ namespace Aritiafel.Organizations
         public static bool Exists(ArProductInfo info)
             => _Products.ContainsKey(info) && _Products[info] != null;
         public static bool Remove(ArProductInfo info)
-            => _Products.TryRemove(info, out _);            
+            => _Products.TryRemove(info, out _);
         internal static object CreateOrGetObject(ArProductInfo info)
-        {            
+        {
             object result;
-            if(_Products.TryGetValue(info, out result))
+            if (_Products.TryGetValue(info, out result))
             {
                 if (_Products[info] != null)
                     return result;
                 else
                     _Products.TryRemove(info, out _);
             }
-                
+
             if (info.Args.Count == 0)
                 result = Activator.CreateInstance(info.Type);
             else
                 result = Activator.CreateInstance(info.Type, info.Args.ToArray(), null);
 
-            if(result != null && info.Setting != null)
+            if (result != null && info.Setting != null)
             {
-                foreach(KeyValuePair<string, object> kvp in info.Setting)
+                foreach (KeyValuePair<string, object> kvp in info.Setting)
                 {
                     PropertyInfo pi = info.Type.GetProperty(kvp.Key);
-                    if (pi != null) 
+                    if (pi != null)
                         pi.SetValue(result, kvp.Value);
                 }
             }

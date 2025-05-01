@@ -1,9 +1,9 @@
-﻿using Aritiafel.Characters.Heroes;
-using Aritiafel.Definitions;
-using Aritiafel.Items;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Aritiafel.Characters.Heroes;
+using Aritiafel.Definitions;
+using Aritiafel.Items;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 //拆解字串，提供初步分析
@@ -32,7 +32,7 @@ namespace Aritiafel.Locations
     {
         public bool RecordValueWithoutEscapeChar { get; set; }
         public bool ErrorOccurIfNoMatch { get; set; }
-        public StringMatchPolicy ReservedStringMatchPolicy { get; set; }        
+        public StringMatchPolicy ReservedStringMatchPolicy { get; set; }
         public bool WhenReservedStringNoMatchTimesIgnorePreviousReservedString { get; set; }
 
         public DisassembleShop()
@@ -150,7 +150,7 @@ namespace Aritiafel.Locations
         }
 
         internal ArOutPartInfoList DisassembleStringFull(string s, ArDisassembleInfo di)
-        {   
+        {
             string s2, containerEndString = "";
             int index = 0;
             int i, reservedStringsIndex = 0; //-1 = No Reserved
@@ -195,13 +195,13 @@ namespace Aritiafel.Locations
                 if (reservedStringsIndex != -1 && !found) //-1指完全不核對
                 {
                     for (i = startIndex[reservedStringsIndex]; i < di.ReservedStringInfo[reservedStringsIndex].Length; i++)
-                    {   
+                    {
                         if (di.ReservedStringInfo[reservedStringsIndex][i].Times == 0)
                         {
                             if (WhenReservedStringNoMatchTimesIgnorePreviousReservedString)
                                 startIndex[reservedStringsIndex] = i + 1;
                             continue;
-                        }   
+                        }
 
                         if (di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.UnsignedInteger ||
                                 di.ReservedStringInfo[reservedStringsIndex][i].Type == ArStringPartType.Integer ||
@@ -248,7 +248,7 @@ namespace Aritiafel.Locations
                                     break;
                                 }
                             }
-                        }   
+                        }
                         if (found)
                             break;
                         //Not Fonud

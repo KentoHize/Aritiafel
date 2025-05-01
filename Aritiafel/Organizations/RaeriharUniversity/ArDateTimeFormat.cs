@@ -1,11 +1,11 @@
-﻿using Aritiafel.Definitions;
-using Aritiafel.Items;
-using Aritiafel.Locations;
-using Aritiafel.Organizations.ArinaOrganization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using Aritiafel.Definitions;
+using Aritiafel.Items;
+using Aritiafel.Locations;
+using Aritiafel.Organizations.ArinaOrganization;
 
 namespace Aritiafel.Organizations.RaeriharUniversity
 {
@@ -82,7 +82,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             result[i].Values = [dtfi.AMDesignator[0].ToString(), dtfi.PMDesignator[0].ToString()];
                             break;
                         case "ggg":
-                            result[i].Value = Mylar.GetStandardCalendarEraName(dtfi);
+                            result[i].Values = Mylar.GetAllStandardCalendarEraName();
                             break;
                         case "gg":
                             if (dtfi == Mylar.ArinaCulture.DateTimeFormat) // ArCulture
@@ -141,7 +141,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         value = dtfi.DateSeparator;
                         break;
                     case 12:
-                    case 13:                    
+                    case 13:
                     case 20:
                     case 21:
                     case 33: //tt
@@ -174,7 +174,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     case 24: //m
                     case 25: //d
                     case 31: //ff
-                    case 47:                    
+                    case 47:
                         type = ArStringPartType.Integer;
                         maxLength = 2;
                         break;
@@ -224,7 +224,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     result.Add(new ArStringPartInfo(ospi.Name, [value], type, maxLength, 1));
                 else if (type == ArStringPartType.Special)
                     result.Add(new ArStringPartInfo(ospi.Name, [""], type, maxLength, 1));
-                else if (type == ArStringPartType.Integer)                        
+                else if (type == ArStringPartType.Integer)
                     result.Add(new ArStringPartInfo(ospi.Name, "", type, maxLength, 1));
                 else
                 {
@@ -494,7 +494,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
 
             ArDateTime result;
             //偵測標準格式的ggg開頭
-            if(s.Length >= Mylar.StandardDateLength - 1 && (s[9] == '/' || s[8] == '/'))
+            if (s.Length >= Mylar.StandardDateLength - 1 && (s[9] == '/' || s[8] == '/'))
             {
                 if (char.IsLetter(s[0]) && char.IsLetter(s[1]))
                 {
@@ -526,7 +526,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                                 return result;
                     }
                 }
-                else if((char.IsLetter(s[0]) || char.IsWhiteSpace(s[0])) && char.IsLetter(s[1]) && char.IsLetter(s[2]))
+                else if ((char.IsLetter(s[0]) || char.IsWhiteSpace(s[0])) && char.IsLetter(s[1]) && char.IsLetter(s[2]))
                 {
                     if (s.Length == Mylar.StandardDateTimeLength)
                     {
@@ -599,13 +599,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 }
 
                 if (s.Length == Mylar.StandardShortDateExtensionLength && s[6] == '/' && slash == 2)
-                {   
-                    if(dot == 1)
+                {
+                    if (dot == 1)
                     {
                         if (TryParseExact(s, "Z", provider, dateTimeStyles, out result))
                             return result;
-                    }       
-                    else if(colon == 2)
+                    }
+                    else if (colon == 2)
                     {
                         if (TryParseExact(s, "z", provider, dateTimeStyles, out result))
                             return result;
@@ -627,9 +627,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 {
                     if (tsr == 2)
                     {
-                        if (TryParseExact(s, "F", provider, dateTimeStyles, out result))
-                            return result;
                         if (TryParseExact(s, "G", provider, dateTimeStyles, out result))
+                            return result;
+                        if (TryParseExact(s, "F", provider, dateTimeStyles, out result))
                             return result;
                     }
                     else if (tsr == 1)
@@ -639,9 +639,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         if (TryParseExact(s, "g", provider, dateTimeStyles, out result))
                             return result;
                     }
-                }                
-            } 
-            
+                }
+            }
+
             if (s.Length == Mylar.StandardTimeLength && dot == 1 && colon == 2)
                 if (TryParseExact(s, "C", provider, dateTimeStyles, out result))
                     return result;
@@ -662,9 +662,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 if (TryParseExact(s, "d", provider, dateTimeStyles, out result))
                     return result;
             }
-            if(s.Length >= MinimumCharForLongDate)
+            if (s.Length >= MinimumCharForLongDate)
                 if (TryParseExact(s, "D", provider, dateTimeStyles, out result))
-                    return result;            
+                    return result;
             if (TryParseExact(s, "d", provider, dateTimeStyles, out result))
                 return result;
             if (TryParseExact(s, "M", provider, dateTimeStyles, out result))
@@ -675,14 +675,14 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             //非常態情況            
             if (sp != 0 && s.Length >= MinimumCharForLongFormat)
             {
-                if (TryParseExact(s, "F", provider, dateTimeStyles, out result))
-                    return result;
                 if (TryParseExact(s, "G", provider, dateTimeStyles, out result))
+                    return result;
+                if (TryParseExact(s, "F", provider, dateTimeStyles, out result))
                     return result;
                 if (TryParseExact(s, "f", provider, dateTimeStyles, out result))
                     return result;
                 if (TryParseExact(s, "g", provider, dateTimeStyles, out result))
-                    return result;                
+                    return result;
             }
             if (TryParseExact(s, "T", provider, dateTimeStyles, out result))
                 return result;

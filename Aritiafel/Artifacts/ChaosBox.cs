@@ -58,7 +58,7 @@ namespace Aritiafel.Artifacts
                 return DateTime.Now.Ticks % 2 == 0 ?
                     _Random.Next(minValue - 1, maxValue) + 1 :
                     _Random2.Next(minValue - 1, maxValue) + 1;
-        }       
+        }
         public int DrawOutInteger(int maxValue, bool includeNegative = false)
             => includeNegative ? DrawOutInteger(int.MinValue, maxValue) :
                 DrawOutInteger(0, maxValue);
@@ -183,7 +183,7 @@ namespace Aritiafel.Artifacts
             int i;
 
             for (i = startCompareDigit; startCompareDigit - i < maxLoop &&
-                startCompareDigit - i <= maxCompareRound ; i--)
+                startCompareDigit - i <= maxCompareRound; i--)
             {
                 if (!isDigitsCountLowerBound && !isDigitsCountUpperBound)
                 {

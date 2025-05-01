@@ -1,11 +1,11 @@
-﻿using Aritiafel.Characters;
-using Aritiafel.Items;
-using System;
+﻿using System;
 using System.Collections;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Text;
 using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Windows.Forms;
+using Aritiafel.Characters;
+using Aritiafel.Items;
 
 namespace Aritiafel.Organizations
 {
@@ -22,7 +22,7 @@ namespace Aritiafel.Organizations
 
         public static bool Registered { get; private set; }
 
-        public delegate DialogResult FormStartDelegate (Form newForm);
+        public delegate DialogResult FormStartDelegate(Form newForm);
 
         public static event FormStartDelegate Form_Start;
 
@@ -48,7 +48,7 @@ namespace Aritiafel.Organizations
         public static void DismissMembers()
         {
             Bard = null;
-            Courier = null;            
+            Courier = null;
             Archivist = null;
             Registered = false;
         }
@@ -177,15 +177,15 @@ namespace Aritiafel.Organizations
 
             string response = Courier.GetResponse(message.ID);
             if (!string.IsNullOrEmpty(response))
-                dr = (DialogResult)Enum.Parse(typeof(DialogResult), response);                
+                dr = (DialogResult)Enum.Parse(typeof(DialogResult), response);
 
             if (!message.ChoiceOption.ToString().Contains(dr.ToString()))
                 throw new InvalidCastException("DialogResult");
 
             record = $"DialogResult = [{dr}]";
             Courier.MessageReceived.Add(record);
-            Archivist.WriteRecord(record);            
-                
+            Archivist.WriteRecord(record);
+
             return dr;
         }
 
@@ -285,10 +285,10 @@ namespace Aritiafel.Organizations
 
         //Implement
         private static DialogResult ShowOrCallEvent(Form form, IWin32Window owner, bool asDialog)
-        {            
+        {
             if (!Registered)
-            { 
-                if(asDialog)
+            {
+                if (asDialog)
                 {
                     if (owner == null)
                         return form.ShowDialog();

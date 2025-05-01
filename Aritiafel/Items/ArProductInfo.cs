@@ -29,12 +29,12 @@ namespace Aritiafel.Items
         public override int GetHashCode()
         {
             int result = Type.ToString().GetHashCode();
-            for(int i = 0; i < Args.Count; i++)
+            for (int i = 0; i < Args.Count; i++)
                 result ^= Args[i].ToString().GetHashCode();
-            foreach(KeyValuePair<string, object> kvp in Setting)
+            foreach (KeyValuePair<string, object> kvp in Setting)
                 result ^= kvp.Key.GetHashCode() ^ kvp.Value.ToString().GetHashCode();
             return result;
-        }            
+        }
 
         public override bool Equals(object obj)
         {

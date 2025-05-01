@@ -120,7 +120,7 @@ namespace Aritiafel.Artifacts
             else if (count == 1)
                 return new double[] { DrawOutDouble(minValue, maxValue) };
             if (minValue > maxValue)
-                throw new ArgumentException(MinGreaterThanMaxMessage);            
+                throw new ArgumentException(MinGreaterThanMaxMessage);
 
             double[] result = new double[count];
             if (repeatable)
@@ -229,7 +229,7 @@ namespace Aritiafel.Artifacts
             if (!repeatable)
                 return Array.ConvertAll(DrawOutIntegers(count, minValue, maxValue, repeatable), m => (byte)m);
             if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));            
+                throw new ArgumentOutOfRangeException(nameof(count));
             if (minValue > maxValue)
                 throw new ArgumentException(MinGreaterThanMaxMessage);
             byte[] result = new byte[count];
@@ -247,7 +247,7 @@ namespace Aritiafel.Artifacts
             if (collection is IList<T>)
                 return DrawOutFromList((IList<T>)collection);
             int i = DrawOutInteger(collection.Count - 1);
-            foreach(T item in collection)
+            foreach (T item in collection)
             {
                 if (i == 0)
                     return item;
@@ -257,7 +257,7 @@ namespace Aritiafel.Artifacts
         }
         public T[] DrawOutItemsFromArray<T>(T[] array, long count)
         {
-            if(count < 0)
+            if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
             long[] indexes = DrawOutLongs(count, array.LongLength - 1, false);
             T[] result = new T[count];
@@ -265,7 +265,7 @@ namespace Aritiafel.Artifacts
                 result[i] = array[indexes[i]];
             return result;
         }
-          
+
         public List<T> DrawOutItemsFromList<T>(IList<T> list, int count)
         {
             if (count < 0)
@@ -276,7 +276,7 @@ namespace Aritiafel.Artifacts
                 result.Add(list[indexes[i]]);
             return result;
         }
-        
+
         public List<T> DrawOutItemsFromCollection<T>(ICollection<T> collection, int count)
         {
             if (collection is IList<T>)
@@ -287,7 +287,7 @@ namespace Aritiafel.Artifacts
             List<T> result = new List<T>();
             Array.Sort(indexes);
             int i = 0, j = 0;
-            foreach(T item in collection)
+            foreach (T item in collection)
             {
                 if (i == indexes[j])
                 {
@@ -295,10 +295,10 @@ namespace Aritiafel.Artifacts
                     j++;
                     if (indexes.Length == j)
                         break;
-                }   
+                }
                 i++;
-            }            
+            }
             return result;
-        }   
+        }
     }
 }

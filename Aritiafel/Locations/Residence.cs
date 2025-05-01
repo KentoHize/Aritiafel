@@ -1,11 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Aritiafel;
 using System.Text.RegularExpressions;
+using Aritiafel;
 using Aritiafel.Locations.StorageHouse;
 
 namespace Aritiafel.Locations
@@ -76,7 +76,7 @@ namespace Aritiafel.Locations
             if (string.IsNullOrEmpty(subDirectory))
                 throw new ArgumentNullException(nameof(subDirectory));
 
-            return DirectoryCopy(Path.Combine(rootDirectory, subDirectory), Path.Combine(Address, subDirectory), true, null, null, null, inMinutes); 
+            return DirectoryCopy(Path.Combine(rootDirectory, subDirectory), Path.Combine(Address, subDirectory), true, null, null, null, inMinutes);
         }
 
         public static string ReadTextFile(string path)
@@ -203,7 +203,7 @@ namespace Aritiafel.Locations
                     if (ignoreFileFilters != null)
                         foreach (string filter in ignoreFileFilters)
                             if (FitsMask(fileName, filter))
-                                goto BreakPoint;                    
+                                goto BreakPoint;
                     if (inMinutes != 0 && File.GetLastWriteTime(file).AddMinutes(inMinutes) < DateTime.Now)
                         goto BreakPoint;
                     copiedFileCount++;
@@ -221,8 +221,8 @@ namespace Aritiafel.Locations
                     if (ignoreDirectoryNames != null)
                         foreach (string dirName in ignoreDirectoryNames)
                             if (dirName == subDirName)
-                                goto BreakPoint2;                   
-                    if(specificDirectoryNames != null)
+                                goto BreakPoint2;
+                    if (specificDirectoryNames != null)
                     {
                         foreach (string dirName in specificDirectoryNames)
                         {
@@ -231,7 +231,7 @@ namespace Aritiafel.Locations
                                 copiedFileCount += DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, null, null, ignoreFileFilters, inMinutes);
                                 goto BreakPoint2;
                             }
-                        }       
+                        }
                     }
                     copiedFileCount += DirectoryCopy(subDir, Path.Combine(targetDirectory, subDirName), includeSubDirectory, ignoreDirectoryNames, specificDirectoryNames, ignoreFileFilters, inMinutes);
                 BreakPoint2:;

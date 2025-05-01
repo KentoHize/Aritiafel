@@ -1,5 +1,4 @@
-﻿using Aritiafel.Characters.Heroes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -45,7 +44,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
             DateTimeFormat.DateSeparator = ",";
         }
         public new static CultureInfo GetCultureInfo(int culture)
-        { 
+        {
             if (culture == Mylar.ArinaCulture.LCID)
                 return Mylar.ArinaCulture;
             else
@@ -59,7 +58,7 @@ namespace Aritiafel.Organizations.ArinaOrganization
             else
                 return CultureInfo.GetCultureInfo(name);
         }
-        
+
         public new static CultureInfo GetCultureInfo(string name, string altname)
         {
             if (name == Mylar.ArinaCulture.Name)
@@ -69,14 +68,14 @@ namespace Aritiafel.Organizations.ArinaOrganization
         }
 
         public new static CultureInfo[] GetCultures(CultureTypes types)
-        {   
-            CultureInfo[] cultures = CultureInfo.GetCultures(types);            
+        {
+            CultureInfo[] cultures = CultureInfo.GetCultures(types);
             if (types.HasFlag(CultureTypes.UserCustomCulture) ||
                 types.HasFlag(CultureTypes.AllCultures))
             {
                 Array.Resize(ref cultures, cultures.Length + 1);
-                cultures[cultures.Length - 1] = Mylar.ArinaCulture;                
-            }   
+                cultures[cultures.Length - 1] = Mylar.ArinaCulture;
+            }
             return cultures;
         }
         public string[] GetAllDateTimePatterns()

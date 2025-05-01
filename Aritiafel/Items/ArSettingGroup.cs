@@ -8,7 +8,7 @@ namespace Aritiafel.Items
 {
     public class ArSettingGroup : SortedSet<ArSetting>
     {
-        class CompareArSetting : IComparer<ArSetting>
+        private class CompareArSetting : IComparer<ArSetting>
         {
             public int Compare(ArSetting a, ArSetting b)
             {

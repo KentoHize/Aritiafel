@@ -11,10 +11,10 @@ namespace Aritiafel.Characters
     public class Archivist //Recorder
     {
         public string Name { get; set; }
-        public Stream Stream { get => _Stream; set { if (value != null) { _Stream = value; sw = new StreamWriter(_Stream); } else if(sw != null) sw.Dispose(); } }
+        public Stream Stream { get => _Stream; set { if (value != null) { _Stream = value; sw = new StreamWriter(_Stream); } else if (sw != null) sw.Dispose(); } }
         private Stream _Stream;
         public IReadOnlyList<string> Records { get => records.AsReadOnly(); }
-        private List<string> records  = new List<string>();
+        private List<string> records = new List<string>();
         private StreamWriter sw;
 
         public Archivist()

@@ -8,6 +8,6 @@ namespace Aritiafel.Definitions
     {
         Normal = 0,
         Text = 1,
-        Custom = 2        
+        Custom = 2
     }
 }

@@ -35,17 +35,17 @@ namespace Aritiafel.Items
 
         public ArMessage(string content, string title = "", string id = null, ChoiceOptions co = ChoiceOptions.OK, LevelOfEergency loe = LevelOfEergency.None, byte defaultResponse = 1)
             : base(id, title)
-        {   
+        {
             Content = content;
             ChoiceOption = co;
-            LevelOfEergency = loe;           
+            LevelOfEergency = loe;
             DefaultResponse = defaultResponse;
         }
 
         private string GetResponseOptionString()
         {
             string result;
-            switch(ChoiceOption)
+            switch (ChoiceOption)
             {
                 case ChoiceOptions.OK:
                     result = "[OK]";
@@ -66,14 +66,14 @@ namespace Aritiafel.Items
                     result = "[Abort][Retry][Ignore]";
                     break;
                 default:
-                    return null;                    
+                    return null;
             }
             int index = 0;
             byte time = 0;
-            while(true)
+            while (true)
             {
                 index = result.IndexOf('[', index);
-                time++;                
+                time++;
 
                 if (time == DefaultResponse)
                     break;
@@ -107,9 +107,9 @@ namespace Aritiafel.Items
     {
         OK = 0,
         OKCancel,
-        AbortRetryIgnore,        
-        YesNoCancel,        
-        YesNo,        
+        AbortRetryIgnore,
+        YesNoCancel,
+        YesNo,
         RetryCancel
     }
 }

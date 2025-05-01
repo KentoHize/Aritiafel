@@ -40,9 +40,12 @@ namespace Aritiafel.Organizations.ArinaOrganization
                 return ArCultureInfo.SystemCalendarEraName;
             else if (dtfi.Calendar is GregorianCalendar)
                 return " CE";
-            else 
+            else
                 return "ZZZ";
-        }        
+        }
+
+        public static string[] GetAllStandardCalendarEraName() //先暫時寫死
+            => [ArCultureInfo.SystemCalendarEraName, " CE", "ZZZ"];
         public static string[] GetAllStandardDateTimePatterns(DateTimeFormatInfo dtfi)
         {
             Array allStandardDateTimeTypes = Enum.GetValues(typeof(ArStandardDateTimeType));
