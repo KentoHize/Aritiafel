@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Xml;
 using Aritiafel.Artifacts;
 using Aritiafel.Locations.StorageHouse;
-using Microsoft.VisualBasic;
+using System.Runtime.InteropServices;
+using Microsoft.International.Converters;
+using Microsoft.International.Converters.TraditionalChineseToSimplifiedConverter;
+//using Microsoft.VisualBasic;
 
 namespace Aritiafel.Organizations
 {
@@ -15,10 +19,10 @@ namespace Aritiafel.Organizations
     /// 法師公會，目前提供繁轉簡翻譯服務和中文姓名服務
     /// </summary>
     public static class WizardGuild
-    {
+    { 
         public static string TranslateTextFromTraditionalChineseToSimplifiedChinese(string text)
         {   
-            return Strings.StrConv(text, VbStrConv.SimplifiedChinese, 2052);
+            return ChineseConverter.Convert(text, ChineseConversionDirection.TraditionalToSimplified);            
         }
 
         public static void ProduceSimplifiedChineseResourceFile(string traditionalChineseFileName)

@@ -17,7 +17,7 @@ namespace AritiafelTest
         [TestMethod]
         public void ResourceFileTranslateToZHCN()
         {
-            WizardGuild.ProduceSimplifiedChineseResourceFile(@"C:\Programs\WinForm\JsonEditorV2\JsonEditorV2\Resources\Res.resx");
+            WizardGuild.ProduceSimplifiedChineseResourceFile(@"C:\Programs\JsonEditorV2\JsonEditorV2\Resources\Res.resx");
         }
 
         [TestMethod]

@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Aritiafel.Organizations.ArinaOrganization;
 using Aritiafel.Organizations.RaeriharUniversity;
@@ -116,6 +117,17 @@ namespace Aritiafel
                     return false;
             return true;
         }
+
+        //private static readonly Regex cjkCharRegex = new Regex(@"\p{IsCJKUnifiedIdeographs}");
+        //public static bool IsChinese(this char c)
+        //{
+        //    return cjkCharRegex.IsMatch(c.ToString());
+        //}
+        public static bool IsChinese(this char c)
+            => Regex.IsMatch(c.ToString(), @"\p{IsCJKUnifiedIdeographs}");
+
+        public static bool ContainChinese(this string s)
+            => s.Any(m => m.IsChinese());
 
     }
 }

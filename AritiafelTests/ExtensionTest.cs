@@ -37,5 +37,16 @@ namespace AritiafelTest
             TestContext.WriteLine(HeroStyle.Cool.ToArString());
             TestContext.WriteLine(HeroStyle.Power.ToArString());
         }
+
+        [TestMethod]
+        public void ChineseCharacterTest()
+        {
+            Assert.IsFalse('a'.IsChinese());
+            Assert.IsTrue('中'.IsChinese());
+
+            Assert.IsFalse("aaa".ContainChinese());
+            Assert.IsTrue("a人a".ContainChinese());
+        }
+
     }
 }
