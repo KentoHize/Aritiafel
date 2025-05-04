@@ -245,9 +245,13 @@ namespace AritiafelTest
         [TestMethod]
         public void TestArea()
         {
+            //ArDateTime ad = ArDateTime.Parse(" AR 00021/03/03 00:00:00.0000000");
+            ArDateTime ad = ArDateTime.Parse("2, 29, Ar. 11");
+            Sophia.SeeThrough(ad);
+
             Sophia.SeeThrough(Mylar.GetStandardDateTimePattern(Mylar.ArinaCulture.DateTimeFormat, ArStandardDateTimeType.DateExtension));
             return;
-            ArDateTime ad = ArDateTime.Now;
+            //ArDateTime ad = ArDateTime.Now;
             //Sophia.SeeThrough(ad);
             ad = new ArDateTime(7, 10, 15);
             

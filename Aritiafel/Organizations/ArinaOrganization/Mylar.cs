@@ -29,6 +29,8 @@ namespace Aritiafel.Organizations.ArinaOrganization
         public const string StandardTimePattern = "HH':'mm':'ss'.'fffffff";
         public const string StandardShortTimePattern = "HH':'mm':'ss";
 
+        public static bool UserIsAuthorSelf()
+            => File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Arina Command Center.lnk");
         public static string GetStandardCalendarEraName()
             => GetStandardCalendarEraName(ArinaCulture.DateTimeFormat);
         public static string GetStandardCalendarEraName(DateTimeFormatInfo dtfi)
@@ -43,7 +45,6 @@ namespace Aritiafel.Organizations.ArinaOrganization
             else
                 return "ZZZ";
         }
-
         public static string[] GetAllStandardCalendarEraName() //先暫時寫死
             => [ArCultureInfo.SystemCalendarEraName, " CE", "ZZZ"];
         public static string[] GetAllStandardDateTimePatterns(DateTimeFormatInfo dtfi)

@@ -40,15 +40,15 @@ namespace Aritiafel.Organizations.RaeriharUniversity
             return result.ToArray();
         }
 
-        static internal ArDisassembleInfo CreateScanDisassembleInfo(ArOutPartInfo patternInfo, DateTimeFormatInfo dtfi, bool allowWhiteSpace = false)
+        static internal ArDisassembleInfo CreateScanDisassembleInfo(ArOutPartInfo patternInfo, DateTimeFormatInfo dtfi, ArDateTimeStyles dateTimeStyles)
         {
             ArDisassembleInfo di = new ArDisassembleInfo();
-            di.ReservedStringInfo = [CreateScanStringPartInfo(patternInfo, dtfi, allowWhiteSpace)];
+            di.ReservedStringInfo = [CreateScanStringPartInfo(patternInfo, dtfi, dateTimeStyles)];
             di.ContainerPartInfo = [];
             return di;
         }
 
-        static internal ArStringPartInfo[] CreateScanStringPartInfo(ArOutPartInfo patternInfo, DateTimeFormatInfo dtfi, bool allowWhiteSpace = false)
+        static internal ArStringPartInfo[] CreateScanStringPartInfo(ArOutPartInfo patternInfo, DateTimeFormatInfo dtfi, ArDateTimeStyles dateTimeStyles)
         {
             List<ArStringPartInfo> result = CreateScanStringPartInfoLoop(patternInfo, dtfi);
             string[] sa;
@@ -83,6 +83,9 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                             break;
                         case "ggg":
                             result[i].Values = Mylar.GetAllStandardCalendarEraName();
+                            if(dateTimeStyles.HasFlag(ArDateTimeStyles.AllowLeadingWhite))
+                                for(int j = 0; j < result[i].Values.Length; j++)
+                                    result[i].Values[j] = result[i].Values[j].TrimStart();
                             break;
                         case "gg":
                             if (dtfi == Mylar.ArinaCulture.DateTimeFormat) // ArCulture
@@ -112,7 +115,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 }
             }
 
-            if (allowWhiteSpace)
+            if (dateTimeStyles.HasFlag(ArDateTimeStyles.AllowInnerWhite))
                 result.Insert(0, new ArStringPartInfo(" ", " "));
             return result.ToArray();
         }
@@ -290,7 +293,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 ds.ReservedStringMatchPolicy = StringMatchPolicy.IgnoreLimitedReservedStringIfNoMatch; //忽略模式，對K較為棘手
             else
                 ds.ReservedStringMatchPolicy = StringMatchPolicy.SkipAllReservedStringIfFirstNoMatch; //嚴格模式
-            ospi = ds.Disassemble(s, CreateScanDisassembleInfo(ospi, dtfi, dateTimeStyles.HasFlag(ArDateTimeStyles.AllowInnerWhite)));
+            ospi = ds.Disassemble(s, CreateScanDisassembleInfo(ospi, dtfi, dateTimeStyles));
 
             int year = 1, month = 1, day = 1, hour = 0, minute = 0, second = 0, decimalPart = 0, tt = -1,
                 zHour = 0, zMinute = 0;
@@ -366,7 +369,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                     case "g":
                     case "gg":
                     case "ggg":
-                        era = ((ArOutStringPartInfo)ospi.Value[i]).Value;
+                        era = ((ArOutStringPartInfo)ospi.Value[i]).Value;                        
                         break;
                     case "zzz1":
                     case "zz":
@@ -383,10 +386,13 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                 }
             });
 
+            
+            //if (era != "" && era.Length < 3)
+            //    era = era.PadLeft(3, ' ');
             //AR -> era != "" 也!= "AR"
             //Other => != "Ar"
             //先寫死 => 待修改
-            if (era != Mylar.GetStandardCalendarEraName() && era != ArCultureInfo.EraName && era != ArCultureInfo.AbbreviatedEraName &&
+            if (era.Trim() != Mylar.GetStandardCalendarEraName().Trim() && era != ArCultureInfo.EraName && era != ArCultureInfo.AbbreviatedEraName &&
                 (dtfi != Mylar.ArinaCulture.DateTimeFormat || era != ""))
                 useCEDate = true;
 
@@ -827,7 +833,7 @@ namespace Aritiafel.Organizations.RaeriharUniversity
                         case 34: // "t"
                             sb.Append(hour < 12 ? dtf.AMDesignator[0] : dtf.PMDesignator[0]);
                             break;
-                        case 35: // "ggg"
+                        case 35: // "ggg"                            
                             sb.Append(Mylar.GetStandardCalendarEraName(dtf));
                             break;
                         case 36: // "gg"
