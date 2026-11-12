@@ -19,19 +19,19 @@ namespace Aritiafel.Characters.Heroes
         //    { ProjectChoice.Aritiafel, @"C:\Programs\Standard\Aritiafel" }
         //}
 
-        public static long BackupGameSave(string rootFolder, string subFolder, string backupDrive = DefaultBackupDrive)
+        public static long BackupGameSave(string rootFolder, string subFolder, string? fileExtension = null, string backupDrive = DefaultBackupDrive)
         {
             Residence rs = new Residence($"{backupDrive}:\\GameSave");
-            return rs.BackupGameData(rootFolder, subFolder);
+            return rs.BackupGameData(rootFolder, subFolder, fileExtension);
         }
 
-        public static long CopyGameSave(string rootFolder, string subFolder, string targetFolder)
-            => CopyLatestGameSave(rootFolder, subFolder, targetFolder, 0);
+        public static long CopyGameSave(string rootFolder, string subFolder, string targetFolder, string? fileExtension = null)
+            => CopyLatestGameSave(rootFolder, subFolder, targetFolder, fileExtension, 0);
 
-        public static long CopyLatestGameSave(string rootFolder, string subFolder, string targetFolder, long inMinutes = 30)
+        public static long CopyLatestGameSave(string rootFolder, string subFolder, string targetFolder, string? fileExtension = null, long inMinutes = 30)
         {
             Residence rs = new Residence(Path.Combine(targetFolder, "GameSave"));
-            return rs.BackupGameData(rootFolder, subFolder, inMinutes);
+            return rs.BackupGameData(rootFolder, subFolder, fileExtension, inMinutes);
         }
     }
 }
